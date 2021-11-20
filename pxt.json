@@ -1,0 +1,43 @@
+{
+    "name": "microbit-pxt-blehid",
+    "version": "0.0.0",
+    "description": "BLE HID Support",
+    "license": "MIT",
+    "dependencies": {
+        "core": "*",
+        "bluetooth": "*"
+    },
+    "files": [
+        "README.md",
+        "blehid.ts",
+        "blehid.cpp",
+        "shims.d.ts",
+        "enums.d.ts"
+    ],
+    "testFiles": [
+        "test.ts"
+    ],
+    "public": true,
+    "supportedTargets": [
+        "microbit"
+    ],
+    "preferredEditor": "tsprj",
+    "authors": [
+        "Bill Siever <bsiever@gmail.com>"
+    ],
+    "card": {
+        "name": "BLE HID",
+        "feedbackUrl": "http://siever.info"
+    },
+    "yotta": {
+        "config": {
+            "microbit-dal": {
+                "bluetooth": {
+                    "open": 1,
+                    "whitelist": 0,
+                    "security_level": null
+                }
+            }
+        }
+    }
+}
