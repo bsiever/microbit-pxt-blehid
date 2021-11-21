@@ -13,9 +13,10 @@ basic.showIcon(IconNames.Yes)
 bluetooth.startUartService()
 bluetooth.startLEDService()
 
+serial.writeLine("Calling Adv...")
+blehid.startHIDService()
+serial.writeLine("Done...")
 
 input.onButtonPressed(Button.A, function () {
-    serial.writeLine("Calling Adv...")
-    blehid.advertise()
-    serial.writeLine("Done...")
+    serial.writeLine("Button...")
 })
