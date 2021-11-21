@@ -6,10 +6,9 @@
 #ifdef DEBUG_ENABLED 
 #include "pxt.h"
 #include "MicroBit.h"
-void loopUntilSent(ManagedString str);
-void loopUntilSent(int str);
 
-#define DEBUG(str) loopUntilSent(str)
+
+#define DEBUG(...) uBit.serial.printf( __VA_ARGS__ )
 
 #else 
 #define DEBUG(str) 

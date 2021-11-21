@@ -23,19 +23,25 @@
 #include "ble_advdata.h"
 #include "ble_conn_params.h"
 
+#if CONFIG_ENABLED(DEVICE_BLE)
 
-#include "BatteryService.h"
-#include "debug.h"
+
 #if MICROBIT_CODAL
 #include "peripheral_alloc.h"
 #endif 
 
 
+#include "BatteryService.h"
+#include "debug.h"
+
+
+static BatteryService *bs = NULL;
 
 
 using namespace pxt;
 
 namespace blehid { 
+
 
     void advertiseHID() {
 #if MICROBIT_CODAL
@@ -48,7 +54,7 @@ namespace blehid {
 
         // V2
         // destruct at old location
-        DEBUG("advertising function");
+        DEBUG("advertising function\n");
         uBit.bleManager.stopAdvertising();
 
         MICROBIT_DEBUG_DMESG( "configureAdvertising connectable %d, discoverable %d", (int) connectable, (int) discoverable);
@@ -94,7 +100,24 @@ namespace blehid {
         // Start advertising as HID
 #if CONFIG_ENABLED(DEVICE_BLE)
         advertiseHID();
-        new ::BatteryService(*uBit.ble);
+        if(bs == NULL)
+            bs = new ::BatteryService(*uBit.ble);
+#endif
+    }
+
+    //% 
+    void setBatteryLevel(uint8_t level) {
+#if CONFIG_ENABLED(DEVICE_BLE)
+        if(bs!=NULL) bs->setLevel(level);
 #endif
     }
 }
+#else 
+
+namespace blehid { 
+    //%
+    void startHIDService() {}
+    //% 
+    void setBatteryLevel(uint8_t level) {}
+}
+#endif

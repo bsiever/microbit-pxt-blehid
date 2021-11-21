@@ -7,4 +7,11 @@ namespace blehid {
     //% shim=blehid::startHIDService
     export function startHIDService() : void {
     }
+
+    //% blockId="set battery level" block="set battery level to | $level %"
+    //% shim=blehid::setBatteryLevel
+    //% level.min=0 level.max=100
+    export function setBatteryLevel(level: number) : void {
+    }
+
 }

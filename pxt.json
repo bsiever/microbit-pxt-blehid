@@ -13,7 +13,6 @@
         "blehid.cpp",
         "BatteryService.cpp",
         "BatteryService.h",
-        "debug.cpp",
         "debug.h",
         "shims.d.ts",
         "enums.d.ts"

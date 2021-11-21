@@ -18,5 +18,6 @@ blehid.startHIDService()
 serial.writeLine("Done...")
 
 input.onButtonPressed(Button.A, function () {
-    serial.writeLine("Button...")
+    serial.writeLine("Button...\n")
+    blehid.setBatteryLevel(50)
 })

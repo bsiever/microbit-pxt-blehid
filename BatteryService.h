@@ -22,7 +22,9 @@ class BatteryService : public MicroBitBLEService
      * Create a representation of the Bluetooth SIG Battery Service
      * @param _ble The instance of a BLE device that we're running on.
      */
-     BatteryService( BLEDevice &_ble);
+    BatteryService( BLEDevice &_ble);
+
+    void setLevel(uint8_t newLevel);
 
     private:
     /**
@@ -41,13 +43,13 @@ class BatteryService : public MicroBitBLEService
     void onDataWritten( const microbit_ble_evt_write_t *params);
 
 
-
-    // TODO / Update
+    // Actual service data
+    uint8_t batteryLevel;  // Battery level (0-100)
+    
     // Index for each charactersitic in arrays of handles and UUIDs
     typedef enum mbbs_cIdx
     {
-        mbbs_cIdxDATA,
-        mbbs_cIdxPERIOD,
+        mbbs_cIdxLEVEL,
         mbbs_cIdxCOUNT
     } mbbs_cIdx;
     
@@ -57,6 +59,8 @@ class BatteryService : public MicroBitBLEService
     
     // Data for each characteristic when they are held by Soft Device.
     MicroBitBLEChar      chars[ mbbs_cIdxCOUNT];
+
+
 
     public:
     
