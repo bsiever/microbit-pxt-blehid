@@ -41,8 +41,6 @@
                     "open": 0,
                     "whitelist": 1,
                     "security_level": "SECURITY_MODE_ENCRYPTION_NO_MITM",
-                    "MICROBIT_BLE_DEVICE_INFORMATION_SERVICE": 0,
-                    "MICROBIT_DAL_BLUETOOTH_DEVICE_INFO_SERVICE": 0,
                     "DEVICE_INFO_SERVICE": 0
                 }
             }
