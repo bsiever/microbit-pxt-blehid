@@ -12,35 +12,86 @@
 */
 
 
-//#define MICROBIT_CODAL 1  // Temp for syntax highlighting
+// See https://github.com/kshoji/pxt-bluetooth-gamepad/blob/master/BluetoothGamepadService.cpp
+
+//#define MICROBIT_CODAL 1  // Temp for  syntax highlighting
 
 
 #include "pxt.h"
 #include "MicroBit.h"
+
+#if CONFIG_ENABLED(DEVICE_BLE) 
+
 #include "ble.h"
 #include "ble_hci.h"
 #include "ble_srv_common.h"
 #include "ble_advdata.h"
 #include "ble_conn_params.h"
-
-#if CONFIG_ENABLED(DEVICE_BLE)
-
+#include "ble_dis.h"
 
 #if MICROBIT_CODAL
 #include "peripheral_alloc.h"
 #endif 
 
 
+
+// Copied from MicroBitBLEManager.cpp
+static void const_ascii_to_utf8(ble_srv_utf8_str_t * p_utf8, const char * p_ascii)
+{
+    // ble_srv_ascii_to_utf8() doesn't check for p_ascii == NULL;
+    // cast away const or allocate temporary buffer?
+    p_utf8->p_str  = (uint8_t *)p_ascii;
+    p_utf8->length = p_ascii ? (uint16_t)strlen(p_ascii) : 0;
+}
+
+
 #include "BatteryService.h"
+#include "HIDService.h"
 #include "debug.h"
 
 
 static BatteryService *bs = NULL;
-
+static HIDService *hids = NULL;
 
 using namespace pxt;
 
 namespace blehid { 
+
+    void updateDIS() {
+        // Copied from MicroBitBLEManager.cpp
+//        MicroBitVersion version = uBit.power.getVersion();
+        const char *MICROBIT_BLE_MANUFACTURER = NULL;
+        static const char *MICROBIT_BLE_MODEL = "BBC micro:bit";
+        const char *MICROBIT_BLE_HARDWARE_VERSION = NULL;
+        const char *MICROBIT_BLE_FIRMWARE_VERSION = MICROBIT_DAL_VERSION;
+        const char *MICROBIT_BLE_SOFTWARE_VERSION = NULL;
+        // FIXME: Hardcoded, but should be based on board version as in MicroBit.cpp
+        ManagedString modelVersion( "2.0");
+        ManagedString disName( MICROBIT_BLE_MODEL);
+        disName = disName + " V" + modelVersion;
+
+        ble_dis_init_t disi;
+        ble_dis_pnp_id_t pnp;
+        memset( &pnp, 0, sizeof(pnp));
+        memset( &disi, 0, sizeof(disi));
+        disi.dis_char_rd_sec = SEC_OPEN;
+        const_ascii_to_utf8( &disi.manufact_name_str,  MICROBIT_BLE_MANUFACTURER);
+        const_ascii_to_utf8( &disi.model_num_str,      disName.toCharArray());
+        const_ascii_to_utf8( &disi.serial_num_str,     uBit.getSerial().toCharArray());
+        const_ascii_to_utf8( &disi.hw_rev_str,         MICROBIT_BLE_HARDWARE_VERSION);
+        const_ascii_to_utf8( &disi.fw_rev_str,         MICROBIT_BLE_FIRMWARE_VERSION);
+        const_ascii_to_utf8( &disi.sw_rev_str,         MICROBIT_BLE_SOFTWARE_VERSION);
+        //ble_dis_sys_id_t *             p_sys_id;                    /**< System ID. */
+        //ble_dis_reg_cert_data_list_t * p_reg_cert_data_list;        /**< IEEE 11073-20601 Regulatory Certification Data List. */
+        // TODO update these:
+        pnp.vendor_id_source = 1;
+        pnp.vendor_id = 1;
+        pnp.product_id = 1;
+        pnp.product_version = 1;
+        disi.p_pnp_id = &pnp;
+        //ble_dis_pnp_id_t *             p_pnp_id;                    /**< PnP ID. */
+        ble_dis_init( &disi);
+    }
 
 
     void advertiseHID() {
@@ -100,8 +151,11 @@ namespace blehid {
         // Start advertising as HID
 #if CONFIG_ENABLED(DEVICE_BLE)
         advertiseHID();
-        if(bs == NULL)
+        if(bs == NULL) {
+            updateDIS();
             bs = new ::BatteryService(*uBit.ble);
+            hids = new ::HIDService(*uBit.ble);
+        }
 #endif
     }
 
