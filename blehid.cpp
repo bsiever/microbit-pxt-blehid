@@ -57,6 +57,9 @@ using namespace pxt;
 
 namespace blehid { 
 
+
+// TODO: According to Nordic forums, this isn't needed https://devzone.nordicsemi.com/f/nordic-q-a/1518/do-i-need-vid-pid-for-btle-hid
+// TODO: Appearance???
     void updateDIS() {
         // Copied from MicroBitBLEManager.cpp
 //        MicroBitVersion version = uBit.power.getVersion();
@@ -105,8 +108,7 @@ namespace blehid {
 
         // V2
         // destruct at old location
-        DEBUG("advertising function\n");
-        uBit.bleManager.stopAdvertising();
+
 
         MICROBIT_DEBUG_DMESG( "configureAdvertising connectable %d, discoverable %d", (int) connectable, (int) discoverable);
         MICROBIT_DEBUG_DMESG( "whitelist %d, interval_ms %d, timeout_seconds %d", (int) whitelist, (int) interval_ms, (int) timeout_seconds);
@@ -139,9 +141,6 @@ namespace blehid {
         //NRF_LOG_HEXDUMP_INFO( gap_adv_data.adv_data.p_data, gap_adv_data.adv_data.len);
         MICROBIT_BLE_ECHK( sd_ble_gap_adv_set_configure( &m_adv_handle, &gap_adv_data, &gap_adv_params));
 
-        // WARNING: This will start adv using the static handle in the BLE Manager. 
-        // Hopefully the same handle is used as the one returned by sd_ble_gap_adv_set_configure
-        uBit.bleManager.advertise();
 #endif
 
     }
@@ -150,11 +149,17 @@ namespace blehid {
     void startHIDService() {
         // Start advertising as HID
 #if CONFIG_ENABLED(DEVICE_BLE)
-        advertiseHID();
+        DEBUG("advertising function\n");
         if(bs == NULL) {
+            uBit.bleManager.stopAdvertising();
+            advertiseHID();
             updateDIS();
             bs = new ::BatteryService(*uBit.ble);
             hids = new ::HIDService(*uBit.ble);
+
+            // WARNING: This will start adv using the static handle in the BLE Manager. 
+            // Hopefully the same handle is used as the one returned by sd_ble_gap_adv_set_configure
+            uBit.bleManager.advertise();
         }
 #endif
     }

@@ -24,7 +24,6 @@ class HIDService : public MicroBitBLEService
      */
     HIDService( BLEDevice &_ble);
 
-    void setLevel(uint8_t newLevel);
 
     private:
     /**
@@ -44,12 +43,17 @@ class HIDService : public MicroBitBLEService
 
 
     // Actual service data
-    uint8_t batteryLevel;  // Battery level (0-100)
-    
+    uint8_t protocolMode;  // 0=>Boot Protocol; 1=>Report
+    static  uint16_t HIDInfo[];
+    static  uint8_t  reportMap[];
+
+
     // Index for each charactersitic in arrays of handles and UUIDs
     typedef enum mbbs_cIdx
     {
-        mbbs_cIdxLEVEL,
+        mbbs_cIdxProtocolMode,
+        mbbs_cIdxHIDInfo,
+        mbbs_cIdxReportMap,
         mbbs_cIdxCOUNT
     } mbbs_cIdx;
     
