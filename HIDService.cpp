@@ -6,19 +6,36 @@
 #include "HIDService.h"
 #include "debug.h"
 
-#define HID_TESTING 1
+//#define HID_TESTING 1
 
+
+/*
+TODO / Major stuff:
+  https://docs.silabs.com/bluetooth/2.13/code-examples/applications/ble-hid-keyboard
+
+
+  1. Add appearance to advertising
+  2. Add security to Map and Report (for iOS to work) 
+*/
+
+
+#ifdef HID_TESTING
+const uint16_t HIDService::serviceUUID = 0x8812;   // 0x1812 = HID 
+#else
 const uint16_t HIDService::serviceUUID = 0x1812;   // 0x1812 = HID 
+#endif
 
 const uint16_t HIDService::charUUID[ mbbs_cIdxCOUNT ] = { 
 #ifdef HID_TESTING
   0x2A4E,  //  ProtocolMode
   0x8A4A,  //  HIDInfo    0x2A4A
-  0x8A4B   // Report Map
+  0x8A4B,  // Report Map 
+  0x8A4D   // Report
 #else
   0x2A4E,  //  ProtocolMode
   0x2A4A,  //  HIDInfo (Confirm Value without BLUETOOTH_PRIVLEDGED exception)   0x2A4A
-  0x2A4B   // Report Map
+  0x2A4B,  // Report Map
+  0x2A4D   // Report 
 #endif
 };
 
@@ -64,10 +81,13 @@ uint8_t HIDService::reportMap[] =
 HIDService::HIDService( BLEDevice &_ble) 
     : protocolMode(0x00) // 0x01 = Report Protocol
 {
-        DEBUG("HID. Serv starting\n");
+    DEBUG("HID Serv starting\n");
+
+    //memset(report, 0, sizeof(report));
 
     // Register the base UUID and create the service.
     bs_uuid_type = BLE_UUID_TYPE_BLE;  // Set the UUID type to 0x01, which should be Bluetooth SIG ID
+    DEBUG("1\n");
     CreateService( serviceUUID);
     
     // Create the data structures that represent each of our characteristics in Soft Device.
@@ -76,17 +96,25 @@ HIDService::HIDService( BLEDevice &_ble)
                         sizeof(protocolMode), sizeof(protocolMode),
                         microbit_propREAD | microbit_propWRITE_WITHOUT);
 
+    DEBUG("2\n");
     CreateCharacteristic( mbbs_cIdxHIDInfo, charUUID[ mbbs_cIdxHIDInfo ],
                         (uint8_t *)HIDInfo,
                         //sizeof(HIDInfo), sizeof(HIDInfo),
                         4,4,
                         microbit_propREAD  | microbit_propWRITE_WITHOUT);
-
+    DEBUG("3\n"); 
+ 
     CreateCharacteristic( mbbs_cIdxReportMap, charUUID[ mbbs_cIdxReportMap ],
                         (uint8_t *)reportMap,
                         sizeof(reportMap), sizeof(reportMap),
-                        microbit_propREAD );
+                        microbit_propREAD  | microbit_propREADAUTH);
+    DEBUG("4\n");
 
+    CreateCharacteristic( mbbs_cIdxReport, charUUID[ mbbs_cIdxReport ],
+                        (uint8_t *)report,
+                        sizeof(report), sizeof(report),
+                        microbit_propREAD  | microbit_propNOTIFY | microbit_propREADAUTH);
+    DEBUG("5\n");
 
 }
 
@@ -105,7 +133,6 @@ void HIDService::onConnect( const microbit_ble_evt_t *p_ble_evt)
 {
     DEBUG("HID. Serv onConnect\n");
 }
-
 
 /**
   * Invoked when BLE disconnects.
@@ -131,6 +158,29 @@ void HIDService::onDataWritten( const microbit_ble_evt_write_t *params)
       setChrValue( mbbs_cIdxProtocolMode, (const uint8_t *)&protocolMode, sizeof(protocolMode));
 
     }
+}
+
+void HIDService::sendKey(char c) {
+  report[0] = 0;
+  report[1] = 0;
+  report[2] = 0x05;  //b
+  report[3] = 0;
+  report[4] = 0;
+  report[5] = 0;
+  report[6] = 0;
+  report[7] = 0;
+  notifyChrValue( mbbs_cIdxReport, (uint8_t *)report, sizeof(report)); 
+  uBit.sleep(100);
+  report[0] = 0;
+  report[1] = 0;
+  report[2] = 0; 
+  report[3] = 0;
+  report[4] = 0;
+  report[5] = 0;
+  report[6] = 0;
+  report[7] = 0;
+  notifyChrValue( mbbs_cIdxReport, (uint8_t *)report, sizeof(report)); 
+  uBit.sleep(100);
 }
 
 

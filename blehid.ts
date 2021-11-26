@@ -14,4 +14,9 @@ namespace blehid {
     export function setBatteryLevel(level: number) : void {
     }
 
+    //% blockId="send string" block="send keys %" 
+    //% shim=blehid::sendString
+    export function sendString() : void {
+    }
+
 }

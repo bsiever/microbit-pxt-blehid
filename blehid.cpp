@@ -87,10 +87,10 @@ namespace blehid {
         //ble_dis_sys_id_t *             p_sys_id;                    /**< System ID. */
         //ble_dis_reg_cert_data_list_t * p_reg_cert_data_list;        /**< IEEE 11073-20601 Regulatory Certification Data List. */
         // TODO update these:
-        pnp.vendor_id_source = 1;
-        pnp.vendor_id = 1;
-        pnp.product_id = 1;
-        pnp.product_version = 1;
+        pnp.vendor_id_source = 0x02;
+        pnp.vendor_id = 0x10c4;
+        pnp.product_id = 0x0001;
+        pnp.product_version = 0x0001;
         disi.p_pnp_id = &pnp;
         //ble_dis_pnp_id_t *             p_pnp_id;                    /**< PnP ID. */
         ble_dis_init( &disi);
@@ -165,6 +165,14 @@ namespace blehid {
     }
 
     //% 
+    void sendString() {
+#if CONFIG_ENABLED(DEVICE_BLE)
+        if(!hids) return;
+        hids->sendKey('a');
+#endif
+    }
+
+    //% 
     void setBatteryLevel(uint8_t level) {
 #if CONFIG_ENABLED(DEVICE_BLE)
         if(bs!=NULL) bs->setLevel(level);
@@ -178,5 +186,7 @@ namespace blehid {
     void startHIDService() {}
     //% 
     void setBatteryLevel(uint8_t level) {}
+    //%
+    void sendString() {}
 }
 #endif

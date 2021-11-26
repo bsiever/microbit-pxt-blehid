@@ -46,6 +46,8 @@ class HIDService : public MicroBitBLEService
     uint8_t protocolMode;  // 0=>Boot Protocol; 1=>Report
     static  uint16_t HIDInfo[];
     static  uint8_t  reportMap[];
+    uint8_t report[8];
+    bool connected;
 
 
     // Index for each charactersitic in arrays of handles and UUIDs
@@ -54,6 +56,7 @@ class HIDService : public MicroBitBLEService
         mbbs_cIdxProtocolMode,
         mbbs_cIdxHIDInfo,
         mbbs_cIdxReportMap,
+        mbbs_cIdxReport,
         mbbs_cIdxCOUNT
     } mbbs_cIdx;
     
@@ -70,6 +73,8 @@ class HIDService : public MicroBitBLEService
     
     int              characteristicCount()          { return mbbs_cIdxCOUNT; };
     MicroBitBLEChar *characteristicPtr( int idx)    { return &chars[ idx]; };
+
+    void sendKey(char c);
 
 };
 
