@@ -1,5 +1,5 @@
-#ifndef HID_SERVICE_H
-#define HID_SERVICE_H
+#ifndef SCAN_PARAMETERS_SERVICE_H
+#define SCAN_PARAMETERS_SERVICE_H
 
 #include "MicroBitConfig.h"
 
@@ -14,7 +14,7 @@
   * Class definition for a MicroBit BLE Accelerometer Service.
   * Provides access to live accelerometer data via Bluetooth, and provides basic configuration options.
   */
-class HIDService : public MicroBitBLEService
+class ScanParametersService : public MicroBitBLEService
 {
     public:
     /**
@@ -22,7 +22,7 @@ class HIDService : public MicroBitBLEService
      * Create a representation of the Bluetooth SIG Battery Service
      * @param _ble The instance of a BLE device that we're running on.
      */
-    HIDService( BLEDevice &_ble);
+    ScanParametersService( BLEDevice &_ble);
 
 
     private:
@@ -41,40 +41,13 @@ class HIDService : public MicroBitBLEService
       */
     void onDataWritten( const microbit_ble_evt_write_t *params);
 
+    uint8_t scanParameters[4];
 
-    /**
-     * Callback. Invoked when any of our attributes are read via BLE.
-     */
-    void onDataRead( microbit_onDataRead_t *params);
-
-
-    /*
-    */
-    void addReportDescriptor(uint16_t value_handle, uint8_t reportID, uint8_t reportType);
-
-
-
-    // Debugging: Print the attribute / info.
-    void debugAttribute(int index); 
-
-    // Actual service data
-    uint8_t protocolMode;  // 0=>Boot Protocol; 1=>Report
-    static  uint16_t HIDInfo[];
-    static  uint8_t  reportMap[];
-    uint8_t report[8];
-   // uint8_t bootReport[8];
-    //uint8_t kbtOut[4];  
-
-
+    
     // Index for each charactersitic in arrays of handles and UUIDs
     typedef enum mbbs_cIdx
     {
-        mbbs_cIdxProtocolMode,
-        mbbs_cIdxHIDInfo,
-        mbbs_cIdxReportMap,
-        mbbs_cIdxReport,
-      //  mbbs_cIdxBootKbdInp,
-      //  mbbs_cIdxBootKbdOut,
+        mbbs_cIdxPARAMS,
         mbbs_cIdxCOUNT
     } mbbs_cIdx;
     
@@ -91,8 +64,6 @@ class HIDService : public MicroBitBLEService
     
     int              characteristicCount()          { return mbbs_cIdxCOUNT; };
     MicroBitBLEChar *characteristicPtr( int idx)    { return &chars[ idx]; };
-
-    void sendKey(char c);
 
 };
 

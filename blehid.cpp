@@ -47,11 +47,13 @@ static void const_ascii_to_utf8(ble_srv_utf8_str_t * p_utf8, const char * p_asci
 
 #include "BatteryService.h"
 #include "HIDService.h"
+#include "ScanParametersService.h"
 #include "debug.h"
 
 
 static BatteryService *bs = NULL;
 static HIDService *hids = NULL;
+static ScanParametersService *sps = NULL;
 
 using namespace pxt;
 
@@ -99,6 +101,7 @@ namespace blehid {
 
     void advertiseHID() {
 #if MICROBIT_CODAL
+
         // TODO Do these need to be static???
         static ble_advdata_t m_advdata;
         static uint8_t  m_enc_advdata[BLE_GAP_ADV_SET_DATA_SIZE_MAX];
@@ -116,6 +119,15 @@ namespace blehid {
         uuid.uuid = 0x1812; //0x180D;  // 1812 sets to HID ; 180D Sets to Heart Rate
         m_advdata.uuids_complete.uuid_cnt = 1;
         m_advdata.uuids_complete.p_uuids = &uuid;
+        m_advdata.include_appearance = true;
+        sd_ble_gap_appearance_set(BLE_APPEARANCE_HID_KEYBOARD );
+        /*
+ 	BLE_APPEARANCE_GENERIC_HID   960
+    BLE_APPEARANCE_HID_KEYBOARD   961
+    BLE_APPEARANCE_HID_MOUSE   962
+    BLE_APPEARANCE_HID_JOYSTICK   963
+    BLE_APPEARANCE_HID_GAMEPAD   964
+     */
 
         ble_gap_adv_params_t    gap_adv_params;
         memset( &gap_adv_params, 0, sizeof( gap_adv_params));
@@ -156,6 +168,7 @@ namespace blehid {
             updateDIS();
             bs = new ::BatteryService(*uBit.ble);
             hids = new ::HIDService(*uBit.ble);
+            sps = new ::ScanParametersService(*uBit.ble);
 
             // WARNING: This will start adv using the static handle in the BLE Manager. 
             // Hopefully the same handle is used as the one returned by sd_ble_gap_adv_set_configure

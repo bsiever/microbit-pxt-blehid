@@ -13,6 +13,8 @@
         "blehid.cpp",
         "BatteryService.cpp",
         "BatteryService.h",
+        "ScanParametersService.cpp",
+        "ScanParametersService.h",
         "HIDService.cpp",
         "HIDService.h",
         "debug.h",
