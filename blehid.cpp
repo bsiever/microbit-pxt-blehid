@@ -99,6 +99,7 @@ namespace blehid {
     }
 
 
+
     void advertiseHID() {
 #if MICROBIT_CODAL
 
@@ -128,6 +129,8 @@ namespace blehid {
     BLE_APPEARANCE_HID_JOYSTICK   963
     BLE_APPEARANCE_HID_GAMEPAD   964
      */
+        // BSIEVER: The flags below ensure "pairing mode" so it shows up in Android
+        m_advdata.flags = BLE_GAP_ADV_FLAG_BR_EDR_NOT_SUPPORTED | BLE_GAP_ADV_FLAG_LE_GENERAL_DISC_MODE;
 
         ble_gap_adv_params_t    gap_adv_params;
         memset( &gap_adv_params, 0, sizeof( gap_adv_params));
@@ -152,7 +155,7 @@ namespace blehid {
         MICROBIT_BLE_ECHK( ble_advdata_encode( &m_advdata, gap_adv_data.adv_data.p_data, &gap_adv_data.adv_data.len));
         //NRF_LOG_HEXDUMP_INFO( gap_adv_data.adv_data.p_data, gap_adv_data.adv_data.len);
         MICROBIT_BLE_ECHK( sd_ble_gap_adv_set_configure( &m_adv_handle, &gap_adv_data, &gap_adv_params));
-
+ 
 #endif
 
     }
@@ -164,7 +167,9 @@ namespace blehid {
         DEBUG("advertising function\n");
         if(bs == NULL) {
             uBit.bleManager.stopAdvertising();
+
             advertiseHID();
+
             updateDIS();
             bs = new ::BatteryService(*uBit.ble);
             hids = new ::HIDService(*uBit.ble);
@@ -173,7 +178,7 @@ namespace blehid {
             // WARNING: This will start adv using the static handle in the BLE Manager. 
             // Hopefully the same handle is used as the one returned by sd_ble_gap_adv_set_configure
             uBit.bleManager.advertise();
-        }
+       }
 #endif
     }
 
