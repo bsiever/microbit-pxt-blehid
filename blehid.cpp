@@ -45,10 +45,11 @@ namespace blehid {
 
     void advertiseHID() {
 #if MICROBIT_CODAL
-        ble_advdata_t m_advdata;
+        // m_advdata _must_ be static / retained!
+        static ble_advdata_t m_advdata;
         // m_enc_advdata _must_ be static / retained!
         static uint8_t  m_enc_advdata[BLE_GAP_ADV_SET_DATA_SIZE_MAX];
-        ble_uuid_t uuid;  // UUID Struct
+        static ble_uuid_t uuid;  // UUID Struct
         uint8_t m_adv_handle;
 
         MICROBIT_DEBUG_DMESG( "configureAdvertising connectable %d, discoverable %d", (int) connectable, (int) discoverable);
@@ -58,6 +59,10 @@ namespace blehid {
         m_advdata.uuids_complete.uuid_cnt = 1;
         m_advdata.uuids_complete.p_uuids = &uuid;
         m_advdata.include_appearance = true;
+        // Name needed to be identified by Android
+        m_advdata.name_type = BLE_ADVDATA_FULL_NAME;
+        
+        // Appearance isn't stricly needed for detection 
         sd_ble_gap_appearance_set(BLE_APPEARANCE_GENERIC_HID );
         /*
         Options for Advertised appearance:
