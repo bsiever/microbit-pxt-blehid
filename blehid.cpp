@@ -160,6 +160,7 @@ namespace blehid {
 
     }
 
+ //
     //%
     void startHIDService() {
         // Start advertising as HID
@@ -171,9 +172,9 @@ namespace blehid {
             advertiseHID();
 
             updateDIS();
-            bs = new ::BatteryService(*uBit.ble);
+           // bs = new ::BatteryService(*uBit.ble);
             hids = new ::HIDService(*uBit.ble);
-            sps = new ::ScanParametersService(*uBit.ble);
+           // sps = new ::ScanParametersService(*uBit.ble);
 
             // WARNING: This will start adv using the static handle in the BLE Manager. 
             // Hopefully the same handle is used as the one returned by sd_ble_gap_adv_set_configure
