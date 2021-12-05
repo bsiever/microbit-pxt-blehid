@@ -121,7 +121,7 @@ namespace blehid {
         m_advdata.uuids_complete.uuid_cnt = 1;
         m_advdata.uuids_complete.p_uuids = &uuid;
         m_advdata.include_appearance = true;
-        sd_ble_gap_appearance_set(BLE_APPEARANCE_HID_KEYBOARD );
+        sd_ble_gap_appearance_set(BLE_APPEARANCE_GENERIC_HID );
         /*
  	BLE_APPEARANCE_GENERIC_HID   960
     BLE_APPEARANCE_HID_KEYBOARD   961
