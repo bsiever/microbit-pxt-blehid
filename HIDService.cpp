@@ -25,19 +25,15 @@ const uint16_t HIDService::serviceUUID = 0x1812;   // 0x1812 = HID
 
 const uint16_t HIDService::charUUID[ mbbs_cIdxCOUNT ] = { 
 #ifdef HID_TESTING
-  0x8A4E,  //  ProtocolMode
-  0x8A4A,  //  HIDInfo    0x2A4A
-  0x8A4B,  // Report Map 
-  0x8A4D,   // Report
-//  0x8a22,   // Boot keyboard input
-//  0x8a32,   // Boot keyboard output
+  0x8A4E,  // ProtocolMode
+  0x8A4A,  // HIDInfo    
+  0x8A4B,  // Keyboard Report Map 
+  0x8A4D,  // Keyboard Report
 #else
   0x2A4E,  //  ProtocolMode
   0x2A4A,  //  HIDInfo (Confirm Value without BLUETOOTH_PRIVLEDGED exception)   0x2A4A
-  0x2A4B,  // Report Map
-  0x2A4D,  // Report 
- // 0x2a22,   // Boot keyboard input
-//  0x2a32   // Boot keyboard output
+  0x2A4B,  // Keyboard Report Map
+  0x2A4D,  // Keyboard Report 
 #endif
 };
 
@@ -50,29 +46,6 @@ uint16_t HIDService::HIDInfo[] = {
 // Actually: https://docs.silabs.com/resources/bluetooth/code-examples/applications/ble-hid-keyboard/source/gatt.xml
 uint8_t HIDService::reportMap[] =
 {
-  // 0x0501
-  // 0906
-  // a101
-  // 0507
-  // 19e0
-  // 29e7
-  // 1500
-  // 2501
-  //7501
-  // 9508
-  //8102
-  // 9501
-  // 7508
-  // 8101
-  // 9506
-  // 7508
-  // 1500
-  // 2565
-  // 0507
-  // 1900
-  // 2965
-  // 8100
-  // c0
 0x05, 0x01, //	Usage Page (Generic Desktop)
 0x09, 0x06, //	Usage (Keyboard)
 0xa1, 0x01, //	Collection (Application)
@@ -99,8 +72,6 @@ uint8_t HIDService::reportMap[] =
 0x81, 0x00, //	Input (Data,Array) Key arrays (6 bytes)
 0xc0,       //	End Collection
 };
-
-
 
 /**
  * 
@@ -195,14 +166,6 @@ HIDService::HIDService( BLEDevice &_ble)
     //                     microbit_propREAD  | microbit_propWRITE | microbit_propWRITE_WITHOUT);
 
 }
-
-// void HIDService::setLevel(uint8_t newLevel)
-// {
-//     batteryLevel = newLevel; 
-//     notifyChrValue( mbbs_cIdxLEVEL, (uint8_t *)&batteryLevel, sizeof(batteryLevel)); 
-// }
-
-
 
 
 /**

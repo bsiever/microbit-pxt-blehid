@@ -62,9 +62,6 @@ class HIDService : public MicroBitBLEService
     static  uint16_t HIDInfo[];
     static  uint8_t  reportMap[];
     uint8_t report[8];
-   // uint8_t bootReport[8];
-    //uint8_t kbtOut[4];  
-
 
     // Index for each charactersitic in arrays of handles and UUIDs
     typedef enum mbbs_cIdx

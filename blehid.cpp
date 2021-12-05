@@ -33,86 +33,23 @@
 #include "peripheral_alloc.h"
 #endif 
 
-
-
-// Copied from MicroBitBLEManager.cpp
-static void const_ascii_to_utf8(ble_srv_utf8_str_t * p_utf8, const char * p_ascii)
-{
-    // ble_srv_ascii_to_utf8() doesn't check for p_ascii == NULL;
-    // cast away const or allocate temporary buffer?
-    p_utf8->p_str  = (uint8_t *)p_ascii;
-    p_utf8->length = p_ascii ? (uint16_t)strlen(p_ascii) : 0;
-}
-
-
-#include "BatteryService.h"
 #include "HIDService.h"
-#include "ScanParametersService.h"
 #include "debug.h"
 
 
-static BatteryService *bs = NULL;
 static HIDService *hids = NULL;
-static ScanParametersService *sps = NULL;
 
 using namespace pxt;
 
 namespace blehid { 
 
-
-// TODO: According to Nordic forums, this isn't needed https://devzone.nordicsemi.com/f/nordic-q-a/1518/do-i-need-vid-pid-for-btle-hid
-// TODO: Appearance???
-    void updateDIS() {
-        // Copied from MicroBitBLEManager.cpp
-//        MicroBitVersion version = uBit.power.getVersion();
-        const char *MICROBIT_BLE_MANUFACTURER = NULL;
-        static const char *MICROBIT_BLE_MODEL = "BBC micro:bit";
-        const char *MICROBIT_BLE_HARDWARE_VERSION = NULL;
-        const char *MICROBIT_BLE_FIRMWARE_VERSION = MICROBIT_DAL_VERSION;
-        const char *MICROBIT_BLE_SOFTWARE_VERSION = NULL;
-        // FIXME: Hardcoded, but should be based on board version as in MicroBit.cpp
-        ManagedString modelVersion( "2.0");
-        ManagedString disName( MICROBIT_BLE_MODEL);
-        disName = disName + " V" + modelVersion;
-
-        ble_dis_init_t disi;
-        ble_dis_pnp_id_t pnp;
-        memset( &pnp, 0, sizeof(pnp));
-        memset( &disi, 0, sizeof(disi));
-        disi.dis_char_rd_sec = SEC_OPEN;
-        const_ascii_to_utf8( &disi.manufact_name_str,  MICROBIT_BLE_MANUFACTURER);
-        const_ascii_to_utf8( &disi.model_num_str,      disName.toCharArray());
-        const_ascii_to_utf8( &disi.serial_num_str,     uBit.getSerial().toCharArray());
-        const_ascii_to_utf8( &disi.hw_rev_str,         MICROBIT_BLE_HARDWARE_VERSION);
-        const_ascii_to_utf8( &disi.fw_rev_str,         MICROBIT_BLE_FIRMWARE_VERSION);
-        const_ascii_to_utf8( &disi.sw_rev_str,         MICROBIT_BLE_SOFTWARE_VERSION);
-        //ble_dis_sys_id_t *             p_sys_id;                    /**< System ID. */
-        //ble_dis_reg_cert_data_list_t * p_reg_cert_data_list;        /**< IEEE 11073-20601 Regulatory Certification Data List. */
-        // TODO update these:
-        pnp.vendor_id_source = 0x02;
-        pnp.vendor_id = 0x10c4;
-        pnp.product_id = 0x0001;
-        pnp.product_version = 0x0001;
-        disi.p_pnp_id = &pnp;
-        //ble_dis_pnp_id_t *             p_pnp_id;                    /**< PnP ID. */
-        ble_dis_init( &disi);
-    }
-
-
-
     void advertiseHID() {
 #if MICROBIT_CODAL
-
-        // TODO Do these need to be static???
-        static ble_advdata_t m_advdata;
+        ble_advdata_t m_advdata;
+        // m_enc_advdata _must_ be static / retained!
         static uint8_t  m_enc_advdata[BLE_GAP_ADV_SET_DATA_SIZE_MAX];
-        static ble_uuid_t uuid;  // UUID Struct
+        ble_uuid_t uuid;  // UUID Struct
         uint8_t m_adv_handle;
-
-
-        // V2
-        // destruct at old location
-
 
         MICROBIT_DEBUG_DMESG( "configureAdvertising connectable %d, discoverable %d", (int) connectable, (int) discoverable);
         MICROBIT_DEBUG_DMESG( "whitelist %d, interval_ms %d, timeout_seconds %d", (int) whitelist, (int) interval_ms, (int) timeout_seconds);
@@ -123,13 +60,15 @@ namespace blehid {
         m_advdata.include_appearance = true;
         sd_ble_gap_appearance_set(BLE_APPEARANCE_GENERIC_HID );
         /*
- 	BLE_APPEARANCE_GENERIC_HID   960
-    BLE_APPEARANCE_HID_KEYBOARD   961
-    BLE_APPEARANCE_HID_MOUSE   962
-    BLE_APPEARANCE_HID_JOYSTICK   963
-    BLE_APPEARANCE_HID_GAMEPAD   964
-     */
-        // BSIEVER: The flags below ensure "pairing mode" so it shows up in Android
+        Options for Advertised appearance:
+            BLE_APPEARANCE_GENERIC_HID   960
+            BLE_APPEARANCE_HID_KEYBOARD   961
+            BLE_APPEARANCE_HID_MOUSE   962
+            BLE_APPEARANCE_HID_JOYSTICK   963
+            BLE_APPEARANCE_HID_GAMEPAD   964
+         */
+
+        // The flags below ensure "pairing mode" so it shows up in Android
         m_advdata.flags = BLE_GAP_ADV_FLAG_BR_EDR_NOT_SUPPORTED | BLE_GAP_ADV_FLAG_LE_GENERAL_DISC_MODE;
 
         ble_gap_adv_params_t    gap_adv_params;
@@ -151,13 +90,9 @@ namespace blehid {
         gap_adv_data.adv_data.p_data    = m_enc_advdata;
         gap_adv_data.adv_data.len       = BLE_GAP_ADV_SET_DATA_SIZE_MAX;
 
-
         MICROBIT_BLE_ECHK( ble_advdata_encode( &m_advdata, gap_adv_data.adv_data.p_data, &gap_adv_data.adv_data.len));
-        //NRF_LOG_HEXDUMP_INFO( gap_adv_data.adv_data.p_data, gap_adv_data.adv_data.len);
         MICROBIT_BLE_ECHK( sd_ble_gap_adv_set_configure( &m_adv_handle, &gap_adv_data, &gap_adv_params));
- 
 #endif
-
     }
 
     //%
@@ -165,15 +100,11 @@ namespace blehid {
         // Start advertising as HID
 #if CONFIG_ENABLED(DEVICE_BLE)
         DEBUG("advertising function\n");
-        if(bs == NULL) {
+        if(hids == NULL) {
             uBit.bleManager.stopAdvertising();
-
             advertiseHID();
 
-            updateDIS();
-            bs = new ::BatteryService(*uBit.ble);
             hids = new ::HIDService(*uBit.ble);
-            sps = new ::ScanParametersService(*uBit.ble);
 
             // WARNING: This will start adv using the static handle in the BLE Manager. 
             // Hopefully the same handle is used as the one returned by sd_ble_gap_adv_set_configure
@@ -189,21 +120,12 @@ namespace blehid {
         hids->sendKey('a');
 #endif
     }
-
-    //% 
-    void setBatteryLevel(uint8_t level) {
-#if CONFIG_ENABLED(DEVICE_BLE)
-        if(bs!=NULL) bs->setLevel(level);
-#endif
-    }
 }
 #else 
 
 namespace blehid { 
     //%
     void startHIDService() {}
-    //% 
-    void setBatteryLevel(uint8_t level) {}
     //%
     void sendString() {}
 }
