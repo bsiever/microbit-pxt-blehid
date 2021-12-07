@@ -60,7 +60,7 @@ class HIDService : public MicroBitBLEService
     // Actual service data
     uint8_t protocolMode;  // 0=>Boot Protocol; 1=>Report
     static  uint16_t HIDInfo[];
-    static  uint8_t  reportMap[];
+    static  const uint8_t reportMap[];
     uint8_t report[8];
 
     // Index for each charactersitic in arrays of handles and UUIDs

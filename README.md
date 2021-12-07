@@ -1,8 +1,19 @@
+
+# Supported Platforms and quirks
+
+* [Android BLE HID support list](https://github.com/raghavk92/Android_Bluetooth_HID_Device_Profile_CompatibilityList/blob/master/device_list.txt)
+
+
 # i2c2
 
 ```package
 pins=github:bsiever/microbit-pxt-i2cpins
 ```
+
+
+
+
+
 
 This extension allows non-default pins to be used for the micro:bit's excernal I2C.
 # Setting the pins

@@ -135,7 +135,7 @@ uint16_t HIDService::HIDInfo[] = {
 
 // Copied from https://docs.silabs.com/bluetooth/2.13/code-examples/applications/ble-hid-keyboard
 // Actually: https://docs.silabs.com/resources/bluetooth/code-examples/applications/ble-hid-keyboard/source/gatt.xml
-uint8_t HIDService::reportMap[] =
+const uint8_t HIDService::reportMap[] =
 {
 0x05, 0x01, //	Usage Page (Generic Desktop)
 0x09, 0x06, //	Usage (Keyboard)
