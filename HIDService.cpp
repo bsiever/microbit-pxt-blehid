@@ -10,9 +10,100 @@
 //#define HID_TESTING 1
  
 
+/**
+ *  Keys:
+ *     ASCII to Scancodes
+ * 
+ *     1. Single Bytes:  
+ *           ASCII printable characters: [0x20-0X7E] represent that char
+ *        
+ *     2. Single byte 0x01-0x08: Control byte indicating which special key
+ *        to apply (L Ctrl, L Shift, L Alt, LMeta, R Ctrl, R Shift, R Alt, R Meta) 
+ *        These are all the "With" command that apply to the next character
+ *          Shifts will not be supported / ignored (?) 
+ *     
+ *     3. Two byte command: 0x10 0xXX.  The 2nd byte is a literal key code to use
+ *        (Copied directly to report)    
+ * 
+ *      ASCII           Scancode    + Shift
+ *      Space   0x20      0x2C
+ *      !       0x21      0x1e        TRUE      
+ *      "       0x22     
+ *      #       0x23
+ *      $       0x24
+ *      %       0x25
+ *      &       0x26
+ *      '       0x27
+ *      (       0x28
+ *      )       0x29
+ *      *       0x2A
+ *      -       0x2B
+ *      .       0x2C
+ *      /       0x2D
+ *      )       0x2E
+ *      /       0x2F  
+ *      0       0x30      0x27
+ *      1-9     0x31-39   0x1e-0x26
+ *      :       0x3A
+ *      ;       0x3B
+ *      <       0x3C
+ *      =       0x3D
+ *      >       0x3E
+ *      ?       0x3F
+ *      :       0x3A
+ *      @       0x40
+ *      A-Z     0x41-0x5A   0x04-0x1dD  TRUE
+ *      [       0x5B
+ *      \       0x5C
+ *      ]       0x5D
+ *      ^       0x5E
+ *      _       0x5F
+ *      `       0x60
+ *      a-z     0x61-0x7A   0x04-0x1dD
+ *      {       0x7B
+ *      |       0x7C
+ *      }       0x7D
+ *      ~       0x7E
+ * 
+ *  Non-printable:
+ *    Escape, Delete, Return, Arrows, Tab, 
+ *    F1-F12, Copy, Cut, Paste, 
+ *    Mute, Vol up, Vol Down
+ *      `       0x7F
+ * 
+ * */
+
+
 /*
 TODO / Major stuff:
   https://docs.silabs.com/bluetooth/2.13/code-examples/applications/ble-hid-keyboard
+
+ASCII / typeable:
+  A-Z,a-z,0-9 are programmatic
+  Other typeables are lookup?
+Non-typeables:
+  "Modifiers"
+  Enter, delete, arrows, F1-F12, Tab
+
+OS Specific:
+  Apple's Option = Windows Windows key?
+
+Keyboard keys:
+  A-Za-z,0-9,special chars (shift + 0-9, " ", F1-F12, arrows)
+  enter/return/delete/escape
+Keypad keys:
+  numbers, arrows, 
+Modifiers:
+   Left control/shift/alt/gui
+  Right control/shift/alt/gui
+
+Mac's Command key??? Is Option = Alt? Is Command = GUI?
+*/
+
+
+/*
+Keycodes / Scan Codes to support (from https://usb.org/sites/default/files/hut1_21.pdf Chapter 10 / Page 92)
+
 
 */
 
