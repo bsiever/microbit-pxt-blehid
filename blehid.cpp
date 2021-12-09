@@ -119,10 +119,18 @@ namespace blehid {
     }
 
     //% 
-    void sendString() {
+    void sendString(String keys) {
 #if CONFIG_ENABLED(DEVICE_BLE)
         if(!hids) return;
-        hids->sendKey('a');
+
+        // Iterate over keys and send them
+        DEBUG("Keys: ");
+        for(int i=0; i<keys->ascii.length; i++) {
+            hids->sendCharacter(keys->ascii.data[i]);
+            uBit.sleep(40);
+            DEBUG("%c",keys->ascii.data[i]);
+        }
+        DEBUG("\n");
 #endif
     }
 }
@@ -132,6 +140,6 @@ namespace blehid {
     //%
     void startHIDService() {}
     //%
-    void sendString() {}
+    void sendString(String keys) {}
 }
 #endif

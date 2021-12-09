@@ -329,7 +329,7 @@ void HIDService::onDataWritten( const microbit_ble_evt_write_t *params)
     }
 }
 
-void HIDService::sendKey(char c) {
+void HIDService::sendCharacter(char c) {
   static bool tog = false;
 
   tog = !tog;

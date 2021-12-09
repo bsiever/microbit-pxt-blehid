@@ -8,9 +8,9 @@ namespace blehid {
     export function startHIDService() : void {
     }
 
-    //% blockId="send string" block="send keys %" 
+    //% blockId="send string" block="send keys | $keys" 
     //% shim=blehid::sendString
-    export function sendString() : void {
+    export function sendString(keys: string) : void {
     }
 
 }
