@@ -15,12 +15,17 @@
         "HIDService.h",
         "debug.h",
         "shims.d.ts",
-        "enums.d.ts"
+        "enums.d.ts",
+        "main.py"
     ],
     "testFiles": [
         "test.ts"
     ],
     "public": true,
+    "targetVersions": {
+        "target": "4.1.9",
+        "targetId": "microbit"
+    },
     "supportedTargets": [
         "microbit"
     ],
@@ -34,7 +39,7 @@
     },
     "yotta": {
         "config": {
-            "DEVICE_DMESG_BUFFER_SIZE":8192,
+            "DEVICE_DMESG_BUFFER_SIZE": 8192,
             "DMESG_SERIAL_DEBUG": 1,
             "microbit-dal": {
                 "bluetooth": {

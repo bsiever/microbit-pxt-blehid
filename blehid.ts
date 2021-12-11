@@ -1,7 +1,7 @@
 
 //% color=#0000FF 
-//% icon="\uf074"
-//% block="advertise"
+//% icon="\uf007"
+//% block="HID"
 namespace blehid {
     //% blockId="advertise" block="bluetooth HID service"
     //% shim=blehid::startHIDService
