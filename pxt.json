@@ -11,6 +11,8 @@
         "README.md",
         "blehid.ts",
         "blehid.cpp",
+        "ascii2scan.cpp",
+        "ascii2scan.h",
         "HIDService.cpp",
         "HIDService.h",
         "debug.h",
