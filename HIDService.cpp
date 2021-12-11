@@ -4,7 +4,6 @@
 #if CONFIG_ENABLED(DEVICE_BLE)
 
 #include "HIDService.h"
-#include "debug.h"
 
 #include "ble_srv_common.h"
 //#define HID_TESTING 1
@@ -146,7 +145,7 @@ const uint8_t HIDService::reportMap[] =
 0x15, 0x00, //	Logical Minimum (0)
 0x25, 0x01, //	Logical Maximum (1)
 0x75, 0x01, //	Report Size (1)
-0x95, 0x08, //	Report Count (8)
+0x95, 0x08, //	Report Count (8) = Above codes are bit mapped to the first byte
 0x81, 0x02, //	Input (Data, Variable, Absolute) Modifier byte
 
 0x95, 0x01, //	Report Count (1)
@@ -163,6 +162,8 @@ const uint8_t HIDService::reportMap[] =
 0x81, 0x00, //	Input (Data,Array) Key arrays (6 bytes)
 0xc0,       //	End Collection
 };
+
+
 
 /**
  * 
@@ -276,8 +277,8 @@ void HIDService::onDisconnect( const microbit_ble_evt_t *p_ble_evt)
 }
 
 
-void HIDService::debugAttribute(int handle) {
 #ifdef DEBUG_ENABLED
+void HIDService::debugAttribute(int handle) {
       microbit_charattr_t type;
       int index = charHandleToIdx(handle, &type);
 
@@ -301,8 +302,8 @@ void HIDService::debugAttribute(int handle) {
       if(index<0 || index>3) index = 4;
       char const *charNames[] = {"Mode", "Info", "Map", "Report", "Invalid"};
       DEBUG("     %s %s\n", charNames[index], typeName);
-#endif
 }
+#endif
 
 
 void HIDService::onDataRead( microbit_onDataRead_t *params) {
@@ -329,20 +330,15 @@ void HIDService::onDataWritten( const microbit_ble_evt_write_t *params)
     }
 }
 
-void HIDService::sendCharacter(char c) {
-  static bool tog = false;
-
-  tog = !tog;
-
+void HIDService::sendScanCode(uint8_t c, uint8_t modifiers) {
   memset(report, 0, sizeof(report));
  // memset(bootReport, 0, sizeof(bootReport));
 
-  if(tog) {
-    report[2] = 0x05;  //b
-   // bootReport[2] = 0x05;  //b
+  if(c) {
+    report[0] = modifiers;
+    report[2] = c;  //b
   }
   notifyChrValue( mbbs_cIdxReport, (uint8_t *)report, sizeof(report)); 
-  //notifyChrValue( mbbs_cIdxBootKbdInp, (uint8_t *)bootReport, sizeof(bootReport)); 
 }
 
 

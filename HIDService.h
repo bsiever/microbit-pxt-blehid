@@ -8,6 +8,7 @@
 #include "MicroBitBLEManager.h"
 #include "MicroBitBLEService.h"
 #include "EventModel.h"
+#include "debug.h"
 
 
 /**
@@ -23,6 +24,17 @@ class HIDService : public MicroBitBLEService
      * @param _ble The instance of a BLE device that we're running on.
      */
     HIDService( BLEDevice &_ble);
+
+    enum KeyModifiers {
+      leftControlMask = 0x80,
+      leftShiftMask = 0x40,
+      leftAltMask = 0x20,
+      leftGUIMask = 0x10,
+      rightControlMask = 0x08,
+      rightShiftMask = 0x04,
+      rightAltMask = 0x02,
+      rightGUIMask = 0x01
+    };
 
 
     private:
@@ -53,9 +65,10 @@ class HIDService : public MicroBitBLEService
     void addReportDescriptor(uint16_t value_handle, uint8_t reportID, uint8_t reportType);
 
 
-
+#ifdef DEBUG_ENABLED
     // Debugging: Print the attribute / info.
     void debugAttribute(int index); 
+#endif 
 
     // Actual service data
     uint8_t protocolMode;  // 0=>Boot Protocol; 1=>Report
@@ -74,7 +87,9 @@ class HIDService : public MicroBitBLEService
       //  mbbs_cIdxBootKbdOut,
         mbbs_cIdxCOUNT
     } mbbs_cIdx;
-    
+
+
+
     // UUIDs for our service and characteristics
     static const uint16_t serviceUUID;
     static const uint16_t charUUID[ mbbs_cIdxCOUNT];
@@ -89,7 +104,7 @@ class HIDService : public MicroBitBLEService
     int              characteristicCount()          { return mbbs_cIdxCOUNT; };
     MicroBitBLEChar *characteristicPtr( int idx)    { return &chars[ idx]; };
 
-    void sendCharacter(char c);
+    void sendScanCode(uint8_t c, uint8_t modifiers = 0);
 
 };
 
