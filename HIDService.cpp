@@ -26,46 +26,6 @@
  *     3. Two byte command: 0x10 0xXX.  The 2nd byte is a literal key code to use
  *        (Copied directly to report)    
  * 
- *      ASCII           Scancode    + Shift
- *      Space   0x20      0x2C
- *      !       0x21      0x1e        TRUE      
- *      "       0x22     
- *      #       0x23
- *      $       0x24
- *      %       0x25
- *      &       0x26
- *      '       0x27
- *      (       0x28
- *      )       0x29
- *      *       0x2A
- *      -       0x2B
- *      .       0x2C
- *      /       0x2D
- *      )       0x2E
- *      /       0x2F  
- *      0       0x30      0x27
- *      1-9     0x31-39   0x1e-0x26
- *      :       0x3A
- *      ;       0x3B
- *      <       0x3C
- *      =       0x3D
- *      >       0x3E
- *      ?       0x3F
- *      :       0x3A
- *      @       0x40
- *      A-Z     0x41-0x5A   0x04-0x1dD  TRUE
- *      [       0x5B
- *      \       0x5C
- *      ]       0x5D
- *      ^       0x5E
- *      _       0x5F
- *      `       0x60
- *      a-z     0x61-0x7A   0x04-0x1dD
- *      {       0x7B
- *      |       0x7C
- *      }       0x7D
- *      ~       0x7E
- * 
  *  Non-printable:
  *    Escape, Delete, Return, Arrows, Tab, 
  *    F1-F12, Copy, Cut, Paste, 
@@ -134,6 +94,8 @@ uint16_t HIDService::HIDInfo[] = {
   0x0002
 };
 
+
+// TODO: For some reason this can't be "const".  WHY NOT? 
 // Copied from https://docs.silabs.com/bluetooth/2.13/code-examples/applications/ble-hid-keyboard
 // Actually: https://docs.silabs.com/resources/bluetooth/code-examples/applications/ble-hid-keyboard/source/gatt.xml
 uint8_t HIDService::reportMap[] =
@@ -241,23 +203,8 @@ HIDService::HIDService( BLEDevice &_ble)
                         sizeof(report), sizeof(report),
                         microbit_propREAD  | microbit_propNOTIFY | microbit_propREADAUTH);
 
+  // NEED TO ADD A DESCRIPTOR FOR OS DETECTION!
    addReportDescriptor(charHandles( mbbs_cIdxReport)->value, 0, 1 /* Input report */);
-
-
-  // NEED TO ADD A DESCRIPTOR!
-
-
-    // memset(bootReport, 0, sizeof(bootReport));
-    // CreateCharacteristic( mbbs_cIdxBootKbdInp, charUUID[ mbbs_cIdxBootKbdInp ],
-    //                     (uint8_t *)bootReport,
-    //                     sizeof(bootReport), sizeof(bootReport),
-    //                     microbit_propREAD  | microbit_propNOTIFY | microbit_propREADAUTH);
-
-    // memset(kbtOut, 0, sizeof(kbtOut));
-    // CreateCharacteristic( mbbs_cIdxBootKbdOut, charUUID[ mbbs_cIdxBootKbdOut ],
-    //                     (uint8_t *)kbtOut,
-    //                     sizeof(kbtOut), sizeof(kbtOut),
-    //                     microbit_propREAD  | microbit_propWRITE | microbit_propWRITE_WITHOUT);
 
 }
 
@@ -314,7 +261,6 @@ void HIDService::onDataRead( microbit_onDataRead_t *params) {
 }
 
 
-
 /**
   * Callback. Invoked when any of our attributes are written via BLE.
   */
@@ -356,6 +302,8 @@ void HIDService::sendString(char *str, int len) {
                 shift = (full>>8) ? HIDService::leftShiftMask : 0;
                 code = full & 0xFF;
                 // Send blank when repeated keys or just a change in modifier
+
+                // TODO: Is this needed???
                 if(code == lastCode) {
                     sendScanCode(0, 0);
                     uBit.sleep(betweenKeyDelay);
