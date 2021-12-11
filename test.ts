@@ -21,5 +21,5 @@ input.onButtonPressed(Button.A, function () {
     serial.writeLine("Button 2...\n")
 //    blehid.setBatteryLevel(50)
     // All printable ASCII characters...
-    blehid.sendString(" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~");
+    blehid.sendString(" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~");
 })

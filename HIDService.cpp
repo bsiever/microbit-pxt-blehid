@@ -6,6 +6,8 @@
 #include "HIDService.h"
 
 #include "ble_srv_common.h"
+#include "ascii2scan.h"
+
 //#define HID_TESTING 1
  
 
@@ -134,7 +136,7 @@ uint16_t HIDService::HIDInfo[] = {
 
 // Copied from https://docs.silabs.com/bluetooth/2.13/code-examples/applications/ble-hid-keyboard
 // Actually: https://docs.silabs.com/resources/bluetooth/code-examples/applications/ble-hid-keyboard/source/gatt.xml
-const uint8_t HIDService::reportMap[] =
+uint8_t HIDService::reportMap[] =
 {
 0x05, 0x01, //	Usage Page (Generic Desktop)
 0x09, 0x06, //	Usage (Keyboard)
@@ -340,6 +342,38 @@ void HIDService::sendScanCode(uint8_t c, uint8_t modifiers) {
   }
   notifyChrValue( mbbs_cIdxReport, (uint8_t *)report, sizeof(report)); 
 }
+
+void HIDService::sendString(char *str, int len) {
+        uint8_t lastCode = 0;
+        // Iterate over keys and send them
+        DEBUG("Keys: ");
+        uint8_t shift = 0;
+        uint8_t code = 0;
+        for(int i=0; i<len; i++) {
+            char c = str[i];
+            if(c >= ' ') {  // ASCII character: Get scancode details
+                uint16_t full = ascii2scan(c);
+                shift = (full>>8) ? HIDService::leftShiftMask : 0;
+                code = full & 0xFF;
+                // Send blank when repeated keys or just a change in modifier
+                if(code == lastCode) {
+                    sendScanCode(0, 0);
+                    uBit.sleep(betweenKeyDelay);
+                }
+                sendScanCode(code, shift);
+
+            } else {
+                // Special codes
+            }
+            uBit.sleep(betweenKeyDelay);
+            lastCode = code;
+            DEBUG("%c (%d%d)",str[i], shift, code);
+        }
+        // Send final release
+        sendScanCode(0, 0);
+        DEBUG("\n");
+}
+
 
 
 

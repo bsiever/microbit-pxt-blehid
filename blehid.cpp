@@ -19,7 +19,6 @@
 
 #include "pxt.h"
 #include "MicroBit.h"
-#include "ascii2scan.h"
 
 #if CONFIG_ENABLED(DEVICE_BLE) 
 
@@ -124,26 +123,7 @@ namespace blehid {
 #if CONFIG_ENABLED(DEVICE_BLE)
         if(!hids) return;
 
-        // Iterate over keys and send them
-        DEBUG("Keys: ");
-        uint8_t shift = 0;
-        uint8_t code = 0;
-        for(int i=0; i<keys->ascii.length; i++) {
-            char c = keys->ascii.data[i];
-            if(c >= ' ') {  // ASCII character: Get scancode details
-                uint16_t full = ascii2scan(c);
-                shift = (full>>8) ? HIDService::leftShiftMask : 0;
-                code = full & 0xFF;
-                hids->sendScanCode(code, shift);
-            } else {
-                // Special codes
-            }
-            uBit.sleep(40);
-            DEBUG("%c (%s%d)",keys->ascii.data[i], shift?"s":"", code);
-        }
-        // Send final release
-        hids->sendScanCode(0);
-        DEBUG("\n");
+        hids->sendString(keys->ascii.data, keys->ascii.length);
 #endif
     }
 }

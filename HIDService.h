@@ -26,14 +26,14 @@ class HIDService : public MicroBitBLEService
     HIDService( BLEDevice &_ble);
 
     enum KeyModifiers {
-      leftControlMask = 0x80,
-      leftShiftMask = 0x40,
-      leftAltMask = 0x20,
-      leftGUIMask = 0x10,
-      rightControlMask = 0x08,
-      rightShiftMask = 0x04,
-      rightAltMask = 0x02,
-      rightGUIMask = 0x01
+      leftControlMask = 0x01,
+      leftShiftMask = 0x02,
+      leftAltMask = 0x04,
+      leftGUIMask = 0x08,
+      rightControlMask = 0x10,
+      rightShiftMask = 0x20,
+      rightAltMask = 0x40,
+      rightGUIMask = 0x80
     };
 
 
@@ -69,14 +69,15 @@ class HIDService : public MicroBitBLEService
     // Debugging: Print the attribute / info.
     void debugAttribute(int index); 
 #endif 
+    const int betweenKeyDelay = 40; 
 
     // Actual service data
     uint8_t protocolMode;  // 0=>Boot Protocol; 1=>Report
     static  uint16_t HIDInfo[];
-    static  const uint8_t reportMap[];
+    static  uint8_t reportMap[];
     uint8_t report[8];
 
-    // Index for each charactersitic in arrays of handles and UUIDs
+    // Index for each characteristic in arrays of handles and UUIDs
     typedef enum mbbs_cIdx
     {
         mbbs_cIdxProtocolMode,
@@ -104,7 +105,8 @@ class HIDService : public MicroBitBLEService
     int              characteristicCount()          { return mbbs_cIdxCOUNT; };
     MicroBitBLEChar *characteristicPtr( int idx)    { return &chars[ idx]; };
 
-    void sendScanCode(uint8_t c, uint8_t modifiers = 0);
+    void sendScanCode(uint8_t c, uint8_t modifiers);
+    void sendString(char *str, int len);
 
 };
 

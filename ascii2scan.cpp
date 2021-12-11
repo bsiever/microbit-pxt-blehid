@@ -8,6 +8,8 @@ uint16_t ascii2scan(char c) {
     bool shift = false;
     uint8_t code = 0x00;
 
+//;\z
+
     if(c<0x20) { 
         // Before space / ' '...Nothing
     } else 
@@ -53,7 +55,7 @@ uint16_t ascii2scan(char c) {
         code = codes[index];
     } else 
     if(c<0x7b) {  // [a..z]
-        code = 0x04 + c-'b';
+        code = 0x04 + c-'a';
     } else
     if(c<0x7f) {  // Before del
         const uint8_t codes[] = 
