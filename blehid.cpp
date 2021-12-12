@@ -126,14 +126,10 @@ namespace blehid {
     }
 
     //% 
-    void setStatusChangeHandler(Action a) {
+    void setStatusChangeHandler(Action action) {
         DEBUG("Setting Status Changed Handler");
-        // Release any prior error handler
-       if(HIDService::statusChangeHandler)
-         pxt::decr(HIDService::statusChangeHandler);
-        HIDService::statusChangeHandler = a; 
-        if(HIDService::statusChangeHandler)    
-            pxt::incr(HIDService::statusChangeHandler);
+        registerWithDal(HIDService::EVT_ID, HIDService::EVT_STATUS, action);
+        DEBUG("Done...");
     }
 
 }

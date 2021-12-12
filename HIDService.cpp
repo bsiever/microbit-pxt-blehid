@@ -92,6 +92,9 @@ const uint16_t HIDService::charUUID[ mbbs_cIdxCOUNT ] = {
 #endif
 };
 
+const int HIDService::EVT_ID = 109;
+const int HIDService::EVT_STATUS = 1;
+
 uint16_t HIDService::HIDInfo[] = { 
   0x0111,
   0x0002
@@ -357,12 +360,10 @@ bool HIDService::keyboardIsEnabled() {
   return keyboardEnabled;
 }
 
-
 void HIDService::setKeyboardEnabled(bool status) {
+  DEBUG("Setting Keyboard: %d", status);
   keyboardEnabled = status;
-  if(statusChangeHandler) {
-    pxt::runAction0(statusChangeHandler);  
-  }       
+  MicroBitEvent(EVT_ID, EVT_STATUS);
 }
 
 #endif

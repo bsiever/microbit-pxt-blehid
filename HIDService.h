@@ -109,6 +109,8 @@ class HIDService : public MicroBitBLEService
 
     static Action statusChangeHandler;
 
+    static const int EVT_ID;
+    static const int EVT_STATUS;
 };
 
 #endif
