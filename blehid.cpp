@@ -14,7 +14,6 @@
 
 // See https://github.com/kshoji/pxt-bluetooth-gamepad/blob/master/BluetoothGamepadService.cpp
 
-//#define MICROBIT_CODAL 1  // Temp for  syntax highlighting
 
 
 #include "pxt.h"
@@ -29,10 +28,6 @@
 #include "ble_conn_params.h"
 #include "ble_dis.h"
 
-#if MICROBIT_CODAL
-#include "peripheral_alloc.h"
-#endif 
-
 #include "HIDService.h"
 #include "debug.h"
 
@@ -44,7 +39,6 @@ using namespace pxt;
 namespace blehid { 
 
     void advertiseHID() {
-#if MICROBIT_CODAL
         // m_advdata _must_ be static / retained!
         static ble_advdata_t m_advdata;
         // m_enc_advdata _must_ be static / retained!
@@ -97,7 +91,6 @@ namespace blehid {
 
         MICROBIT_BLE_ECHK( ble_advdata_encode( &m_advdata, gap_adv_data.adv_data.p_data, &gap_adv_data.adv_data.len));
         MICROBIT_BLE_ECHK( sd_ble_gap_adv_set_configure( &m_adv_handle, &gap_adv_data, &gap_adv_params));
-#endif
     }
 
     //%
@@ -126,7 +119,26 @@ namespace blehid {
         hids->sendString(keys->ascii.data, keys->ascii.length);
 #endif
     }
+
+    //%
+    bool keyboardIsEnabled() {
+        return hids ? hids->keyboardIsEnabled() : false;
+    }
+
+    //% 
+    void setStatusChangeHandler(Action a) {
+        DEBUG("Setting Status Changed Handler");
+        // Release any prior error handler
+       if(HIDService::statusChangeHandler)
+         pxt::decr(HIDService::statusChangeHandler);
+        HIDService::statusChangeHandler = a; 
+        if(HIDService::statusChangeHandler)    
+            pxt::incr(HIDService::statusChangeHandler);
+    }
+
 }
+
+
 #else 
 
 namespace blehid { 
@@ -134,5 +146,10 @@ namespace blehid {
     void startHIDService() {}
     //%
     void sendString(String keys) {}
+    //%
+    bool keyboardIsEnabled() { return false; }
+    //%
+    void setStatusChangeHandler(Action a) {}
+
 }
 #endif

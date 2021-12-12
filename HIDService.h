@@ -62,13 +62,15 @@ class HIDService : public MicroBitBLEService
 
     /*
     */
-    void addReportDescriptor(uint16_t value_handle, uint8_t reportID, uint8_t reportType);
+    void addReportDescriptor(uint16_t value_handle, uint8_t reportID, uint8_t reportTypeD);
+
+    /*
+    */
+   void setKeyboardEnabled(bool status);
 
 
-#ifdef DEBUG_ENABLED
     // Debugging: Print the attribute / info.
     void debugAttribute(int index); 
-#endif 
     const int betweenKeyDelay = 40; 
 
     // Actual service data
@@ -76,7 +78,7 @@ class HIDService : public MicroBitBLEService
     static  uint16_t HIDInfo[];
     static  uint8_t reportMap[];
     uint8_t report[8];
-
+    bool keyboardEnabled;
     // Index for each characteristic in arrays of handles and UUIDs
     typedef enum mbbs_cIdx
     {
@@ -84,12 +86,8 @@ class HIDService : public MicroBitBLEService
         mbbs_cIdxHIDInfo,
         mbbs_cIdxReportMap,
         mbbs_cIdxReport,
-      //  mbbs_cIdxBootKbdInp,
-      //  mbbs_cIdxBootKbdOut,
         mbbs_cIdxCOUNT
     } mbbs_cIdx;
-
-
 
     // UUIDs for our service and characteristics
     static const uint16_t serviceUUID;
@@ -107,6 +105,9 @@ class HIDService : public MicroBitBLEService
 
     void sendScanCode(uint8_t c, uint8_t modifiers);
     void sendString(char *str, int len);
+    bool keyboardIsEnabled(); 
+
+    static Action statusChangeHandler;
 
 };
 

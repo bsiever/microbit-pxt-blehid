@@ -4,11 +4,11 @@
 // Upper byte of return value indicats if shift is needed (a 0x00=>No, 0x01=>Yes)
 // Lower byte is the scan code to return
 // 0x0000 => No valid scan code 
+
+// Based on https://usb.org/sites/default/files/hut1_21.pdf chapter 10, page 82
 uint16_t ascii2scan(char c) {
     bool shift = false;
     uint8_t code = 0x00;
-
-//;\z
 
     if(c<0x20) { 
         // Before space / ' '...Nothing

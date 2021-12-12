@@ -75,6 +75,9 @@ const uint16_t HIDService::serviceUUID = 0x8812;   // 0x1812 = HID
 const uint16_t HIDService::serviceUUID = 0x1812;   // 0x1812 = HID 
 #endif
 
+
+Action HIDService::statusChangeHandler = NULL;
+
 const uint16_t HIDService::charUUID[ mbbs_cIdxCOUNT ] = { 
 #ifdef HID_TESTING
   0x8A4E,  // ProtocolMode
@@ -162,10 +165,10 @@ void HIDService::addReportDescriptor(uint16_t value_handle, uint8_t reportID, ui
     attr_char_value.init_offs = 0;
     attr_char_value.max_len   = attr_char_value.init_len;
     attr_char_value.p_value   = encoded_rep_ref;
-    uint16_t ref_handle;// Returned, but discarded
+    uint16_t reportCCCDHandle;
     sd_ble_gatts_descriptor_add(value_handle, 
                                   &attr_char_value,
-                                  &ref_handle); 
+                                  &reportCCCDHandle); 
 }
 /**
  * Constructor.
@@ -173,7 +176,8 @@ void HIDService::addReportDescriptor(uint16_t value_handle, uint8_t reportID, ui
  * @param _ble The instance of a BLE device that we're running on.
  */
 HIDService::HIDService( BLEDevice &_ble) 
-    : protocolMode(0x01) // 0x01 = Report Protocol
+    : protocolMode(0x01), // 0x01 = Report Protocol
+      keyboardEnabled(false)
 {
     DEBUG("HID Serv starting\n");
 
@@ -223,6 +227,7 @@ void HIDService::onConnect( const microbit_ble_evt_t *p_ble_evt)
 void HIDService::onDisconnect( const microbit_ble_evt_t *p_ble_evt)
 {
     DEBUG("HID. Serv onDisconnect\n");
+    setKeyboardEnabled(false);
 }
 
 
@@ -268,14 +273,16 @@ void HIDService::onDataWritten( const microbit_ble_evt_write_t *params)
 {
     DEBUG("HID. Serv onDataWritten\n");
     debugAttribute(params->handle);
-    if(params->handle == valueHandle(mbbs_cIdxProtocolMode)) {
-      DEBUG("HID: Data to Protocol");
-      protocolMode = params->data[0];
-      // 0=>Boot Protocol; 1->Enumeration; ...2.255 ???
 
-      // params->data and params->len
-      setChrValue( mbbs_cIdxProtocolMode, (const uint8_t *)&protocolMode, sizeof(protocolMode));
-    }
+    microbit_charattr_t type;
+    int index = charHandleToIdx(params->handle, &type);
+
+    if(index == mbbs_cIdxReport && type == microbit_charattrCCCD) {
+      DEBUG("HID. Serv Report CCCD Changed\n");
+        bool status = params->len>0 && params->data[0] ? true : false;
+        if(keyboardEnabled != status)
+          setKeyboardEnabled(status);
+  } 
 }
 
 void HIDService::sendScanCode(uint8_t c, uint8_t modifiers) {
@@ -311,7 +318,30 @@ void HIDService::sendString(char *str, int len) {
                 sendScanCode(code, shift);
 
             } else {
-                // Special codes
+                // Handle control codes
+                uint8_t modifiers = 0;
+                while(str[i]>=1 && str[i]<=8 && i<len) {
+                  modifiers |= 1<<(str[i]-1);
+                  i++;
+                }
+                if(i<len) {
+                  // Check for raw scancode
+                  if(str[i]==0x10) {
+                    if(i+1<len) {
+                      i++;
+                      code = str[i]; 
+                    } else {
+                      code = 0;  // Scancode expected, but not there. Default to nothing.
+                    }
+                  } else {
+                    uint16_t full = ascii2scan(str[i]);
+                    modifiers |= (full>>8) ? HIDService::leftShiftMask : 0;
+                    code = full & 0xFF;
+                  }
+                  i++;
+                  sendScanCode(code, modifiers);
+                }
+
             }
             uBit.sleep(betweenKeyDelay);
             lastCode = code;
@@ -323,6 +353,16 @@ void HIDService::sendString(char *str, int len) {
 }
 
 
+bool HIDService::keyboardIsEnabled() {
+  return keyboardEnabled;
+}
 
+
+void HIDService::setKeyboardEnabled(bool status) {
+  keyboardEnabled = status;
+  if(statusChangeHandler) {
+    pxt::runAction0(statusChangeHandler);  
+  }       
+}
 
 #endif
