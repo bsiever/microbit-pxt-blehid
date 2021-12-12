@@ -24,4 +24,29 @@ namespace blehid {
     export function keyboardIsEnabled() : boolean {
         return false;
     }
+
+    //% blockId="key_conv" block="%key"
+    export function keys(key : Key) : string {
+    let code = null
+    switch(key) {
+        case Key.enter: code="\x28"; break;
+        case Key.escape: code="\x29"; break;
+        case Key.delete: code="\x2A"; break;
+        case Key.tab: code="\x2B"; break;
+    }
+    if(code!=null) {
+        return "\x10"+code;
+    } else {
+        return "";
+    }
+  }
+}
+
+
+enum Key {
+    enter,
+    escape,
+    delete, 
+    tab,
+    _END_
 }

@@ -4,6 +4,8 @@
 * [Android BLE HID support list](https://github.com/raghavk92/Android_Bluetooth_HID_Device_Profile_CompatibilityList/blob/master/device_list.txt)
 
 
+# Programming and Pairing
+
 # i2c2
 
 ```package
