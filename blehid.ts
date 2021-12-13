@@ -127,7 +127,16 @@ namespace blehid {
         return "\x10"+String.fromCharCode(code)
     }
 
+    //% blockId="send simultaneous keys" block="send simultaneous keys | $keys || hold keys %hold" 
+    //% hold.shadow=false
+    //% shim=blehid::sendSimultaneousKeys
+    export function sendSimultaneousKeys(keys: string, hold: boolean) : void {
+    }
 
+    //% blockId="release keys" block="release keys" 
+    //% shim=blehid::releaseKeys
+    export function releaseKeys() : void {
+    }
 
 }
 

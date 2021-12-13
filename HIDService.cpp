@@ -291,7 +291,6 @@ void HIDService::onDataWritten( const microbit_ble_evt_write_t *params)
 
 void HIDService::sendScanCode(uint8_t c, uint8_t modifiers) {
   memset(report, 0, sizeof(report));
- // memset(bootReport, 0, sizeof(bootReport));
 
   if(c) {
     report[0] = modifiers;
@@ -299,6 +298,34 @@ void HIDService::sendScanCode(uint8_t c, uint8_t modifiers) {
   }
   notifyChrValue( mbbs_cIdxReport, (uint8_t *)report, sizeof(report)); 
 }
+
+void HIDService::sendSimultaneousKeys(char *str, int len) {
+  uint8_t modifiers = 0;
+  memset(report, 0, sizeof(report));
+  int idx = 2;  // Report index
+  // Process the string / build the report
+  for(int i=0; i<len && idx<sizeof(report); i++) {
+    char c = str[i];
+    // Check for modifiers
+    if(c>=1 && c<=8) {
+      modifiers |= 1<<(c-1);
+      // Check for direct scan code
+    } else if(c==0x10) { 
+      i++; // Advance to next character if valid
+      if(i<len) {
+        report[idx++] = str[i];
+      }
+      // Regular ASCII character
+    } else if(c>=' ') {
+      uint16_t full = ascii2scan(c);
+      modifiers |= (full>>8) ? SHIFT_MASK : 0;
+      report[idx++] = full & 0xFF;
+    }
+  }
+  report[0] = modifiers;
+  notifyChrValue( mbbs_cIdxReport, (uint8_t *)report, sizeof(report)); 
+}
+
 
 void HIDService::sendString(char *str, int len) {
         uint8_t lastCode = 0;

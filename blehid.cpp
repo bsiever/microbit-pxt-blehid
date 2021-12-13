@@ -132,6 +132,27 @@ namespace blehid {
         DEBUG("Done...");
     }
 
+
+    //% 
+    void sendSimultaneousKeys(String keys, bool hold) {
+#if CONFIG_ENABLED(DEVICE_BLE)
+        if(!hids) return;
+
+        hids->sendSimultaneousKeys(keys->ascii.data, keys->ascii.length);
+        if(!hold) {
+            hids->sendScanCode(0,0);
+        }
+#endif
+    }
+
+    //% 
+    void releaseKeys() {
+#if CONFIG_ENABLED(DEVICE_BLE)
+        if(!hids) return;
+        hids->sendScanCode(0,0);
+#endif
+    }
+
   }
 
 
@@ -146,6 +167,9 @@ namespace blehid {
     bool keyboardIsEnabled() { return false; }
     //%
     void setStatusChangeHandler(Action a) {}
-
+    //%
+    void sendSimultaneousKeys(String keys, bool hold) {}
+    //% 
+    void releaseKeys() {}
 }
 #endif
