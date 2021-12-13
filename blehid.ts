@@ -135,8 +135,7 @@ namespace blehid {
         return "\x10"+String.fromCharCode(code)
     }
 
-    //% blockId="send simultaneous keys" block="send simultaneous keys | $keys || hold keys | $hold" advanced=true
-    //% hold.shadow=false
+    //% blockId="send simultaneous keys" block="send simultaneous keys $keys || hold keys $hold" advanced=true
     //% shim=blehid::sendSimultaneousKeys
     //% weight=50
     export function sendSimultaneousKeys(keys: string, hold: boolean) : void {
