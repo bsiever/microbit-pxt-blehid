@@ -6,22 +6,26 @@ namespace blehid {
 
     //% blockId="advertise" block="bluetooth HID service"
     //% shim=blehid::startHIDService
+    //% weight=10
     export function startHIDService() : void {
     }
 
     //% blockId="send string" block="send keys | $keys" 
     //% shim=blehid::sendString
+    //% weight=20
     export function sendString(keys: string) : void {
     }
 
     //% blockID="on status change" block="on HID status change" advanced=true
     //% shim=blehid::setStatusChangeHandler 
+    //% weight=10
     export function setStatusChangeHandler(a: Action) {
     }
 
     //% blockId="keyboard enabled" block="keyboard enabled" advanced=true
     //% shim=blehid::keyboardIsEnabled
-    export function keyboardIsEnabled() : boolean {
+    //% weight=20
+     export function keyboardIsEnabled() : boolean {
         return false;
     }
 
@@ -71,6 +75,7 @@ namespace blehid {
 
 
     //% blockId="modifiers" block="%key"
+    //% weight=40
     export function modifiers(key : Modifier) : string {
         let code = null
         switch(key) {
@@ -101,6 +106,7 @@ namespace blehid {
 
 
     //% blockId="key_conv" block="%key"
+    //% weight=50
     export function keys(key : Key) : string {
         let code = null
         switch(key) {
@@ -122,20 +128,23 @@ namespace blehid {
         }
     }
 
-    //% block="raw scancode | %code" 
+    //% block="raw scancode | %code" advanced=true
     //% code.min=0 code.max=255
+    //% weight=30
     export function rawScancode(code: number) {
         return "\x10"+String.fromCharCode(code)
     }
 
-    //% blockId="send simultaneous keys" block="send simultaneous keys | $keys || hold keys %hold" 
+    //% blockId="send simultaneous keys" block="send simultaneous keys | $keys || hold keys $hold" advanced=true
     //% hold.shadow=false
     //% shim=blehid::sendSimultaneousKeys
+    //% weight=50
     export function sendSimultaneousKeys(keys: string, hold: boolean) : void {
     }
 
-    //% blockId="release keys" block="release keys" 
+    //% blockId="release keys" block="release keys" advanced=true
     //% shim=blehid::releaseKeys
+    //% weight=60
     export function releaseKeys() : void {
     }
 
