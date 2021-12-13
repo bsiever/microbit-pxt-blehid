@@ -132,7 +132,7 @@ namespace blehid {
         DEBUG("Done...");
     }
 
-}
+  }
 
 
 #else 

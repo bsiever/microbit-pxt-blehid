@@ -10,6 +10,7 @@
 
 //#define HID_TESTING 1
  
+const int SHIFT_MASK =  0x02;
 
 /**
  *  Keys:
@@ -309,7 +310,7 @@ void HIDService::sendString(char *str, int len) {
             char c = str[i];
             if(c >= ' ') {  // ASCII character: Get scancode details
                 uint16_t full = ascii2scan(c);
-                shift = (full>>8) ? HIDService::leftShiftMask : 0;
+                shift = (full>>8) ? SHIFT_MASK : 0;
                 code = full & 0xFF;
                 // Send blank when repeated keys or just a change in modifier
 
@@ -338,7 +339,7 @@ void HIDService::sendString(char *str, int len) {
                     }
                   } else {
                     uint16_t full = ascii2scan(str[i]);
-                    modifiers |= (full>>8) ? HIDService::leftShiftMask : 0;
+                    modifiers |= (full>>8) ? SHIFT_MASK : 0;
                     code = full & 0xFF;
                   }
                   i++;

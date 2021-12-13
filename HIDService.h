@@ -25,16 +25,16 @@ class HIDService : public MicroBitBLEService
      */
     HIDService( BLEDevice &_ble);
 
-    enum KeyModifiers {
-      leftControlMask = 0x01,
-      leftShiftMask = 0x02,
-      leftAltMask = 0x04,
-      leftGUIMask = 0x08,
-      rightControlMask = 0x10,
-      rightShiftMask = 0x20,
-      rightAltMask = 0x40,
-      rightGUIMask = 0x80
-    };
+    // enum KeyModifiers {
+    //   leftControlMask = 0x01,
+    //   leftShiftMask = 0x02,
+    //   leftAltMask = 0x04,
+    //   leftGUIMask = 0x08,
+    //   rightControlMask = 0x10,
+    //   rightShiftMask = 0x20,
+    //   rightAltMask = 0x40,
+    //   rightGUIMask = 0x80
+    // };
 
 
     private:

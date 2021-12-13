@@ -40,7 +40,16 @@ blehid.setStatusChangeHandler(function () {
 
 input.onButtonPressed(Button.B, function () {
     serial.writeLine("Button B\n")
-    for(let i = Key.enter; i<Key._END_; i++) {
+    for(let i = blehid.Key.enter; i<blehid.Key._END_; i++) {
         blehid.sendString(blehid.keys(i))
     }
+    for(let i = blehid.Modifier.control; i<blehid.Modifier._END_; i++) {
+        blehid.sendString(blehid.modifiers(i)+"a")
+    }
+})
+
+input.onButtonPressed(Button.AB, function () {
+    serial.writeLine("Button AB\n")
+    // Print an "x" = 0x1b
+    blehid.sendString(blehid.rawScancode(0x1b))
 })
