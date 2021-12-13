@@ -26,30 +26,29 @@ namespace blehid {
     }
 
     export enum Modifier {
-        // block="control+"
+        //% block="control+"
         control, 
-        // block="shift+"
+        //% block="shift+"
         shift, 
-        // block="alt+"
+        //% block="alt+"
         alt, 
-        // block="option+"
+        //% block="option+"
         option,
-        // block="control+"
+        //% block="control+"
         apple, 
-        // block="windows+"
+        //% block="windows+"
         windows, 
-
-        // block="right control+"
+        //% block="right control+"
         rightControl, 
-        // block="right shift+"
+        //% block="right shift+"
         rightShift, 
-        // block="right alt+"
+        //% block="right alt+"
         rightAlt, 
-        // block="right option+"
+        //% block="right option+"
         rightOption, 
-        // block="right apple+"
+        //% block="right apple+"
         rightApple, 
-        // block="right windows+"
+        //% block="right windows+"
         rightWindows,
         _END_
     }
@@ -63,7 +62,9 @@ namespace blehid {
         down,
         left,
         right,
-        vol_up,
+        //% block="volume up"
+       vol_up,
+        //% block="volume down"
         vol_down,
         _END_
     }
@@ -121,8 +122,8 @@ namespace blehid {
         }
     }
 
-    //% block="raw scancode" 
-    //% code.min = 0 code.max=255
+    //% block="raw scancode | %code" 
+    //% code.min=0 code.max=255
     export function rawScancode(code: number) {
         return "\x10"+String.fromCharCode(code)
     }
