@@ -46,60 +46,66 @@ namespace blehid {
 
     export enum _Modifier {
         //% block="control+"
-        _control, 
+        control, 
         //% block="shift+"
-        _shift, 
+        shift, 
         //% block="alt+"
-        _alt, 
+        alt, 
         //% block="option+"
-        _option,
+        option,
         //% block="control+"
-        _apple, 
+        apple, 
         //% block="windows+"
-        _windows, 
+        windows, 
         //% block="right control+"
-        _rightControl, 
+        rightControl, 
         //% block="right shift+"
-        _rightShift, 
+        rightShift, 
         //% block="right alt+"
-        _rightAlt, 
+        rightAlt, 
         //% block="right option+"
-        _rightOption, 
+        rightOption, 
         //% block="right apple+"
-        _rightApple, 
+        rightApple, 
         //% block="right windows+"
-        _rightWindows,
+        rightWindows,
     }
 
-    // export enum Modifier {
-    //     //% block="control+"
-    //     control, 
-    //     //% block="shift+"
-    //     shift, 
-    //     //% block="alt+"
-    //     alt, 
-    //     //% block="option+"
-    //     option,
-    //     //% block="control+"
-    //     apple, 
-    //     //% block="windows+"
-    //     windows, 
-    //     //% block="right control+"
-    //     rightControl, 
-    //     //% block="right shift+"
-    //     rightShift, 
-    //     //% block="right alt+"
-    //     rightAlt, 
-    //     //% block="right option+"
-    //     rightOption, 
-    //     //% block="right apple+"
-    //     rightApple, 
-    //     //% block="right windows+"
-    //     rightWindows,
-    //     _END_
-    // }
+    //% blockId="modifiers" block="%key"
+    //% weight=30
+    export function modifiers(key : _Modifier) : string {
+        let mods = [
+            Modifier.control,
+            Modifier.alt,
+            Modifier.option,
+            Modifier.apple,
+            Modifier.windows,
+            Modifier.rightControl,
+            Modifier.rightShift,
+            Modifier.rightAlt,
+            Modifier.rightOption,
+            Modifier.rightApple,
+            Modifier.rightWindows]
+        if(key>=_Modifier.control && key<=_Modifier.rightWindows)
+            return mods[key];
 
-    export enum Key {
+        return ""
+    }
+
+    export class Key {
+        static readonly enter = "\x10\x28"
+        static readonly escape = "\x10\x29"
+        static readonly delete = "\x10\x2A"
+        static readonly tab = "\x10\x2B"
+        static readonly up = "\x10\x52"
+        static readonly down = "\x10\x51"
+        static readonly left = "\x10\x50"
+        static readonly right = "\x10\x4f"
+        static readonly vol_up = "\x10\x80"
+        static readonly vol_down = "\x10\x81"
+    }
+
+    export enum _Key {
         enter,
         escape,
         delete,
@@ -109,64 +115,30 @@ namespace blehid {
         left,
         right,
         //% block="volume up"
-       vol_up,
+        vol_up,
         //% block="volume down"
         vol_down,
-        _END_
     }
-
-    //% blockId="modifiers" block="%key"
-    //% weight=30
-    export function modifiers(key : _Modifier) : string {
-        let code = null
-        switch(key) {
-            case _Modifier._control: 
-                return Modifier.control;
-            // case Modifier.shift: 
-            //     return "\x02"; 
-            // case Modifier.alt: 
-            // case Modifier.option: 
-            //     return "\x03"; 
-            // case Modifier.apple: 
-            // case Modifier.windows: 
-            //     return "\x04"; 
-            // case Modifier.rightControl: 
-            //     return "\x05"; 
-            // case Modifier.rightShift: 
-            //     return "\x06"; 
-            // case Modifier.rightAlt: 
-            // case Modifier.rightOption: 
-            //     return "\x07"; 
-            // case Modifier.rightApple: 
-            // case Modifier.rightWindows: 
-            //     return "\x08"; 
-        }
-        return ""
-    }
-
 
 
     //% blockId="key_conv" block="%key"
     //% weight=20
-    export function keys(key : Key) : string {
-        let code = null
-        switch(key) {
-            case Key.enter: code="\x28"; break;
-            case Key.escape: code="\x29"; break;
-            case Key.delete: code="\x2A"; break;
-            case Key.tab: code="\x2B"; break;
-            case Key.up: code = "\x52"; break;
-            case Key.down: code = "\x51"; break;
-            case Key.left: code = "\x50"; break;
-            case Key.right: code = "\x4f"; break;
-            case Key.vol_up: code = "\x80"; break;
-            case Key.vol_down: code = "\x81"; break;
-        }
-        if(code!=null) {
-            return "\x10"+code;
-        } else {
-            return "";
-        }
+    export function keys(key : _Key) : string {
+        let keys = [
+            Key.enter,
+            Key.escape,
+            Key.delete,
+            Key.tab,
+            Key.up,
+            Key.down,
+            Key.left,
+            Key.right,
+            Key.vol_up,
+            Key.vol_down            
+        ]
+        if(key>=_Key.enter && key<=_Key.vol_down)
+            return keys[key];
+        return "";
     }
 
     //% block="raw scancode | %code" advanced=true
