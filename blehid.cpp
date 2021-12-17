@@ -14,12 +14,9 @@
 
 // See https://github.com/kshoji/pxt-bluetooth-gamepad/blob/master/BluetoothGamepadService.cpp
 
-
-
 #include "pxt.h"
 #include "MicroBit.h"
 
-#if CONFIG_ENABLED(DEVICE_BLE) 
 
 #include "ble.h"
 #include "ble_hci.h"
@@ -96,7 +93,6 @@ namespace blehid {
     //%
     void startHIDService() {
         // Start advertising as HID
-#if CONFIG_ENABLED(DEVICE_BLE)
         DEBUG("advertising function\n");
         if(hids == NULL) {
             uBit.bleManager.stopAdvertising();
@@ -108,16 +104,13 @@ namespace blehid {
             // Hopefully the same handle is used as the one returned by sd_ble_gap_adv_set_configure
             uBit.bleManager.advertise();
        }
-#endif
     }
 
     //% 
     void sendString(String keys) {
-#if CONFIG_ENABLED(DEVICE_BLE)
         if(!hids) return;
 
         hids->sendString(keys->ascii.data, keys->ascii.length);
-#endif
     }
 
     //%
@@ -135,41 +128,18 @@ namespace blehid {
 
     //% 
     void sendSimultaneousKeys(String keys, bool hold) {
-#if CONFIG_ENABLED(DEVICE_BLE)
         if(!hids) return;
 
         hids->sendSimultaneousKeys(keys->ascii.data, keys->ascii.length);
         if(!hold) {
             hids->sendScanCode(0,0);
         }
-#endif
     }
 
     //% 
     void releaseKeys() {
-#if CONFIG_ENABLED(DEVICE_BLE)
         if(!hids) return;
         hids->sendScanCode(0,0);
-#endif
     }
 
   }
-
-
-#else 
-
-namespace blehid { 
-    //%
-    void startHIDService() {}
-    //%
-    void sendString(String keys) {}
-    //%
-    bool keyboardIsEnabled() { return false; }
-    //%
-    void setStatusChangeHandler(Action a) {}
-    //%
-    void sendSimultaneousKeys(String keys, bool hold) {}
-    //% 
-    void releaseKeys() {}
-}
-#endif

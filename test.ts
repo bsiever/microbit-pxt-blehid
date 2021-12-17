@@ -51,7 +51,7 @@ input.onButtonPressed(Button.B, function () {
 input.onButtonPressed(Button.AB, function () {
     serial.writeLine("Button AB\n")
     // // Print an "x" = 0x1b
-    // blehid.sendString(blehid.rawScancode(0x1b))
+    blehid.sendString(blehid.rawScancode(0x1b))
 
     blehid.sendSimultaneousKeys(
                 blehid.modifiers(blehid.Modifier.control)+
