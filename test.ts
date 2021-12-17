@@ -55,11 +55,11 @@ input.onButtonPressed(Button.AB, function () {
     blehid.sendString(blehid.rawScancode(0x1b))
 
     blehid.sendSimultaneousKeys(
-                // blehid.modifiers(blehid.Modifier.control)+
-                // blehid.modifiers(blehid.Modifier.alt)+
-                blehid.Modifier.control+blehid.Modifier.alt+
+                // blehid.modifiers(Modifier.control)+
+                // blehid.modifiers(Modifier.alt)+
+                Modifier.control+Modifier.alt+
                 "ac"+
-                blehid.Key.enter,     
+                Key.enter,     
             false)
 
 })

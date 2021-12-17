@@ -1,4 +1,34 @@
 
+
+// Key Modifiers
+class Modifier {
+    static readonly control = "\x01"
+    static readonly shift =  "\x02"
+    static readonly alt = "\x03"
+    static readonly option = "\x03"
+    static readonly apple = "\x04"
+    static readonly windows = "\x04"
+    static readonly rightControl = "\x05"
+    static readonly rightShift = "\x06"
+    static readonly rightAlt = "\x07"
+    static readonly rightOption = "\x07"
+    static readonly rightApple = "\x08"
+    static readonly rightWindows = "\x08"
+}
+// Special Keys
+class Key {
+    static readonly enter = "\x10\x28"
+    static readonly escape = "\x10\x29"
+    static readonly delete = "\x10\x2A"
+    static readonly tab = "\x10\x2B"
+    static readonly up = "\x10\x52"
+    static readonly down = "\x10\x51"
+    static readonly left = "\x10\x50"
+    static readonly right = "\x10\x4f"
+    static readonly vol_up = "\x10\x80"
+    static readonly vol_down = "\x10\x81"
+}
+
 //% color=#0000FF 
 //% icon="\uf007"
 //% block="HID"
@@ -29,20 +59,6 @@ namespace blehid {
         return false;
     }
 
-    export class Modifier {
-        static readonly control = "\x01"
-        static readonly shift =  "\x02"
-        static readonly alt = "\x03"
-        static readonly option = "\x03"
-        static readonly apple = "\x04"
-        static readonly windows = "\x04"
-        static readonly rightControl = "\x05"
-        static readonly rightShift = "\x06"
-        static readonly rightAlt = "\x07"
-        static readonly rightOption = "\x07"
-        static readonly rightApple = "\x08"
-        static readonly rightWindows = "\x08"
-    }
 
     export enum _Modifier {
         //% block="control+"
@@ -92,18 +108,7 @@ namespace blehid {
         return ""
     }
 
-    export class Key {
-        static readonly enter = "\x10\x28"
-        static readonly escape = "\x10\x29"
-        static readonly delete = "\x10\x2A"
-        static readonly tab = "\x10\x2B"
-        static readonly up = "\x10\x52"
-        static readonly down = "\x10\x51"
-        static readonly left = "\x10\x50"
-        static readonly right = "\x10\x4f"
-        static readonly vol_up = "\x10\x80"
-        static readonly vol_down = "\x10\x81"
-    }
+
 
     export enum _Key {
         enter,
