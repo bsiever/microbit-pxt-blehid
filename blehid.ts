@@ -29,33 +29,75 @@ namespace blehid {
         return false;
     }
 
-    export enum Modifier {
-        //% block="control+"
-        control, 
-        //% block="shift+"
-        shift, 
-        //% block="alt+"
-        alt, 
-        //% block="option+"
-        option,
-        //% block="control+"
-        apple, 
-        //% block="windows+"
-        windows, 
-        //% block="right control+"
-        rightControl, 
-        //% block="right shift+"
-        rightShift, 
-        //% block="right alt+"
-        rightAlt, 
-        //% block="right option+"
-        rightOption, 
-        //% block="right apple+"
-        rightApple, 
-        //% block="right windows+"
-        rightWindows,
-        _END_
+    export class Modifier {
+        static readonly control = "\x10\x01"
+        static readonly shift =  "\x10\x02"
+        static readonly alt = "\x10\x03"
+        static readonly option = "\x10\x03"
+        static readonly apple = "\x10\x04"
+        static readonly windows = "\x10\x04"
+        static readonly rightControl = "\x10\x05"
+        static readonly rightShift = "\x10\x06"
+        static readonly rightAlt = "\x10\x07"
+        static readonly rightOption = "\x10\x07"
+        static readonly rightApple = "\x10\x08"
+        static readonly rightWindows = "\x10\x08"
     }
+
+    export enum _Modifier {
+        //% block="control+"
+        _control, 
+        //% block="shift+"
+        _shift, 
+        //% block="alt+"
+        _alt, 
+        //% block="option+"
+        _option,
+        //% block="control+"
+        _apple, 
+        //% block="windows+"
+        _windows, 
+        //% block="right control+"
+        _rightControl, 
+        //% block="right shift+"
+        _rightShift, 
+        //% block="right alt+"
+        _rightAlt, 
+        //% block="right option+"
+        _rightOption, 
+        //% block="right apple+"
+        _rightApple, 
+        //% block="right windows+"
+        _rightWindows,
+    }
+
+    // export enum Modifier {
+    //     //% block="control+"
+    //     control, 
+    //     //% block="shift+"
+    //     shift, 
+    //     //% block="alt+"
+    //     alt, 
+    //     //% block="option+"
+    //     option,
+    //     //% block="control+"
+    //     apple, 
+    //     //% block="windows+"
+    //     windows, 
+    //     //% block="right control+"
+    //     rightControl, 
+    //     //% block="right shift+"
+    //     rightShift, 
+    //     //% block="right alt+"
+    //     rightAlt, 
+    //     //% block="right option+"
+    //     rightOption, 
+    //     //% block="right apple+"
+    //     rightApple, 
+    //     //% block="right windows+"
+    //     rightWindows,
+    //     _END_
+    // }
 
     export enum Key {
         enter,
@@ -73,32 +115,31 @@ namespace blehid {
         _END_
     }
 
-
     //% blockId="modifiers" block="%key"
     //% weight=30
-    export function modifiers(key : Modifier) : string {
+    export function modifiers(key : _Modifier) : string {
         let code = null
         switch(key) {
-            case Modifier.control: 
-                return "\x01"; 
-            case Modifier.shift: 
-                return "\x02"; 
-            case Modifier.alt: 
-            case Modifier.option: 
-                return "\x03"; 
-            case Modifier.apple: 
-            case Modifier.windows: 
-                return "\x04"; 
-            case Modifier.rightControl: 
-                return "\x05"; 
-            case Modifier.rightShift: 
-                return "\x06"; 
-            case Modifier.rightAlt: 
-            case Modifier.rightOption: 
-                return "\x07"; 
-            case Modifier.rightApple: 
-            case Modifier.rightWindows: 
-                return "\x08"; 
+            case _Modifier._control: 
+                return Modifier.control;
+            // case Modifier.shift: 
+            //     return "\x02"; 
+            // case Modifier.alt: 
+            // case Modifier.option: 
+            //     return "\x03"; 
+            // case Modifier.apple: 
+            // case Modifier.windows: 
+            //     return "\x04"; 
+            // case Modifier.rightControl: 
+            //     return "\x05"; 
+            // case Modifier.rightShift: 
+            //     return "\x06"; 
+            // case Modifier.rightAlt: 
+            // case Modifier.rightOption: 
+            //     return "\x07"; 
+            // case Modifier.rightApple: 
+            // case Modifier.rightWindows: 
+            //     return "\x08"; 
         }
         return ""
     }

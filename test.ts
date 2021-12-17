@@ -43,7 +43,8 @@ input.onButtonPressed(Button.B, function () {
     for(let i = blehid.Key.enter; i<blehid.Key._END_; i++) {
         blehid.sendString(blehid.keys(i))
     }
-    for(let i = blehid.Modifier.control; i<blehid.Modifier._END_; i++) {
+    
+    for(let i = blehid._Modifier._control; i<blehid._Modifier._rightWindows; i++) {
         blehid.sendString(blehid.modifiers(i)+"a")
     }
 })
@@ -54,8 +55,9 @@ input.onButtonPressed(Button.AB, function () {
     blehid.sendString(blehid.rawScancode(0x1b))
 
     blehid.sendSimultaneousKeys(
-                blehid.modifiers(blehid.Modifier.control)+
-                blehid.modifiers(blehid.Modifier.alt)+
+                // blehid.modifiers(blehid.Modifier.control)+
+                // blehid.modifiers(blehid.Modifier.alt)+
+                blehid.Modifier.control+blehid.Modifier.alt+
                 "ac"+
                 blehid.keys(blehid.Key.enter),     
             false)
