@@ -31,10 +31,10 @@
     "supportedTargets": [
         "microbit"
     ],
+    "preferredEditor": "tsprj",
     "disablesVariants": [
         "mbdal"
     ],
-    "preferredEditor": "tsprj",
     "authors": [
         "Bill Siever <bsiever@gmail.com>"
     ],

@@ -30,18 +30,18 @@ namespace blehid {
     }
 
     export class Modifier {
-        static readonly control = "\x10\x01"
-        static readonly shift =  "\x10\x02"
-        static readonly alt = "\x10\x03"
-        static readonly option = "\x10\x03"
-        static readonly apple = "\x10\x04"
-        static readonly windows = "\x10\x04"
-        static readonly rightControl = "\x10\x05"
-        static readonly rightShift = "\x10\x06"
-        static readonly rightAlt = "\x10\x07"
-        static readonly rightOption = "\x10\x07"
-        static readonly rightApple = "\x10\x08"
-        static readonly rightWindows = "\x10\x08"
+        static readonly control = "\x01"
+        static readonly shift =  "\x02"
+        static readonly alt = "\x03"
+        static readonly option = "\x03"
+        static readonly apple = "\x04"
+        static readonly windows = "\x04"
+        static readonly rightControl = "\x05"
+        static readonly rightShift = "\x06"
+        static readonly rightAlt = "\x07"
+        static readonly rightOption = "\x07"
+        static readonly rightApple = "\x08"
+        static readonly rightWindows = "\x08"
     }
 
     export enum _Modifier {
