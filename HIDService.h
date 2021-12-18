@@ -12,20 +12,22 @@
 
 
 /**
-  * Class definition for a MicroBit BLE Accelerometer Service.
-  * Provides access to live accelerometer data via Bluetooth, and provides basic configuration options.
+  * Class definition for a MicroBit BLE HID Service.
   */
 class HIDService : public MicroBitBLEService
 {
-    public:
+    protected:
     /**
      * Constructor.
-     * Create a representation of the Bluetooth SIG Battery Service
+     * Create a representation of the Bluetooth SIG HID Service
      * @param _ble The instance of a BLE device that we're running on.
      */
-    HIDService( BLEDevice &_ble);
+    HIDService( BLEDevice &_ble, 
+                uint8_t *_reportMap, int _reportMapSize, 
+                uint8_t *_report,    int _reportSize, 
+                int _EVT_ID,
+                const char *className) ;
 
-    private:
     /**
       * Invoked when BLE connects.
       */
@@ -41,36 +43,27 @@ class HIDService : public MicroBitBLEService
       */
     void onDataWritten( const microbit_ble_evt_write_t *params);
 
-
     /**
      * Callback. Invoked when any of our attributes are read via BLE.
      */
     void onDataRead( microbit_onDataRead_t *params);
 
-
     /*
     */
-    void addReportDescriptor(uint16_t value_handle, uint8_t reportID, uint8_t reportTypeD);
-
-    /*
-    */
-   void setKeyboardEnabled(bool status);
+    void setEnabled(bool status);
 
 
-    // Debugging: Print the attribute / info.
-    void debugAttribute(int index); 
-    const int betweenKeyDelay = 40; 
+    // Actual service data (must be initialized by subclasses)
+    // Things to initialize in the constructor
+    uint8_t *reportMap;
+    const int reportMapSize;
+    uint8_t *report;
+    const int reportSize;
 
-    // Actual service data
-    uint8_t protocolMode;  // 0=>Boot Protocol; 1=>Report
-    static  uint16_t HIDInfo[];
-    static  uint8_t reportMap[];
-    uint8_t report[8];
-    bool keyboardEnabled;
+
     // Index for each characteristic in arrays of handles and UUIDs
     typedef enum mbbs_cIdx
     {
-        mbbs_cIdxProtocolMode,
         mbbs_cIdxHIDInfo,
         mbbs_cIdxReportMap,
         mbbs_cIdxReport,
@@ -78,29 +71,44 @@ class HIDService : public MicroBitBLEService
     } mbbs_cIdx;
 
     // UUIDs for our service and characteristics
-    static const uint16_t serviceUUID;
-    static const uint16_t charUUID[ mbbs_cIdxCOUNT];
+    static const uint16_t charUUID[mbbs_cIdxCOUNT];
     
+    const int EVT_ID;
     // Data for each characteristic when they are held by Soft Device.
     MicroBitBLEChar      chars[ mbbs_cIdxCOUNT];
 
 
-
-    public:
-    
     int              characteristicCount()          { return mbbs_cIdxCOUNT; };
     MicroBitBLEChar *characteristicPtr( int idx)    { return &chars[ idx]; };
+    Action statusChangeHandler;
 
-    void sendScanCode(uint8_t c, uint8_t modifiers);
-    void sendString(char *str, int len);
-    void sendSimultaneousKeys(char *str, int len);
+    public:
 
-    bool keyboardIsEnabled(); 
+    bool isEnabled() { return enabled; }
+    /*
+    */
+    void setStatusChangeHandler(Action action);
 
-    static Action statusChangeHandler;
 
-    static const int EVT_ID;
+  private:
+      /*
+    */
+    void addReportDescriptor(uint16_t value_handle, uint8_t reportID, uint8_t reportTypeD);
+
+    // Debugging: Print the attribute / info.
+    void debugAttribute(int index); 
+
+    static const uint16_t HIDInfo[2];
+
     static const int EVT_STATUS;
+
+    // Service data (managed by this class)
+    bool enabled;
+
+    static bool advertisingInitialized;
+    const char *className;
+    void advertiseHID();
+
 };
 
 #endif

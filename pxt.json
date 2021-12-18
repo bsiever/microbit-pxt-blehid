@@ -9,16 +9,18 @@
     },
     "files": [
         "README.md",
-        "blehid.ts",
-        "blehid.cpp",
-        "ascii2scan.cpp",
-        "ascii2scan.h",
         "HIDService.cpp",
         "HIDService.h",
         "debug.h",
         "shims.d.ts",
         "enums.d.ts",
-        "main.py"
+        "main.py",
+        "ascii2scan.cpp",
+        "ascii2scan.h", 
+        "blekeyboard.ts", 
+        "blekeyboard.cpp",
+        "BLEHIDKeyboard.cpp",
+        "BLEHIDKeyboard.h"
     ],
     "testFiles": [
         "test.ts"

@@ -6,10 +6,10 @@
 
 # Programming and Pairing
 
-# i2c2
+# blehid
 
 ```package
-pins=github:bsiever/microbit-pxt-i2cpins
+pins=github:bsiever/microbit-pxt-blehid
 ```
 
 

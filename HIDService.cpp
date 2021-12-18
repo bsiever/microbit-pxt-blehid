@@ -4,137 +4,146 @@
 #if CONFIG_ENABLED(DEVICE_BLE)
 
 #include "HIDService.h"
-
 #include "ble_srv_common.h"
-#include "ascii2scan.h"
 
-//#define HID_TESTING 1
- 
-const int SHIFT_MASK =  0x02;
+#include "pxt.h"
+#include "MicroBit.h"
 
-/**
- *  Keys:
- *     ASCII to Scancodes
- * 
- *     1. Single Bytes:  
- *           ASCII printable characters: [0x20-0X7E] represent that char
- *        
- *     2. Single byte 0x01-0x08: Control byte indicating which special key
- *        to apply (L Ctrl, L Shift, L Alt, LMeta, R Ctrl, R Shift, R Alt, R Meta) 
- *        These are all the "With" command that apply to the next character
- *          Shifts will not be supported / ignored (?) 
- *     
- *     3. Two byte command: 0x10 0xXX.  The 2nd byte is a literal key code to use
- *        (Copied directly to report)    
- * 
- *  Non-printable:
- *    Escape, Delete, Return, Arrows, Tab, 
- *    F1-F12, Copy, Cut, Paste, 
- *    Mute, Vol up, Vol Down
- *      `       0x7F
- * 
- * */
+// Advertising includes
+#include "ble.h"
+#include "ble_hci.h"
+#include "ble_srv_common.h"
+#include "ble_advdata.h"
+#include "ble_conn_params.h"
+#include "ble_dis.h"
+
+#include "debug.h"
 
 
-/*
-TODO / Major stuff:
-  https://docs.silabs.com/bluetooth/2.13/code-examples/applications/ble-hid-keyboard
+using namespace pxt;
 
-ASCII / typeable:
-  A-Z,a-z,0-9 are programmatic
-  Other typeables are lookup?
-Non-typeables:
-  "Modifiers"
-  Enter, delete, arrows, F1-F12, Tab
+bool HIDService::advertisingInitialized = false;
 
-OS Specific:
-  Apple's Option = Windows Windows key?
-
-Keyboard keys:
-  A-Za-z,0-9,special chars (shift + 0-9, " ", F1-F12, arrows)
-  enter/return/delete/escape
-Keypad keys:
-  numbers, arrows, 
-Modifiers:
-   Left control/shift/alt/gui
-  Right control/shift/alt/gui
-
-Mac's Command key??? Is Option = Alt? Is Command = GUI?
-*/
-
-
-/*
-Keycodes / Scan Codes to support (from https://usb.org/sites/default/files/hut1_21.pdf Chapter 10 / Page 92)
-
-
-*/
-
-
-#ifdef HID_TESTING
-const uint16_t HIDService::serviceUUID = 0x8812;   // 0x1812 = HID 
-#else
-const uint16_t HIDService::serviceUUID = 0x1812;   // 0x1812 = HID 
-#endif
-
-
-Action HIDService::statusChangeHandler = NULL;
-
-const uint16_t HIDService::charUUID[ mbbs_cIdxCOUNT ] = { 
-#ifdef HID_TESTING
-  0x8A4E,  // ProtocolMode
-  0x8A4A,  // HIDInfo    
-  0x8A4B,  // Keyboard Report Map 
-  0x8A4D,  // Keyboard Report
-#else
-  0x2A4E,  //  ProtocolMode
-  0x2A4A,  //  HIDInfo (Confirm Value without BLUETOOTH_PRIVLEDGED exception)   0x2A4A
-  0x2A4B,  // Keyboard Report Map
-  0x2A4D,  // Keyboard Report 
-#endif
+const uint16_t HIDService::charUUID[mbbs_cIdxCOUNT] = { 
+  0x2A4A,  //  HIDInfo
+  0x2A4B,  //  Report Map
+  0x2A4D,  //  Report 
 };
 
-const int HIDService::EVT_ID = 109;
 const int HIDService::EVT_STATUS = 1;
 
-uint16_t HIDService::HIDInfo[] = { 
+const uint16_t HIDService::HIDInfo[2] = { 
   0x0111,
   0x0002
 };
 
 
-// TODO: For some reason this can't be "const".  WHY NOT? 
-// Copied from https://docs.silabs.com/bluetooth/2.13/code-examples/applications/ble-hid-keyboard
-// Actually: https://docs.silabs.com/resources/bluetooth/code-examples/applications/ble-hid-keyboard/source/gatt.xml
-uint8_t HIDService::reportMap[] =
+
+
+/**
+ * Constructor.
+ * Create a representation of the Bluetooth SIG Battery Service
+ * @param _ble The instance of a BLE device that we're running on.
+ */
+HIDService::HIDService( BLEDevice &_ble, 
+                uint8_t *_reportMap, int _reportMapSize, 
+                uint8_t *_report,    int _reportSize, 
+                int _EVT_ID,
+                const char *_className) :
+  reportMap(_reportMap), 
+  reportMapSize(_reportMapSize),
+  report(_report), 
+  reportSize(_reportSize),
+  EVT_ID(_EVT_ID),
+  className(_className),
+
+  statusChangeHandler(NULL), 
+  enabled(false)
 {
-0x05, 0x01, //	Usage Page (Generic Desktop)
-0x09, 0x06, //	Usage (Keyboard)
-0xa1, 0x01, //	Collection (Application)
-0x05, 0x07, //	Usage Page (Keyboard)
-0x19, 0xe0, //	Usage Minimum (Keyboard LeftControl)
-0x29, 0xe7, //	Usage Maximum (Keyboard Right GUI)
-0x15, 0x00, //	Logical Minimum (0)
-0x25, 0x01, //	Logical Maximum (1)
-0x75, 0x01, //	Report Size (1)
-0x95, 0x08, //	Report Count (8) = Above codes are bit mapped to the first byte
-0x81, 0x02, //	Input (Data, Variable, Absolute) Modifier byte
+    DEBUG("Serv %s starting\n", className);
+    // Update advertisements 
+    advertiseHID();
 
-0x95, 0x01, //	Report Count (1)
-0x75, 0x08, //	Report Size (8)
-0x81, 0x01, //	Input (Constant) Reserved byte
+    // Register the base UUID and create the service.
+    bs_uuid_type = BLE_UUID_TYPE_BLE;  // Set the UUID type to 0x01, which should be Bluetooth SIG ID
+    CreateService( 0x1812 );
+    
+    // Create the data structures that represent each of our characteristics in Soft Device.
+    CreateCharacteristic( mbbs_cIdxHIDInfo, charUUID[ mbbs_cIdxHIDInfo ],
+                        (uint8_t *)HIDInfo,
+                        sizeof(HIDInfo), sizeof(HIDInfo),
+                        microbit_propREAD );
+ 
+    CreateCharacteristic( mbbs_cIdxReportMap, charUUID[ mbbs_cIdxReportMap ],
+                        (uint8_t *)reportMap,
+                        reportMapSize, reportMapSize,
+                        microbit_propREAD  | microbit_propREADAUTH);
 
-0x95, 0x06, //	Report Count (6)
-0x75, 0x08, //	Report Size (8)
-0x15, 0x00, //	Logical Minimum (0)
-0x25, 0x65, //	Logical Maximum (101)
-0x05, 0x07, //	Usage Page (Key Codes)
-0x19, 0x00, //	Usage Minimum (Reserved (no event indicated))
-0x29, 0x65, //	Usage Maximum (Keyboard Application)
-0x81, 0x00, //	Input (Data,Array) Key arrays (6 bytes)
-0xc0,       //	End Collection
-};
+    memset(report, 0, reportSize);
+    CreateCharacteristic( mbbs_cIdxReport, charUUID[ mbbs_cIdxReport ],
+                        (uint8_t *)report,
+                        reportSize, reportSize,
+                        microbit_propREAD  | microbit_propNOTIFY | microbit_propREADAUTH);
+
+  // Must have report discriptor for OS detection
+   addReportDescriptor(charHandles( mbbs_cIdxReport)->value, 0, 1 /* Input report */);
+
+}
 
 
+/**
+  * Invoked when BLE connects.
+  */
+void HIDService::onConnect( const microbit_ble_evt_t *p_ble_evt)
+{
+    DEBUG("%s onConnect\n", className);
+}
+
+/**
+  * Invoked when BLE disconnects.
+  */
+void HIDService::onDisconnect( const microbit_ble_evt_t *p_ble_evt)
+{
+    DEBUG("%s onDisconnect\n", className);
+    setEnabled(false);
+}
+
+void HIDService::onDataRead( microbit_onDataRead_t *params) {
+      DEBUG("%s onDataRead\n", className);
+      debugAttribute(params->handle);
+}
+
+/**
+  * Callback. Invoked when any of our attributes are written via BLE.
+  */
+void HIDService::onDataWritten( const microbit_ble_evt_write_t *params)
+{
+    DEBUG("%s onDataWritten\n", className);
+    debugAttribute(params->handle);
+
+    microbit_charattr_t type;
+    int index = charHandleToIdx(params->handle, &type);
+
+    if(index == mbbs_cIdxReport && type == microbit_charattrCCCD) {
+      DEBUG("%s Report CCCD Changed\n", className);
+        bool status = params->len>0 && params->data[0] ? true : false;
+        if(status!=enabled) {
+          setEnabled(status);
+        }
+  } 
+}
+
+void HIDService::setEnabled(bool status) {
+  DEBUG("%s Setting Enabled %d;  id %d\n", className, status, EVT_ID);
+  enabled = status;
+  // Wrong EVT_ID ????
+  MicroBitEvent(EVT_ID, EVT_STATUS);
+}
+
+void HIDService::setStatusChangeHandler(Action action) {
+  DEBUG("%s Setting Status Handler for %d and status id %d\n", className, EVT_ID, EVT_STATUS);
+  registerWithDal(EVT_ID, EVT_STATUS, action);
+}
 
 /**
  * 
@@ -174,66 +183,66 @@ void HIDService::addReportDescriptor(uint16_t value_handle, uint8_t reportID, ui
                                   &attr_char_value,
                                   &reportCCCDHandle); 
 }
-/**
- * Constructor.
- * Create a representation of the Bluetooth SIG Battery Service
- * @param _ble The instance of a BLE device that we're running on.
- */
-HIDService::HIDService( BLEDevice &_ble) 
-    : protocolMode(0x01), // 0x01 = Report Protocol
-      keyboardEnabled(false)
-{
-    DEBUG("HID Serv starting\n");
-
-    // Register the base UUID and create the service.
-    bs_uuid_type = BLE_UUID_TYPE_BLE;  // Set the UUID type to 0x01, which should be Bluetooth SIG ID
-    CreateService( serviceUUID);
-    
-    // Create the data structures that represent each of our characteristics in Soft Device.
-    CreateCharacteristic( mbbs_cIdxProtocolMode, charUUID[ mbbs_cIdxProtocolMode ],
-                        (uint8_t *)&protocolMode,
-                        sizeof(protocolMode), sizeof(protocolMode),
-                        microbit_propREAD | microbit_propWRITE_WITHOUT ); 
-
-    CreateCharacteristic( mbbs_cIdxHIDInfo, charUUID[ mbbs_cIdxHIDInfo ],
-                        (uint8_t *)HIDInfo,
-                        sizeof(HIDInfo), sizeof(HIDInfo),
-                        microbit_propREAD );
- 
-    CreateCharacteristic( mbbs_cIdxReportMap, charUUID[ mbbs_cIdxReportMap ],
-                        (uint8_t *)reportMap,
-                        sizeof(reportMap), sizeof(reportMap),
-                        microbit_propREAD  | microbit_propREADAUTH);
-
-    memset(report, 0, sizeof(report));
-    CreateCharacteristic( mbbs_cIdxReport, charUUID[ mbbs_cIdxReport ],
-                        (uint8_t *)report,
-                        sizeof(report), sizeof(report),
-                        microbit_propREAD  | microbit_propNOTIFY | microbit_propREADAUTH);
-
-  // NEED TO ADD A DESCRIPTOR FOR OS DETECTION!
-   addReportDescriptor(charHandles( mbbs_cIdxReport)->value, 0, 1 /* Input report */);
-
-}
 
 
-/**
-  * Invoked when BLE connects.
-  */
-void HIDService::onConnect( const microbit_ble_evt_t *p_ble_evt)
-{
-    DEBUG("HID. Serv onConnect\n");
-}
+void HIDService::advertiseHID() {
+        // Only initialize once
+        if(advertisingInitialized) return;
+        advertisingInitialized = true;
 
-/**
-  * Invoked when BLE disconnects.
-  */
-void HIDService::onDisconnect( const microbit_ble_evt_t *p_ble_evt)
-{
-    DEBUG("HID. Serv onDisconnect\n");
-    setKeyboardEnabled(false);
-}
+        // Stop any active advertising
+        uBit.bleManager.stopAdvertising();
 
+        // m_advdata _must_ be static / retained!
+        static ble_advdata_t m_advdata;
+        // m_enc_advdata _must_ be static / retained!
+        static uint8_t  m_enc_advdata[BLE_GAP_ADV_SET_DATA_SIZE_MAX];
+        static ble_uuid_t uuid;  // UUID Struct
+        uint8_t m_adv_handle;
+
+        MICROBIT_DEBUG_DMESG( "configureAdvertising connectable %d, discoverable %d", (int) connectable, (int) discoverable);
+        MICROBIT_DEBUG_DMESG( "whitelist %d, interval_ms %d, timeout_seconds %d", (int) whitelist, (int) interval_ms, (int) timeout_seconds);
+        uuid.type = BLE_UUID_TYPE_BLE;
+        uuid.uuid = 0x1812; // 1812 is HID 
+        m_advdata.uuids_complete.uuid_cnt = 1;
+        m_advdata.uuids_complete.p_uuids = &uuid;
+        m_advdata.include_appearance = true;
+        // Name needed to be identified by Android
+        m_advdata.name_type = BLE_ADVDATA_FULL_NAME;
+        
+        // Appearance isn't stricly needed for detection 
+        sd_ble_gap_appearance_set(BLE_APPEARANCE_GENERIC_HID );
+
+        // The flags below ensure "pairing mode" so it shows up in Android
+        m_advdata.flags = BLE_GAP_ADV_FLAG_BR_EDR_NOT_SUPPORTED | BLE_GAP_ADV_FLAG_LE_GENERAL_DISC_MODE;
+
+        ble_gap_adv_params_t    gap_adv_params;
+        memset( &gap_adv_params, 0, sizeof( gap_adv_params));
+        gap_adv_params.properties.type  = true /* connectable */
+                                        ? BLE_GAP_ADV_TYPE_CONNECTABLE_SCANNABLE_UNDIRECTED
+                                        : BLE_GAP_ADV_TYPE_NONCONNECTABLE_SCANNABLE_UNDIRECTED;
+        gap_adv_params.interval         = ( 1000 * MICROBIT_BLE_ADVERTISING_INTERVAL/* interval_ms */) / 625;  // 625 us units
+        if ( gap_adv_params.interval < BLE_GAP_ADV_INTERVAL_MIN) gap_adv_params.interval = BLE_GAP_ADV_INTERVAL_MIN;
+        if ( gap_adv_params.interval > BLE_GAP_ADV_INTERVAL_MAX) gap_adv_params.interval = BLE_GAP_ADV_INTERVAL_MAX;
+        gap_adv_params.duration         = MICROBIT_BLE_ADVERTISING_TIMEOUT /* timeout_seconds */ * 100;              //10 ms units
+        gap_adv_params.filter_policy    = false /* whitelist */
+                                        ? BLE_GAP_ADV_FP_FILTER_BOTH
+                                        : BLE_GAP_ADV_FP_ANY;
+        gap_adv_params.primary_phy      = BLE_GAP_PHY_1MBPS;
+                    
+        ble_gap_adv_data_t  gap_adv_data;
+        memset( &gap_adv_data, 0, sizeof( gap_adv_data));
+        gap_adv_data.adv_data.p_data    = m_enc_advdata;
+        gap_adv_data.adv_data.len       = BLE_GAP_ADV_SET_DATA_SIZE_MAX;
+
+        MICROBIT_BLE_ECHK( ble_advdata_encode( &m_advdata, gap_adv_data.adv_data.p_data, &gap_adv_data.adv_data.len));
+        MICROBIT_BLE_ECHK( sd_ble_gap_adv_set_configure( &m_adv_handle, &gap_adv_data, &gap_adv_params));
+
+        // Restart advertising
+        // WARNING: This will start adv using the static handle in the BLE Manager. 
+        // Hopefully the same handle is used as the one returned by sd_ble_gap_adv_set_configure
+        uBit.bleManager.advertise();
+    }
 
 #ifdef DEBUG_ENABLED
 void HIDService::debugAttribute(int handle) {
@@ -257,141 +266,10 @@ void HIDService::debugAttribute(int handle) {
         default:
           typeName = "UNKNOWN";
       }
-      if(index<0 || index>3) index = 4;
-      char const *charNames[] = {"Mode", "Info", "Map", "Report", "Invalid"};
+      if(index<0 || index>2) index = 3;
+      char const *charNames[] = {"Info", "Map", "Report", "Invalid"};
       DEBUG("     %s %s\n", charNames[index], typeName);
 }
 #endif
-
-
-void HIDService::onDataRead( microbit_onDataRead_t *params) {
-      DEBUG("HID. Serv onDataRead\n");
-      debugAttribute(params->handle);
-}
-
-
-/**
-  * Callback. Invoked when any of our attributes are written via BLE.
-  */
-void HIDService::onDataWritten( const microbit_ble_evt_write_t *params)
-{
-    DEBUG("HID. Serv onDataWritten\n");
-    debugAttribute(params->handle);
-
-    microbit_charattr_t type;
-    int index = charHandleToIdx(params->handle, &type);
-
-    if(index == mbbs_cIdxReport && type == microbit_charattrCCCD) {
-      DEBUG("HID. Serv Report CCCD Changed\n");
-        bool status = params->len>0 && params->data[0] ? true : false;
-        if(keyboardEnabled != status)
-          setKeyboardEnabled(status);
-  } 
-}
-
-void HIDService::sendScanCode(uint8_t c, uint8_t modifiers) {
-  memset(report, 0, sizeof(report));
-
-  if(c) {
-    report[0] = modifiers;
-    report[2] = c;  //b
-  }
-  notifyChrValue( mbbs_cIdxReport, (uint8_t *)report, sizeof(report)); 
-}
-
-void HIDService::sendSimultaneousKeys(char *str, int len) {
-  uint8_t modifiers = 0;
-  memset(report, 0, sizeof(report));
-  int idx = 2;  // Report index
-  // Process the string / build the report
-  for(int i=0; i<len && idx<sizeof(report); i++) {
-    char c = str[i];
-    // Check for modifiers
-    if(c>=1 && c<=8) {
-      modifiers |= 1<<(c-1);
-      // Check for direct scan code
-    } else if(c==0x10) { 
-      i++; // Advance to next character if valid
-      if(i<len) {
-        report[idx++] = str[i];
-      }
-      // Regular ASCII character
-    } else if(c>=' ') {
-      uint16_t full = ascii2scan(c);
-      modifiers |= (full>>8) ? SHIFT_MASK : 0;
-      report[idx++] = full & 0xFF;
-    }
-  }
-  report[0] = modifiers;
-  notifyChrValue( mbbs_cIdxReport, (uint8_t *)report, sizeof(report)); 
-}
-
-
-void HIDService::sendString(char *str, int len) {
-        uint8_t lastCode = 0;
-        // Iterate over keys and send them
-        DEBUG("Keys: ");
-        uint8_t shift = 0;
-        uint8_t code = 0;
-        for(int i=0; i<len; i++) {
-            char c = str[i];
-            if(c >= ' ') {  // ASCII character: Get scancode details
-                uint16_t full = ascii2scan(c);
-                shift = (full>>8) ? SHIFT_MASK : 0;
-                code = full & 0xFF;
-                // Send blank when repeated keys or just a change in modifier
-
-                // TODO: Is this needed???
-                if(code == lastCode) {
-                    sendScanCode(0, 0);
-                    uBit.sleep(betweenKeyDelay);
-                }
-                sendScanCode(code, shift);
-
-            } else {
-                // Handle control codes
-                uint8_t modifiers = 0;
-                while(str[i]>=1 && str[i]<=8 && i<len) {
-                  modifiers |= 1<<(str[i]-1);
-                  i++;
-                }
-                if(i<len) {
-                  // Check for raw scancode
-                  if(str[i]==0x10) {
-                    if(i+1<len) {
-                      i++;
-                      code = str[i]; 
-                    } else {
-                      code = 0;  // Scancode expected, but not there. Default to nothing.
-                    }
-                  } else {
-                    uint16_t full = ascii2scan(str[i]);
-                    modifiers |= (full>>8) ? SHIFT_MASK : 0;
-                    code = full & 0xFF;
-                  }
-                  i++;
-                  sendScanCode(code, modifiers);
-                }
-
-            }
-            uBit.sleep(betweenKeyDelay);
-            lastCode = code;
-            DEBUG("%c (%d%d)",str[i], shift, code);
-        }
-        // Send final release
-        sendScanCode(0, 0);
-        DEBUG("\n");
-}
-
-
-bool HIDService::keyboardIsEnabled() {
-  return keyboardEnabled;
-}
-
-void HIDService::setKeyboardEnabled(bool status) {
-  DEBUG("Setting Keyboard: %d", status);
-  keyboardEnabled = status;
-  MicroBitEvent(EVT_ID, EVT_STATUS);
-}
 
 #endif

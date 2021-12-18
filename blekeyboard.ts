@@ -1,5 +1,3 @@
-
-
 // Key Modifiers
 class Modifier {
     static readonly control = "\x01"
@@ -32,30 +30,30 @@ class Key {
 //% color=#0000FF 
 //% icon="\uf007"
 //% block="HID"
-namespace blehid {
+namespace blekeyboard {
 
     //% blockId="advertise" block="bluetooth HID service"
-    //% shim=blehid::startHIDService
+    //% shim=blekeyboard::startKeyboardService
     //% weight=50
-    export function startHIDService() : void {
+    export function startKeyboardService() : void {
     }
 
     //% blockId="send string" block="send keys | $keys" 
-    //% shim=blehid::sendString
+    //% shim=blekeyboard::sendString
     //% weight=40
     export function sendString(keys: string) : void {
     }
 
     //% blockID="on status change" block="on HID status change" advanced=true
-    //% shim=blehid::setStatusChangeHandler 
+    //% shim=blekeyboard::setStatusChangeHandler 
     //% weight=20
     export function setStatusChangeHandler(a: Action) {
     }
 
     //% blockId="keyboard enabled" block="keyboard enabled" advanced=true
-    //% shim=blehid::keyboardIsEnabled
+    //% shim=blekeyboard::isEnabled
     //% weight=10
-     export function keyboardIsEnabled() : boolean {
+     export function isEnabled() : boolean {
         return false;
     }
 
@@ -154,17 +152,15 @@ namespace blehid {
     }
 
     //% blockId="send simultaneous keys" block="send simultaneous keys $keys || hold keys $hold" advanced=true
-    //% shim=blehid::sendSimultaneousKeys
+    //% shim=blekeyboard::sendSimultaneousKeys
     //% weight=50
     export function sendSimultaneousKeys(keys: string, hold: boolean) : void {
     }
 
     //% blockId="release keys" block="release keys" advanced=true
-    //% shim=blehid::releaseKeys
+    //% shim=blekeyboard::releaseKeys
     //% weight=40
     export function releaseKeys() : void {
     }
 
 }
-
-
