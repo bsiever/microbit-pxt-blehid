@@ -25,6 +25,7 @@ using namespace pxt;
 bool HIDService::advertisingInitialized = false;
 
 const uint16_t HIDService::charUUID[mbbs_cIdxCOUNT] = { 
+  0x2A4E,  //  ProtocolMode
   0x2A4A,  //  HIDInfo
   0x2A4B,  //  Report Map
   0x2A4D,  //  Report 
@@ -37,7 +38,7 @@ const uint16_t HIDService::HIDInfo[2] = {
   0x0002
 };
 
-
+uint8_t HIDService::protocolMode = 0x01;
 
 
 /**
@@ -67,8 +68,12 @@ HIDService::HIDService( BLEDevice &_ble,
     // Register the base UUID and create the service.
     bs_uuid_type = BLE_UUID_TYPE_BLE;  // Set the UUID type to 0x01, which should be Bluetooth SIG ID
     CreateService( 0x1812 );
-    
     // Create the data structures that represent each of our characteristics in Soft Device.
+    CreateCharacteristic( mbbs_cIdxProtocolMode, charUUID[ mbbs_cIdxProtocolMode ],
+                        (uint8_t *)&protocolMode,
+                        sizeof(protocolMode), sizeof(protocolMode),
+                        microbit_propREAD | microbit_propWRITE_WITHOUT ); 
+
     CreateCharacteristic( mbbs_cIdxHIDInfo, charUUID[ mbbs_cIdxHIDInfo ],
                         (uint8_t *)HIDInfo,
                         sizeof(HIDInfo), sizeof(HIDInfo),

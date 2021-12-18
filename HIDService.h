@@ -64,6 +64,7 @@ class HIDService : public MicroBitBLEService
     // Index for each characteristic in arrays of handles and UUIDs
     typedef enum mbbs_cIdx
     {
+        mbbs_cIdxProtocolMode,
         mbbs_cIdxHIDInfo,
         mbbs_cIdxReportMap,
         mbbs_cIdxReport,
@@ -101,6 +102,7 @@ class HIDService : public MicroBitBLEService
     static const uint16_t HIDInfo[2];
 
     static const int EVT_STATUS;
+    static uint8_t   protocolMode;  // 0=>Boot Protocol; 1=>Report
 
     // Service data (managed by this class)
     bool enabled;
