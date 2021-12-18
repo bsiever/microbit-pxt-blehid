@@ -28,7 +28,7 @@ class Key {
 }
 
 //% color=#0000FF 
-//% icon="\uf293"
+//% icon="\uf11c"
 //% block="Keyboard"
 namespace blekeyboard {
 

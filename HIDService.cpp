@@ -86,7 +86,7 @@ HIDService::HIDService( BLEDevice &_ble,
                         microbit_propREAD  | microbit_propNOTIFY | microbit_propREADAUTH);
 
   // Must have report discriptor for OS detection
-  // NOTE: Assuming INPUT reports only
+  // NOTE: Assuming INPUT reports
    addReportDescriptor(charHandles( mbbs_cIdxReport)->value, 0, 1 /* Input report */);
 
 }

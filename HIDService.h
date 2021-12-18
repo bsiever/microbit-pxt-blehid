@@ -55,7 +55,7 @@ class HIDService : public MicroBitBLEService
 
     // Actual service data (must be initialized by subclasses)
     // Things to initialize in the constructor
-    uint8_t *reportMap;
+    const uint8_t *reportMap;
     const int reportMapSize;
     uint8_t *report;
     const int reportSize;
