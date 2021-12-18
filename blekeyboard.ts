@@ -32,7 +32,7 @@ class Key {
 //% block="Keyboard"
 namespace blekeyboard {
 
-    //% blockId="advertise" block="bluetooth keyboard service"
+    //% blockId="keyboard service" block="bluetooth keyboard service"
     //% shim=blekeyboard::startKeyboardService
     //% weight=50
     export function startKeyboardService() : void {
@@ -44,7 +44,7 @@ namespace blekeyboard {
     export function sendString(keys: string) : void {
     }
 
-    //% blockID="on status change" block="on keyboard status change" advanced=true
+    //% blockID="keyboard on status change" block="on keyboard status change" advanced=true
     //% shim=blekeyboard::setStatusChangeHandler 
     //% weight=20
     export function setStatusChangeHandler(a: Action) {

@@ -5,8 +5,7 @@
 #include "BLEMouseService.h"
 #include "ascii2scan.h"
 
-// From https://eleccelerator.com/tutorial-about-usb-hid-report-descriptors/
-// From https://www.silabs.com/documents/public/application-notes/AN249.pdf
+// Report Map from Nordic SDK Example (app_usbd_hid_mouse_desc.h SDK 17.1.0)
 static uint8_t mouseReportMap[] =
 {
     0x05, 0x01,       /* Usage Page (Generic Desktop),       */     \

@@ -6,11 +6,11 @@ class MouseButton {
 }
 
 //% color=#0000FF 
-//% icon="\uf8cc"
+//% icon="\uf245"
 //% block="Mouse"
 namespace blemouse {
 
-    //% blockId="advertise" block="bluetooth mouse service"
+    //% blockId="mouse service" block="bluetooth mouse service"
     //% shim=blemouse::startMouseService
     //% weight=50
     export function startMouseService() : void {
@@ -22,13 +22,13 @@ namespace blemouse {
     export function send() : void {
     }
 
-    //% blockID="on status change" block="on keyboard status change" advanced=true
+    //% blockID="mouse on status change" block="on keyboard status change" advanced=true
     //% shim=blemouse::setStatusChangeHandler 
     //% weight=20
     export function setStatusChangeHandler(a: Action) {
     }
 
-    //% blockId="keyboard enabled" block="keyboard enabled" advanced=true
+    //% blockId="mouse enabled" block="mouse enabled" advanced=true
     //% shim=blemouse::isEnabled
     //% weight=10
      export function isEnabled() : boolean {
