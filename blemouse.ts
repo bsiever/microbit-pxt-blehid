@@ -22,7 +22,7 @@ namespace blemouse {
     export function send() : void {
     }
 
-    //% blockID="mouse on status change" block="on keyboard status change" advanced=true
+    //% blockID="mouse on status change" block="on mouse status change" advanced=true
     //% shim=blemouse::setStatusChangeHandler 
     //% weight=20
     export function setStatusChangeHandler(a: Action) {
