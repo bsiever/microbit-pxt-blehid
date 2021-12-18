@@ -2,7 +2,7 @@
 
 #if CONFIG_ENABLED(DEVICE_BLE)
 
-#include "BLEHIDKeyboard.h"
+#include "BLEKeyboardService.h"
 #include "ascii2scan.h"
 
 const int SHIFT_MASK =  0x02;
@@ -40,7 +40,7 @@ static uint8_t keyboardReportMap[] =
 
 static uint8_t keyboardReport[8] = {0};
 
-BLEHIDKeyboard::BLEHIDKeyboard( BLEDevice &_ble) : 
+BLEKeyboardService::BLEKeyboardService( BLEDevice &_ble) : 
     HIDService(_ble, 
               keyboardReportMap, sizeof(keyboardReportMap), 
               keyboardReport, sizeof(keyboardReport),
@@ -52,7 +52,7 @@ BLEHIDKeyboard::BLEHIDKeyboard( BLEDevice &_ble) :
     // May need to add protocol characteristic for report protocol
 }
 
-void BLEHIDKeyboard::sendScanCode(uint8_t c, uint8_t modifiers) {
+void BLEKeyboardService::sendScanCode(uint8_t c, uint8_t modifiers) {
   memset(keyboardReport, 0, sizeof(keyboardReport));
 
   if(c) {
@@ -62,12 +62,12 @@ void BLEHIDKeyboard::sendScanCode(uint8_t c, uint8_t modifiers) {
   notifyChrValue( mbbs_cIdxReport, (uint8_t *)keyboardReport, sizeof(keyboardReport)); 
 }
 
-void BLEHIDKeyboard::sendSimultaneousKeys(char *str, int len) {
+void BLEKeyboardService::sendSimultaneousKeys(char *str, int len) {
   uint8_t modifiers = 0;
   memset(keyboardReport, 0, sizeof(keyboardReport));
   int idx = 2;  // Report index
   // Process the string / build the report
-  for(unsigned i=0; i<len && idx<sizeof(keyboardReport); i++) {
+  for(int i=0; i<len && idx<sizeof(keyboardReport); i++) {
     char c = str[i];
     // Check for modifiers
     if(c>=1 && c<=8) {
@@ -90,7 +90,7 @@ void BLEHIDKeyboard::sendSimultaneousKeys(char *str, int len) {
 }
 
 
-void BLEHIDKeyboard::sendString(char *str, int len) {
+void BLEKeyboardService::sendString(char *str, int len) {
         uint8_t lastCode = 0;
         // Iterate over keys and send them
         DEBUG("Keys: ");

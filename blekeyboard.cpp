@@ -22,11 +22,11 @@
 #include "ble_conn_params.h"
 #include "ble_dis.h"
 
-#include "BLEHIDKeyboard.h"
+#include "BLEKeyboardService.h"
 #include "debug.h"
 
 
-static BLEHIDKeyboard *hids = NULL;
+static BLEKeyboardService *hids = NULL;
 
 using namespace pxt;
 
@@ -35,7 +35,7 @@ namespace blekeyboard {
     //%
     void startKeyboardService() {
         if(hids == NULL) {
-            hids = new ::BLEHIDKeyboard(*uBit.ble);
+            hids = new ::BLEKeyboardService(*uBit.ble);
        }
     }
 

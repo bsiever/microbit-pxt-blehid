@@ -7,7 +7,7 @@
 
 #include "HIDService.h"
 
-class  BLEHIDKeyboard : public HIDService {
+class  BLEKeyboardService : public HIDService {
     public:
 
     /**
@@ -15,7 +15,7 @@ class  BLEHIDKeyboard : public HIDService {
      * Create a representation of the Bluetooth SIG Keyboard Service
      * @param _ble The instance of a BLE device that we're running on.
      */
-    BLEHIDKeyboard( BLEDevice &_ble);
+    BLEKeyboardService( BLEDevice &_ble);
     void sendScanCode(uint8_t c, uint8_t modifiers);
     void sendString(char *str, int len);
     void sendSimultaneousKeys(char *str, int len);

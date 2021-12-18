@@ -19,8 +19,8 @@
         "ascii2scan.h", 
         "blekeyboard.ts", 
         "blekeyboard.cpp",
-        "BLEHIDKeyboard.cpp",
-        "BLEHIDKeyboard.h"
+        "BLEKeyboardService.cpp",
+        "BLEKeyboardService.h"
     ],
     "testFiles": [
         "test.ts"
