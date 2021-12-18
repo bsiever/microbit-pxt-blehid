@@ -278,7 +278,7 @@ void HIDService::debugAttribute(int handle) {
           typeName = "UNKNOWN";
       }
       if(index<0 || index>2) index = 3;
-      char const *charNames[] = {"Info", "Map", "Report", "Invalid"};
+      char const *charNames[] = {"Protocol", "Info", "Map", "Report", "Invalid"};
       DEBUG("     %s %s\n", charNames[index], typeName);
 }
 #endif

@@ -25,6 +25,5 @@ class  BLEKeyboardService : public HIDService {
 
 };
 
-
 #endif
 #endif 

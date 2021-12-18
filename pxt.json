@@ -20,7 +20,11 @@
         "blekeyboard.ts", 
         "blekeyboard.cpp",
         "BLEKeyboardService.cpp",
-        "BLEKeyboardService.h"
+        "BLEKeyboardService.h", 
+        "blemouse.ts", 
+        "blemouse.cpp",
+        "BLEMouseService.cpp",
+        "BLEMouseService.h"
     ],
     "testFiles": [
         "test.ts"
