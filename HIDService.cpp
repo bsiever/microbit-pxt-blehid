@@ -71,7 +71,9 @@ HIDService::HIDService( BLEDevice &_ble,
     // Register the base UUID and create the service.
     bs_uuid_type = BLE_UUID_TYPE_BLE;  // Set the UUID type to 0x01, which should be Bluetooth SIG ID
     CreateService( hidService );
+
     // Create the data structures that represent each of our characteristics in Soft Device.
+    // iOS needs protocol mode characteristic for keyboard support
     CreateCharacteristic( mbbs_cIdxProtocolMode, charUUID[ mbbs_cIdxProtocolMode ],
                         (uint8_t *)&protocolMode,
                         sizeof(protocolMode), sizeof(protocolMode),
