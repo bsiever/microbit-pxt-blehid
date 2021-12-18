@@ -34,14 +34,9 @@ const uint16_t HIDService::charUUID[mbbs_cIdxCOUNT] = {
 
 const int HIDService::EVT_STATUS = 1;
 
-uint16_t HIDService::HIDInfo[2] = { 
-  0x0111,
-  0x0002
-};
 
 
 const uint16_t HIDService::hidService = 0x1812; 
-uint8_t HIDService::protocolMode = 0x01;
 
 
 /**
@@ -62,11 +57,21 @@ HIDService::HIDService( BLEDevice &_ble,
   className(_className),
 
   statusChangeHandler(NULL), 
-  enabled(false)
+  enabled(false), 
+  protocolMode(0x01)
 {
     DEBUG("Serv %s starting\n", className);
     // Update advertisements 
     advertiseHID();
+// uint16_t HIDService::HIDInfo[2] = { 
+//   0x0111,
+//   0x0002
+// };
+// uint8_t HIDService::protocolMode = 0x01;
+  HIDInfo[0] = 0x0111;
+  HIDInfo[1] = 0x0002;
+
+
 
     // Register the base UUID and create the service.
     bs_uuid_type = BLE_UUID_TYPE_BLE;  // Set the UUID type to 0x01, which should be Bluetooth SIG ID
@@ -98,7 +103,6 @@ HIDService::HIDService( BLEDevice &_ble,
   // Must have report discriptor for OS detection
   // NOTE: Assuming INPUT reports
    addReportDescriptor(charHandles( mbbs_cIdxReport)->value, 0, 1 /* Input report */);
-
 }
 
 

@@ -20,23 +20,23 @@
 // bluetooth.startLEDService()
 
 // serial.writeLine("Calling Adv...")
-// blekeyboard.startKeyboardService()
+blekeyboard.startKeyboardService()
 // serial.writeLine("Done...")
 
-// input.onButtonPressed(Button.A, function () {
-//     serial.writeLine("Button A\n")
-//     // All printable ASCII characters...
-//     blekeyboard.sendString(" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~");
-// })
+input.onButtonPressed(Button.A, function () {
+    serial.writeLine("Button A\n")
+    // All printable ASCII characters...
+    blekeyboard.sendString(" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~");
+})
 
-// blekeyboard.setStatusChangeHandler(function () {
-//     serial.writeLine("---Status Change---")
-//     if (blekeyboard.isEnabled()) {
-//         led.plot(0, 0)
-//     } else {
-//         led.unplot(0, 0)
-//     }
-// })
+blekeyboard.setStatusChangeHandler(function () {
+    serial.writeLine("---Status Change---")
+    if (blekeyboard.isEnabled()) {
+        led.plot(0, 0)
+    } else {
+        led.unplot(0, 0)
+    }
+})
 
 // input.onButtonPressed(Button.B, function () {
 //     serial.writeLine("Button B\n")
@@ -94,7 +94,7 @@ serial.writeLine("Calling Adv...")
 blemouse.startMouseService()
 serial.writeLine("Done...")
 
-input.onButtonPressed(Button.A, function () {
+input.onButtonPressed(Button.B, function () {
     serial.writeLine("Button A\n")
     // All printable ASCII characters...
     blemouse.send();

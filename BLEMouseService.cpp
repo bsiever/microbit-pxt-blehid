@@ -52,7 +52,7 @@ BLEMouseService::BLEMouseService( BLEDevice &_ble) :
 }
 
 void BLEMouseService::send() {
-  DEBUG("Sedning Mouse Report\n");
+  DEBUG("Sending Mouse Report\n");
   memset(mouseReport, 0, sizeof(mouseReport));
   mouseReport[0] = 0;
   mouseReport[1] =  64;// x

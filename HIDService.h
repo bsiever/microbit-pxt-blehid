@@ -100,11 +100,11 @@ class HIDService : public MicroBitBLEService
     void debugAttribute(int index); 
 
     // Can't be const (?)
-    static  uint16_t HIDInfo[2];
     static const uint16_t hidService;
 
     static const int EVT_STATUS;
-    static uint8_t   protocolMode;  // 0=>Boot Protocol; 1=>Report
+    uint8_t   protocolMode;  // 0=>Boot Protocol; 1=>Report
+    uint16_t HIDInfo[2];
 
     // Service data (managed by this class)
     bool enabled;
