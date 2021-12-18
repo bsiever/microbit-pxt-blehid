@@ -99,7 +99,9 @@ class HIDService : public MicroBitBLEService
     // Debugging: Print the attribute / info.
     void debugAttribute(int index); 
 
-    static const uint16_t HIDInfo[2];
+    // Can't be const (?)
+    static  uint16_t HIDInfo[2];
+    static const uint16_t hidService;
 
     static const int EVT_STATUS;
     static uint8_t   protocolMode;  // 0=>Boot Protocol; 1=>Report
