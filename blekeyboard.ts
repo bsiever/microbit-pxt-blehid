@@ -28,11 +28,11 @@ class Key {
 }
 
 //% color=#0000FF 
-//% icon="\uf007"
-//% block="HID"
+//% icon="\uf293"
+//% block="Keyboard"
 namespace blekeyboard {
 
-    //% blockId="advertise" block="bluetooth HID service"
+    //% blockId="advertise" block="bluetooth keyboard service"
     //% shim=blekeyboard::startKeyboardService
     //% weight=50
     export function startKeyboardService() : void {
@@ -44,7 +44,7 @@ namespace blekeyboard {
     export function sendString(keys: string) : void {
     }
 
-    //% blockID="on status change" block="on HID status change" advanced=true
+    //% blockID="on status change" block="on keyboard status change" advanced=true
     //% shim=blekeyboard::setStatusChangeHandler 
     //% weight=20
     export function setStatusChangeHandler(a: Action) {
