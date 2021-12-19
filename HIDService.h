@@ -68,6 +68,8 @@ class HIDService : public MicroBitBLEService
         mbbs_cIdxHIDInfo,
         mbbs_cIdxReportMap,
         mbbs_cIdxReport,
+        mbbs_cIdxReport2,
+        mbbs_cIdxReport3,
         mbbs_cIdxCOUNT
     } mbbs_cIdx;
 

@@ -5,6 +5,9 @@
 #include "BLEKeyboardService.h"
 #include "ascii2scan.h"
 
+// NOTES: iOS: Works when padding byte is first and modifiers are in position 0 (and 1) ???
+
+
 const int SHIFT_MASK =  0x02;
 
  // Copied from https://docs.silabs.com/bluetooth/2.13/code-examples/applications/ble-hid-keyboard
@@ -14,6 +17,12 @@ static uint8_t keyboardReportMap[] =
 0x05, 0x01, //	Usage Page (Generic Desktop)
 0x09, 0x06, //	Usage (Keyboard)
 0xa1, 0x01, //	Collection (Application)
+
+0x95, 0x01, //	Report Count (1)
+0x75, 0x08, //	Report Size (8)
+0x81, 0x01, //	Input (Constant) Reserved byte
+
+
 0x05, 0x07, //	Usage Page (Keyboard)
 0x19, 0xe0, //	Usage Minimum (Keyboard LeftControl)
 0x29, 0xe7, //	Usage Maximum (Keyboard Right GUI)
@@ -23,9 +32,6 @@ static uint8_t keyboardReportMap[] =
 0x95, 0x08, //	Report Count (8) = Above codes are bit mapped to the first byte
 0x81, 0x02, //	Input (Data, Variable, Absolute) Modifier byte
 
-0x95, 0x01, //	Report Count (1)
-0x75, 0x08, //	Report Size (8)
-0x81, 0x01, //	Input (Constant) Reserved byte
 
 0x95, 0x06, //	Report Count (6)
 0x75, 0x08, //	Report Size (8)
@@ -50,14 +56,16 @@ BLEKeyboardService::BLEKeyboardService( BLEDevice &_ble) :
 {
     // Done
     // May need to add protocol characteristic for report protocol
+    DEBUG("Constructor Body\n");
 }
 
 void BLEKeyboardService::sendScanCode(uint8_t c, uint8_t modifiers) {
   memset(keyboardReport, 0, sizeof(keyboardReport));
 
   if(c) {
-    keyboardReport[0] = modifiers;
-    keyboardReport[2] = c;  //b
+    keyboardReport[0] = modifiers; // iOS hack
+    keyboardReport[1] = modifiers; // Invalid char / ignored in iOS
+    keyboardReport[2] = c;
   }
   notifyChrValue( mbbs_cIdxReport, (uint8_t *)keyboardReport, sizeof(keyboardReport)); 
 }
@@ -85,7 +93,8 @@ void BLEKeyboardService::sendSimultaneousKeys(char *str, int len) {
       keyboardReport[idx++] = full & 0xFF;
     }
   }
-  keyboardReport[0] = modifiers;
+  keyboardReport[0] = modifiers;  // iOS Hack
+  keyboardReport[1] = modifiers;  // Invalid char / ignored in iOS
   notifyChrValue( mbbs_cIdxReport, (uint8_t *)keyboardReport, sizeof(keyboardReport)); 
 }
 

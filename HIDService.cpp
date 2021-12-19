@@ -30,6 +30,8 @@ const uint16_t HIDService::charUUID[mbbs_cIdxCOUNT] = {
   0x2A4A,  //  HIDInfo
   0x2A4B,  //  Report Map
   0x2A4D,  //  Report 
+  0x2A4D,  //  Report 
+  0x2A4D,  //  Report 
 };
 
 const int HIDService::EVT_STATUS = 1;
@@ -90,16 +92,21 @@ HIDService::HIDService( BLEDevice &_ble,
                         microbit_propREAD  | microbit_propREADAUTH);
 
     memset(report, 0, reportSize);
-    CreateCharacteristic( mbbs_cIdxReport, charUUID[ mbbs_cIdxReport ],
-                        (uint8_t *)report,
-                        reportSize, reportSize,
-                        microbit_propREAD  | microbit_propNOTIFY | microbit_propREADAUTH);
-
-  // Must have report discriptor for OS detection
-  // NOTE: Assuming INPUT reports
-   addReportDescriptor(charHandles( mbbs_cIdxReport)->value, 0, 1 /* Input report */);
+    for(int i=mbbs_cIdxReport; i<mbbs_cIdxCOUNT;i++) {
+      DEBUG("Adding %d\n", i);
+      CreateCharacteristic(i, charUUID[i],
+                          (uint8_t *)report,
+                          1, reportSize,
+                          microbit_propREAD  | microbit_propNOTIFY | microbit_propREADAUTH);
+report = new uint8_t[reportSize]; // Testing non-overlappint buffers
+      // Must have report discriptor for OS detection
+      // NOTE: Assuming INPUT reports
+      addReportDescriptor(charHandles(i)->value, i-mbbs_cIdxReport, 1 /* Input report */);
+    }
+    DEBUG("Done with HID service construction\n");
 }
 
+//  !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
 
 /**
   * Invoked when BLE connects.
@@ -276,9 +283,16 @@ void HIDService::debugAttribute(int handle) {
         default:
           typeName = "UNKNOWN";
       }
-      if(index<0 || index>2) index = 3;
+      if(index<0 || index>=mbbs_cIdxCOUNT) index = 4;
       char const *charNames[] = {"Protocol", "Info", "Map", "Report", "Invalid"};
-      DEBUG("     %s %s\n", charNames[index], typeName);
+      if(index>=mbbs_cIdxReport && index<mbbs_cIdxCOUNT) 
+      {
+          int report = index-mbbs_cIdxReport;
+          index=3;
+          DEBUG("     %s %s (%d)\n", charNames[index], typeName, report);
+      } else {
+        DEBUG("     %s %s\n", charNames[index], typeName);
+      }
 }
 #endif
 
