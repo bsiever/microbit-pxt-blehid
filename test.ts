@@ -117,16 +117,16 @@ blemouse.startMouseService()
 basic.forever(function () {
     mx = 0
     x = input.acceleration(Dimension.X)
-    if(x<-400) {
+    if(x<-300) {
         mx = Math.map(x, -1023, -400, -127, 0)
-    } else if(x>400) {
+    } else if(x>300) {
         mx = Math.map(x, 400, 1023, 0, 127)
     }
     my = 0
     y = input.acceleration(Dimension.Y)
-    if(y<-400) {
+    if(y<-300) {
         my = Math.map(y, -1023, -400, -127, 0)
-    } else if(y>400) {
+    } else if(y>300) {
         my = Math.map(y, 400, 1023, 0, 127)
     }
 
