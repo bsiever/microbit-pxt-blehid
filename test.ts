@@ -108,3 +108,38 @@ blemouse.setStatusChangeHandler(function () {
     }
 })
 
+let y = 0
+let my = 0
+let x = 0
+let mx = 0
+basic.showIcon(IconNames.Heart)
+blemouse.startMouseService()
+basic.forever(function () {
+    mx = 0
+    x = input.acceleration(Dimension.X)
+    if(x<-400) {
+        mx = Math.map(x, -1023, -400, -127, 0)
+    } else if(x>400) {
+        mx = Math.map(x, 400, 1023, 0, 127)
+    }
+    my = 0
+    y = input.acceleration(Dimension.Y)
+    if(y<-400) {
+        my = Math.map(y, -1023, -400, -127, 0)
+    } else if(y>400) {
+        my = Math.map(y, 400, 1023, 0, 127)
+    }
+
+    serial.writeValue("mx", mx)
+    serial.writeValue("my", my)
+    blemouse.send(
+        mx,
+        my,
+        input.buttonIsPressed(Button.A),
+        input.buttonIsPressed(Button.B),
+        false,
+        0, 
+        true
+        )
+
+})

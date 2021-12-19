@@ -20,9 +20,9 @@ namespace blemouse {
     function _send(x: number, y: number, scroll: number, buttons: number) : void { 
     }
 
-    //% blockId="send mouse" block="send mouse motion|change x by $x|change y by $y|left pressed $left||middle pressed $middle|right pressed $right|change scroll by $scroll|hold buttons $holdButtons" 
+    //% blockId="send mouse" block="send mouse motion|change x by $x|change y by $y|left pressed $left||middle pressed $middle|right pressed $right|change scroll by $scroll|hold buttons $hold" 
     //% x.min=-127 x.max=127 y.min=-127 y.max=127 scroll.min=-127 scroll.max=127
-    //% holdButtons.default=false left.default=false middle.default=false right.default=false
+    //% hold.default=false left.default=false middle.default=false right.default=false
     //% blockExternalInputs=true
     //% expandableArgumentMode="toggle"
     //% weight=40
