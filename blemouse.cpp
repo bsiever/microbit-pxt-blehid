@@ -28,6 +28,10 @@
 
 static BLEMouseService *hids = NULL;
 
+static int constrain(int in, int min, int max) {
+    return (in<min)?min:(in>max?max:in);
+}
+
 using namespace pxt;
 
 namespace blemouse { 
@@ -40,9 +44,15 @@ namespace blemouse {
     }
 
     //% 
-    void send() {
+    void send(int dx, int dy, int scroll, int buttons) {
         if(!hids) return;
-        hids->send();
+        dx = constrain(dx,-127, 127);
+        dy = constrain(dy,-127, 127);
+        scroll = constrain(scroll,-127, 127);
+        
+        hids->send(dx, dy, buttons&0x1, buttons&0x2, buttons&0x4, scroll);
+        if(!(buttons&0x8)) 
+            hids->send(0,0,false, false, false, 0);
     }
 
     //%

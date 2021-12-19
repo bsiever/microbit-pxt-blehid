@@ -16,8 +16,7 @@ class  BLEMouseService : public HIDService {
      * @param _ble The instance of a BLE device that we're running on.
      */
     BLEMouseService( BLEDevice &_ble);
-    void send();
+    void send(uint8_t dx, uint8_t dy, bool left, bool middle, bool right, uint8_t dscroll);
 };
-
 #endif
 #endif 

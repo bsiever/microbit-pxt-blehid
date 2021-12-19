@@ -16,10 +16,18 @@ namespace blemouse {
     export function startMouseService() : void {
     }
 
-    //% blockId="send string" block="send keys | $keys" 
     //% shim=blemouse::send
+    function _send(x: number, y: number, scroll: number, buttons: number) : void { 
+    }
+
+    //% blockId="send mouse" block="send mouse motion|change x by $x|change y by $y|left pressed $left||middle pressed $middle|right pressed $right|change scroll by $scroll|hold buttons $holdButtons" 
+    //% x.min=-127 x.max=127 y.min=-127 y.max=127 scroll.min=-127 scoll.max=127
+    //% holdButtons.default=false left.default=false middle.default=false right.default=false
+    //% blockExternalInputs=true
+    //% expandableArgumentMode="toggle"
     //% weight=40
-    export function send() : void {
+    export function send(x: number, y: number, left: boolean, middle: boolean, right: boolean, scroll: number, hold: boolean) : void { 
+        _send(x,y,scroll, (left?0x1:0)|(middle?0x2:0)|(right?0x4:0)|(hold?0x8:0)  )
     }
 
     //% blockID="mouse on status change" block="on mouse status change" advanced=true

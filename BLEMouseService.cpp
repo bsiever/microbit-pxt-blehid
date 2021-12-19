@@ -48,15 +48,15 @@ BLEMouseService::BLEMouseService( BLEDevice &_ble) :
     ) 
 {
     // Done
-    // May need to add protocol characteristic for report protocol
 }
 
-void BLEMouseService::send() {
+void BLEMouseService::send(uint8_t dx, uint8_t dy, bool left, bool middle, bool right, uint8_t dscroll) {
   DEBUG("Sending Mouse Report\n");
   memset(mouseReport, 0, sizeof(mouseReport));
-  mouseReport[0] = 0;
-  mouseReport[1] =  64;// x
-  mouseReport[2] = 0; // y
+  mouseReport[0] = (left?0x1:0) | (middle?0x2:0) | (right?0x4:0);
+  mouseReport[1] = dx;
+  mouseReport[2] = dy; 
+  mouseReport[3] = dscroll;
   notifyChrValue( mbbs_cIdxReport, (uint8_t *)mouseReport, sizeof(mouseReport)); 
 }
 
