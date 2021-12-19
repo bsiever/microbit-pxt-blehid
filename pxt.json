@@ -1,6 +1,6 @@
 {
     "name": "microbit-pxt-blehid",
-    "version": "0.0.0",
+    "version": "0.0.1",
     "description": "BLE HID Support",
     "license": "MIT",
     "dependencies": {
@@ -16,12 +16,12 @@
         "enums.d.ts",
         "main.py",
         "ascii2scan.cpp",
-        "ascii2scan.h", 
-        "blekeyboard.ts", 
+        "ascii2scan.h",
+        "blekeyboard.ts",
         "blekeyboard.cpp",
         "BLEKeyboardService.cpp",
-        "BLEKeyboardService.h", 
-        "blemouse.ts", 
+        "BLEKeyboardService.h",
+        "blemouse.ts",
         "blemouse.cpp",
         "BLEMouseService.cpp",
         "BLEMouseService.h"
