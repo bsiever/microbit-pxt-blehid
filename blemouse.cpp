@@ -44,7 +44,7 @@ namespace blemouse {
     }
 
     //% 
-    void send(int dx, int dy, int scroll, int buttons) {
+    void _send(int dx, int dy, int scroll, int buttons) {
         if(!hids) return;
         dx = constrain(dx,-127, 127);
         dy = constrain(dy,-127, 127);
