@@ -89,6 +89,7 @@ namespace keyboard {
     export function modifiers(key : _Modifier) : string {
         let mods = [
             Modifier.control,
+            Modifier.shift,
             Modifier.alt,
             Modifier.option,
             Modifier.apple,

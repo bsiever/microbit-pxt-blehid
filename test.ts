@@ -41,16 +41,16 @@ keyboard.setStatusChangeHandler(function () {
     }
 })
 
-// input.onButtonPressed(Button.B, function () {
-//     serial.writeLine("Button B\n")
-//     for(let i = keyboard._Key.enter; i<=keyboard._Key.vol_down; i++) {
-//         keyboard.sendString(keyboard.keys(i))
-//     }
+input.onButtonPressed(Button.B, function () {
+    serial.writeLine("Button B\n")
+    for(let i = keyboard._Key.enter; i<=keyboard._Key.vol_down; i++) {
+        keyboard.sendString(keyboard.keys(i))
+    }
     
-//     for(let i = keyboard._Modifier.control; i<=keyboard._Modifier.rightWindows; i++) {
-//         keyboard.sendString(keyboard.modifiers(i)+"a")
-//     }
-// })
+    for(let i = keyboard._Modifier.control; i<=keyboard._Modifier.rightWindows; i++) {
+        keyboard.sendString(keyboard.modifiers(i)+"a")
+    }
+})
 
 input.onButtonPressed(Button.AB, function () {
     serial.writeLine("Button AB\n")
@@ -58,8 +58,6 @@ input.onButtonPressed(Button.AB, function () {
     keyboard.sendString(keyboard.rawScancode(0x1b))
 
     keyboard.sendSimultaneousKeys(
-                // blehid.modifiers(Modifier.control)+
-                // blehid.modifiers(Modifier.alt)+
                 Modifier.control+Modifier.alt+
                 "ac"+
                 Key.enter,     
@@ -93,24 +91,24 @@ input.onButtonPressed(Button.AB, function () {
 // bluetooth.startUartService()
 // bluetooth.startLEDService()
 
-serial.writeLine("Calling Adv...")
-mouse.startMouseService()
-serial.writeLine("Done...")
+// serial.writeLine("Calling Adv...")
+// mouse.startMouseService()
+// serial.writeLine("Done...")
 
-input.onButtonPressed(Button.B, function () {
-    serial.writeLine("Button B\n")
-    mouse.send(75, 0, false, false, false, 0, false);
-})
+// input.onButtonPressed(Button.B, function () {
+//     serial.writeLine("Button B\n")
+//     mouse.send(75, 0, false, false, false, 0, false);
+// })
 
-mouse.setStatusChangeHandler(function () {
-    serial.writeLine("---Mouse Status Change---")
-    if (mouse.isEnabled()) {
-        serial.writeLine("Enabled")
-        led.plot(1, 0)
-    } else {
-        led.unplot(1, 0)
-    }
-})
+// mouse.setStatusChangeHandler(function () {
+//     serial.writeLine("---Mouse Status Change---")
+//     if (mouse.isEnabled()) {
+//         serial.writeLine("Enabled")
+//         led.plot(1, 0)
+//     } else {
+//         led.unplot(1, 0)
+//     }
+// })
 
 // let y = 0
 // let my = 0
