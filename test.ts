@@ -14,56 +14,88 @@ bluetooth.onBluetoothConnected(function () {
 bluetooth.onBluetoothDisconnected(function () {
     basic.showIcon(IconNames.No)
 })
+
+basic.showIcon(IconNames.Yes)
+
+
+
+
+
+
+
+
 bluetooth.onUartDataReceived(serial.delimiters(Delimiters.NewLine), function () {
     serial.writeLine(bluetooth.uartReadUntil(serial.delimiters(Delimiters.NewLine)))
 })
-basic.showIcon(IconNames.Yes)
 bluetooth.startUartService()
 bluetooth.startLEDService()
 
-serial.writeLine("Calling Adv...")
-keyboard.startKeyboardService()
 
-serial.writeLine("Done...")
+media.startMediaService()
 input.onButtonPressed(Button.A, function () {
     serial.writeLine("Button A\n")
-    // All printable ASCII characters...
-    keyboard.sendString(" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~");
+    media.sendCode(MediaKey.playPause)
 })
 
-keyboard.setStatusChangeHandler(function () {
-    serial.writeLine("---Keyboard Status Change---")
-    if (keyboard.isEnabled()) {
+media.setStatusChangeHandler(function () {
+    serial.writeLine("---Media Status Change---")
+    if (media.isEnabled()) {
         serial.writeLine("Enabled")
-        led.plot(0, 0)
+        led.plot(2, 0)
     } else {
-        led.unplot(0, 0)
+        led.unplot(2, 0)
     }
 })
 
-input.onButtonPressed(Button.B, function () {
-    serial.writeLine("Button B\n")
-    for(let i = keyboard._Key.enter; i<=keyboard._Key.vol_down; i++) {
-        keyboard.sendString(keyboard.keys(i))
-    }
+
+// serial.writeLine("Calling Adv...")
+// keyboard.startKeyboardService()
+
+// serial.writeLine("Done...")
+// input.onButtonPressed(Button.A, function () {
+//     serial.writeLine("Button A\n")
+//     // All printable ASCII characters...
+//     keyboard.sendString(" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~");
+// })
+
+// keyboard.setStatusChangeHandler(function () {
+//     serial.writeLine("---Keyboard Status Change---")
+//     if (keyboard.isEnabled()) {
+//         serial.writeLine("Enabled")
+//         led.plot(0, 0)
+//     } else {
+//         led.unplot(0, 0)
+//     }
+// })
+
+// input.onButtonPressed(Button.B, function () {
+//     serial.writeLine("Button B\n")
+//     for(let i = keyboard._Key.enter; i<=keyboard._Key.vol_down; i++) {
+//         keyboard.sendString(keyboard.keys(i))
+//     }
     
-    for(let i = keyboard._Modifier.control; i<=keyboard._Modifier.rightWindows; i++) {
-        keyboard.sendString(keyboard.modifiers(i)+"a")
-    }
-})
+//     for(let i = keyboard._Modifier.control; i<=keyboard._Modifier.rightWindows; i++) {
+//         keyboard.sendString(keyboard.modifiers(i)+"a")
+//     }
+// })
 
-input.onButtonPressed(Button.AB, function () {
-    serial.writeLine("Button AB\n")
-    // // Print an "x" = 0x1b
-    keyboard.sendString(keyboard.rawScancode(0x1b))
+// input.onButtonPressed(Button.AB, function () {
+//     serial.writeLine("Button AB\n")
+//     // // Print an "x" = 0x1b
+//     keyboard.sendString(keyboard.rawScancode(0x1b))
 
-    keyboard.sendSimultaneousKeys(
-                Modifier.control+Modifier.alt+
-                "ac"+
-                Key.enter,     
-            false)
+//     keyboard.sendSimultaneousKeys(
+//                 Modifier.control+Modifier.alt+
+//                 "ac"+
+//                 Key.enter,     
+//             false)
 
-})
+// })
+
+
+
+
+
 
 
 

@@ -14,13 +14,6 @@
 #include "pxt.h"
 #include "MicroBit.h"
 
-#include "ble.h"
-#include "ble_hci.h"
-#include "ble_srv_common.h"
-#include "ble_advdata.h"
-#include "ble_conn_params.h"
-#include "ble_dis.h"
-
 #include "KeyboardReporter.h"
 #include "debug.h"
 

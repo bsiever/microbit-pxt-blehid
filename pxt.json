@@ -26,7 +26,11 @@
         "mouse.ts",
         "mouse.cpp",
         "MouseReporter.cpp",
-        "MouseReporter.h"
+        "MouseReporter.h",
+        "media.ts",
+        "media.cpp",
+        "MediaReporter.cpp",
+        "MediaReporter.h"
     ],
     "testFiles": [
         "test.ts"

@@ -71,8 +71,8 @@ void KeyboardReporter::sendScanCode(uint8_t c, uint8_t modifiers) {
   memset(report, 0, reportSize);
   DEBUG("Sending report id %d\n", reportID);
   if(c) {
-    report[0] = modifiers; // iOS hack
-    report[1] = modifiers; // Invalid char / ignored in iOS
+    report[0] = modifiers; 
+    report[1] = modifiers; 
     report[3] = c;
   }
   sendReport();

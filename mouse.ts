@@ -1,9 +1,3 @@
-// Buttons Modifiers
-class MouseButton {
-    static readonly left = "\x01"
-    static readonly right =  "\x02"
-    static readonly middle =  "\x02"
-}
 
 //% color=#0000FF 
 //% icon="\uf245"
@@ -45,13 +39,12 @@ namespace mouse {
         _send(0, 0, 0, 0x4);  
     }
 
-    //% blockId="scroll mouse" block="scroll up|by $scroll"
+    //% blockId="scroll mouse" block="scroll up |by $scroll"
     //% scroll.min=-127 scroll.max=127
     //% weight=5
     export function scroll(scroll: number) : void { 
         _send(0, 0, scroll, 0);  
     }
-
 
     //% blockId="send mouse" block="send mouse motion|change x by $x|change y by $y|left pressed $left|middle pressed $middle|right pressed $right|change scroll by $scroll|hold buttons $hold" advanced=true
     //% x.min=-127 x.max=127 y.min=-127 y.max=127 scroll.min=-127 scroll.max=127

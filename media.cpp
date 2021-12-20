@@ -14,41 +14,32 @@
 #include "pxt.h"
 #include "MicroBit.h"
 
-#include "MouseReporter.h"
+#include "MediaReporter.h"
 #include "debug.h"
 
+static MediaReporter *reporter = NULL;
 
-static MouseReporter *reporter = NULL;
+using namespace pxt;
 
-static int constrain(int in, int min, int max) {
-    return (in<min)?min:(in>max?max:in);
-}
-
-using namespace pxt; 
-
-namespace mouse { 
+namespace media { 
 
     //%
-    void startMouseService() {
+    void startMediaService() {
         if(reporter == NULL) {
-            reporter = MouseReporter::getInstance();
-        }
+            reporter = MediaReporter::getInstance();
+       } 
     }
 
     //% 
-    void _send(int dx, int dy, int scroll, int buttons) {
+    void sendCode(uint8_t number) {
         if(!reporter) return;
-        dx = constrain(dx,-127, 127);
-        dy = constrain(dy,-127, 127);
-        scroll = constrain(scroll,-127, 127);
-        
-        reporter->send(dx, dy, buttons&0x1, buttons&0x2, buttons&0x4, scroll);
-        if(!(buttons&0x8)) 
-            reporter->send(0,0,false, false, false, 0);
+        reporter->sendCode(number);
+        reporter->sendCode(0);
     }
 
     //%
     bool isEnabled() {
+        DEBUG("Media isEnabled\n");
         return reporter ? reporter->isEnabled() : false;
     }
 
@@ -57,5 +48,4 @@ namespace mouse {
         if(!reporter) return;
         reporter->setStatusChangeHandler(action);
     }
-
   }
