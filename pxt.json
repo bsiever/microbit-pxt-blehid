@@ -22,7 +22,11 @@
         "keyboard.ts",
         "keyboard.cpp",
         "KeyboardReporter.cpp",
-        "KeyboardReporter.h"
+        "KeyboardReporter.h",
+        "mouse.ts",
+        "mouse.cpp",
+        "MouseReporter.cpp",
+        "MouseReporter.h"
     ],
     "testFiles": [
         "test.ts"

@@ -6,19 +6,21 @@
 #include "HIDService.h"
 
 
-HIDReporter::HIDReporter(const char *_name, const int _reportSize, const uint8_t *_reportMap, const int _reportMapSize, int _eventID) :
-    name(_name), 
+HIDReporter::HIDReporter(const char *_name, const int _reportSize, const uint8_t *_reportMap, const int _reportMapSize, int _reportIDOffset, int _eventID) :
+    name(_name),  
     enabled(false), 
     reportSize(_reportSize), 
     reportMap(_reportMap), 
     reportMapSize(_reportMapSize), 
+    reportIDOffset(_reportIDOffset),
     eventID(_eventID)
 
 {
+    DEBUG("Name %s ReportSize %d\n", name, reportMapSize);
     // Get the instance of the HID service
     HIDService *hidService = HIDService::getInstance();
     // Add this object
-    reportIndex = hidService->addReporter(this);
+    hidService->addReporter(this);
     report = hidService->getReportBuffer(reportIndex);
 }
 

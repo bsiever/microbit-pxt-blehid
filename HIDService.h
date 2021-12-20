@@ -14,7 +14,7 @@
 
 
 const int numReportsMax = 4;
-const int reportMapMaxSize = 100;
+const int reportMapMaxSize = 150;
 const int reportMaxSize = 10; 
 
 
@@ -101,7 +101,7 @@ class HIDService : public MicroBitBLEService
     HIDReporter *reporters[numReportsMax];
     unsigned    numReporters; 
 
-    unsigned addReporter(HIDReporter *reporter);
+    void addReporter(HIDReporter *reporter);
     uint8_t *getReportBuffer(int index) { return &(reports[reportMaxSize*index]); }
 
     void addReportDescriptor(uint16_t value_handle, uint8_t reportID, uint8_t reportTypeD);

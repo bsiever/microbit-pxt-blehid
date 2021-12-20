@@ -22,50 +22,48 @@
 #include "ble_conn_params.h"
 #include "ble_dis.h"
 
-#include "BLEMouseService.h"
+#include "MouseReporter.h"
 #include "debug.h"
 
 
-static BLEMouseService *hids = NULL;
+static MouseReporter *reporter = NULL;
 
 static int constrain(int in, int min, int max) {
     return (in<min)?min:(in>max?max:in);
 }
 
-using namespace pxt;
+using namespace pxt; 
 
-namespace blemouse { 
+namespace mouse { 
 
     //%
     void startMouseService() {
-        if(hids == NULL) {
-            hids = new ::BLEMouseService(*uBit.ble);
-       }
+        if(reporter == NULL) {
+            reporter = MouseReporter::getInstance();
+        }
     }
 
     //% 
     void _send(int dx, int dy, int scroll, int buttons) {
-        if(!hids) return;
+        if(!reporter) return;
         dx = constrain(dx,-127, 127);
         dy = constrain(dy,-127, 127);
         scroll = constrain(scroll,-127, 127);
         
-        hids->send(dx, dy, buttons&0x1, buttons&0x2, buttons&0x4, scroll);
+        reporter->send(dx, dy, buttons&0x1, buttons&0x2, buttons&0x4, scroll);
         if(!(buttons&0x8)) 
-            hids->send(0,0,false, false, false, 0);
+            reporter->send(0,0,false, false, false, 0);
     }
 
     //%
     bool isEnabled() {
-        DEBUG("blemouse isEnabled\n");
-        return hids ? hids->isEnabled() : false;
+        return reporter ? reporter->isEnabled() : false;
     }
 
     //% 
     void setStatusChangeHandler(Action action) {
-        DEBUG("blemouse Setting Status Changed Handler\n");
-        if(!hids) return;
-        hids->setStatusChangeHandler(action);
+        if(!reporter) return;
+        reporter->setStatusChangeHandler(action);
     }
 
   }

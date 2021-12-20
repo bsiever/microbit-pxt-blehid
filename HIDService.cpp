@@ -41,7 +41,6 @@ const uint16_t HIDService::charUUID[mbbs_cIdxCOUNT] = {
   0x2A4D,  //  Report 1
   0x2A4D,  //  Report 2
   0x2A4D,  //  Report 3
-
 };
 
 uint16_t HIDService::HIDInfo[2] = { 
@@ -65,7 +64,7 @@ HIDService *HIDService::getInstance()
     return service;
 }
 
-/**
+/** 
  * Constructor.
  * Create a representation of the Bluetooth SIG Battery Service
  * @param _ble The instance of a BLE device that we're running on.
@@ -107,44 +106,41 @@ HIDService::HIDService() :
 
     memset(reports, 0, numReportsMax*reportMaxSize);
     for(int i=mbbs_cIdxReport1, idx=0; i<mbbs_cIdxCOUNT;i++, idx++) {
-      DEBUG("Adding %d\n", i);
       CreateCharacteristic(i, charUUID[i],
                           &reports[reportMaxSize*idx],
                           0, reportMaxSize,
                           microbit_propREAD  | microbit_propNOTIFY | microbit_propREADAUTH);
       // Must have report discriptor for OS detection
       // NOTE: Assuming INPUT reports
-      addReportDescriptor(charHandles(i)->value, i-mbbs_cIdxReport1, 1 /* Input report */);
-    }
-    DEBUG("Done with HID service construction\n");
+      // Report indices are 1-based and in order of addition
+      addReportDescriptor(charHandles(i)->value, i-mbbs_cIdxReport1+1, 1 /* Input report */);
+    } 
 }
 
-unsigned HIDService::addReporter(HIDReporter *reporter) {
+void HIDService::addReporter(HIDReporter *reporter) {
   // See if there's room for another
-  DEBUG("HID Adding reporter %s\n", reporter->name);
   uint16_t mapSize = reporter->reportMapSize;
-  DEBUG("Map Size: %d\n", mapSize);
-  if(numReporters>=numReportsMax || reportMapUsed+mapSize>=reportMapMaxSize) {
+  DEBUG("HID Adding reporter %s (%d)\n", reporter->name, mapSize);
+  if(numReporters>=numReportsMax || reportMapUsed+mapSize+2>=reportMapMaxSize) {
     // TO DO: Throw exception / halt REVIEW
     DEBUG("ERROR: No more space for reports");
-    target_panic(PANIC_INVALID_ARGUMENT);
+    target_panic(PANIC_INVALID_ARGUMENT); 
   }
 
-  DEBUG("Copying at %d and size %d\n", reportMapUsed, mapSize);
+  // Update reporter data for reporting...
+  reporter->reportID = numReporters+1;
+  reporter->reportIndex = numReporters+mbbs_cIdxReport1;
+
+  // Add the Report Map
   memcpy(reportMap+reportMapUsed, reporter->reportMap, mapSize);
+  reportMap[reportMapUsed+reporter->reportIDOffset] = reporter->reportID;
   reportMapUsed += mapSize;
-  // And update the characteristic
-  //setChrValue(mbbs_cIdxReportMap, reportMap, reportMapUsed);
+
+  DEBUG("char index %d   report id %d\n", reporter->reportIndex, reporter->reportID);
 
   // Update the list of reporters
-  unsigned thisReporter = numReporters;
-  reporters[thisReporter] = reporter;
-  numReporters++;
-  // Return index of this reporter
-  return thisReporter+mbbs_cIdxReport1;
+  reporters[numReporters++] = reporter;
 }
-
-
 
 /**
   * Invoked when BLE connects.
@@ -170,12 +166,11 @@ void HIDService::onDataRead( microbit_onDataRead_t *params) {
       debugAttribute(params->handle);
       microbit_charattr_t type;
       int index = charHandleToIdx(params->handle, &type);
-    int offset = params->offset;
-    if(index == mbbs_cIdxReportMap && type == microbit_charattrVALUE) {
-      DEBUG("Reading Report Map offset %d\n", offset);
-      params->data = &(reportMap[offset]);
-      params->length = max(reportMapUsed-offset,0);  // Remaining data
-    }
+      int offset = params->offset;
+      if(index == mbbs_cIdxReportMap && type == microbit_charattrVALUE) {
+        params->data = &(reportMap[offset]);
+        params->length = max(reportMapUsed-offset,0);  // Remaining data
+      }
 
 }
 

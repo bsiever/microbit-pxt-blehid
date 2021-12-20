@@ -17,6 +17,8 @@ static const uint8_t keyboardReportMap[] =
   0x05, 0x01, //	Usage Page (Generic Desktop)
   0x09, 0x06, //	Usage (Keyboard)
   0xa1, 0x01, //	Collection (Application)
+  0x85, 0x00,   // Report ID OFFSET: 7
+
 
   0x95, 0x01, //	Report Count (1)
   0x75, 0x08, //	Report Size (8)
@@ -60,18 +62,18 @@ KeyboardReporter *KeyboardReporter::getInstance()
 }
 
 KeyboardReporter::KeyboardReporter() : 
-    HIDReporter("Keyboard", 8, keyboardReportMap, sizeof(keyboardReportMap), 106)  // Name and report size
+    HIDReporter("Keyboard", 8, keyboardReportMap, sizeof(keyboardReportMap), 7, 106)  // Name and report size
 {
     DEBUG("Keyboard Constructor Body\n");
-}
+} 
 
 void KeyboardReporter::sendScanCode(uint8_t c, uint8_t modifiers) {
   memset(report, 0, reportSize);
-
+  DEBUG("Sending report id %d\n", reportID);
   if(c) {
     report[0] = modifiers; // iOS hack
     report[1] = modifiers; // Invalid char / ignored in iOS
-    report[2] = c;
+    report[3] = c;
   }
   sendReport();
 }

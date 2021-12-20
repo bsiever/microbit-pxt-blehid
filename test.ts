@@ -38,16 +38,16 @@ keyboard.setStatusChangeHandler(function () {
     }
 })
 
-input.onButtonPressed(Button.B, function () {
-    serial.writeLine("Button B\n")
-    for(let i = keyboard._Key.enter; i<=keyboard._Key.vol_down; i++) {
-        keyboard.sendString(keyboard.keys(i))
-    }
+// input.onButtonPressed(Button.B, function () {
+//     serial.writeLine("Button B\n")
+//     for(let i = keyboard._Key.enter; i<=keyboard._Key.vol_down; i++) {
+//         keyboard.sendString(keyboard.keys(i))
+//     }
     
-    for(let i = keyboard._Modifier.control; i<=keyboard._Modifier.rightWindows; i++) {
-        keyboard.sendString(keyboard.modifiers(i)+"a")
-    }
-})
+//     for(let i = keyboard._Modifier.control; i<=keyboard._Modifier.rightWindows; i++) {
+//         keyboard.sendString(keyboard.modifiers(i)+"a")
+//     }
+// })
 
 input.onButtonPressed(Button.AB, function () {
     serial.writeLine("Button AB\n")
@@ -90,23 +90,23 @@ input.onButtonPressed(Button.AB, function () {
 // bluetooth.startUartService()
 // bluetooth.startLEDService()
 
-// serial.writeLine("Calling Adv...")
-// blemouse.startMouseService()
-// serial.writeLine("Done...")
+serial.writeLine("Calling Adv...")
+mouse.startMouseService()
+serial.writeLine("Done...")
 
-// input.onButtonPressed(Button.A, function () {
-//     serial.writeLine("Button A\n")
-//     blemouse.send(75, 0, false, false, false, 0, false);
-// })
+input.onButtonPressed(Button.B, function () {
+    serial.writeLine("Button B\n")
+    mouse.send(75, 0, false, false, false, 0, false);
+})
 
-// blemouse.setStatusChangeHandler(function () {
-//     serial.writeLine("---Status Change---")
-//     if (blemouse.isEnabled()) {
-//         led.plot(1, 0)
-//     } else {
-//         led.unplot(1, 0)
-//     }
-// })
+mouse.setStatusChangeHandler(function () {
+    serial.writeLine("---Status Change---")
+    if (mouse.isEnabled()) {
+        led.plot(1, 0)
+    } else {
+        led.unplot(1, 0)
+    }
+})
 
 // let y = 0
 // let my = 0

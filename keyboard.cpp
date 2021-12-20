@@ -34,7 +34,7 @@ namespace keyboard {
     void startKeyboardService() {
         if(reporter == NULL) {
             reporter = KeyboardReporter::getInstance();
-       }
+       } 
     }
 
     //% 
@@ -45,13 +45,12 @@ namespace keyboard {
 
     //%
     bool isEnabled() {
-        DEBUG("Keyboard isEnabled in kbd\n");
+        DEBUG("Keyboard isEnabled\n");
         return reporter ? reporter->isEnabled() : false;
     }
 
     //% 
     void setStatusChangeHandler(Action action) {
-        DEBUG("Keyboard Setting Status Changed Handler\n");
         if(!reporter) return;
         reporter->setStatusChangeHandler(action);
     }
