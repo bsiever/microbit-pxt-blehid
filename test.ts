@@ -1,6 +1,8 @@
 serial.writeLine("starting...")
 
 bluetooth.onBluetoothConnected(function () {
+    serial.writeLine("connected")
+
     basic.showLeds(`
         . . . . .
         . . . . .
@@ -30,8 +32,9 @@ input.onButtonPressed(Button.A, function () {
 })
 
 keyboard.setStatusChangeHandler(function () {
-    serial.writeLine("---Status Change---")
+    serial.writeLine("---Keyboard Status Change---")
     if (keyboard.isEnabled()) {
+        serial.writeLine("Enabled")
         led.plot(0, 0)
     } else {
         led.unplot(0, 0)
@@ -100,8 +103,9 @@ input.onButtonPressed(Button.B, function () {
 })
 
 mouse.setStatusChangeHandler(function () {
-    serial.writeLine("---Status Change---")
+    serial.writeLine("---Mouse Status Change---")
     if (mouse.isEnabled()) {
+        serial.writeLine("Enabled")
         led.plot(1, 0)
     } else {
         led.unplot(1, 0)
