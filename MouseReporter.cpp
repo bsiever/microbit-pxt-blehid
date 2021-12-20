@@ -63,7 +63,7 @@ MouseReporter::MouseReporter() :
 void MouseReporter::send(uint8_t dx, uint8_t dy, bool left, bool middle, bool right, uint8_t dscroll) {
   DEBUG("Sending Mouse Report\n");
   memset(report, 0, reportSize);
-  report[0] = (left?0x1:0) | (middle?0x2:0) | (right?0x4:0);
+  report[0] = (left?0x1:0) | (right?0x2:0) | (middle?0x4:0);
   report[1] = dx;
   report[2] = dy; 
   report[3] = dscroll;
