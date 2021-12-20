@@ -5,14 +5,14 @@
 #include "MouseReporter.h"
 
 // Report Map from Nordic SDK Example (app_usbd_hid_mouse_desc.h SDK 17.1.0)
-static uint8_t mouseReportMap[] =
+static const uint8_t mouseReportMap[] =
 {
     0x05, 0x01,       /* Usage Page (Generic Desktop),       */     \
     0x09, 0x02,       /* Usage (Mouse),                      */     \
     0xA1, 0x01,       /*  Collection (Application),          */     \
     0x09, 0x01,       /*   Usage (Pointer),                  */     \
     0xA1, 0x00,       /*  Collection (Physical),             */     \
-0x85, 0x00,   // Report ID: Offset 11
+    0x85, 0x00,   // Report ID: Offset 11
 
     0x05, 0x09,       /*     Usage Page (Buttons),           */     \
     0x19, 0x01,       /*     Usage Minimum (01),             */     \
