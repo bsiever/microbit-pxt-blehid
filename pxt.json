@@ -11,20 +11,18 @@
         "README.md",
         "HIDService.cpp",
         "HIDService.h",
+        "HIDReporter.cpp",
+        "HIDReporter.h",
         "debug.h",
         "shims.d.ts",
         "enums.d.ts",
         "main.py",
         "ascii2scan.cpp",
         "ascii2scan.h",
-        "blekeyboard.ts",
-        "blekeyboard.cpp",
-        "BLEKeyboardService.cpp",
-        "BLEKeyboardService.h",
-        "blemouse.ts",
-        "blemouse.cpp",
-        "BLEMouseService.cpp",
-        "BLEMouseService.h"
+        "keyboard.ts",
+        "keyboard.cpp",
+        "KeyboardReporter.cpp",
+        "KeyboardReporter.h"
     ],
     "testFiles": [
         "test.ts"

@@ -30,33 +30,32 @@ class Key {
 //% color=#0000FF 
 //% icon="\uf11c"
 //% block="Keyboard"
-namespace blekeyboard {
+namespace keyboard {
 
     //% blockId="keyboard service" block="bluetooth keyboard service"
-    //% shim=blekeyboard::startKeyboardService
+    //% shim=keyboard::startKeyboardService
     //% weight=50
     export function startKeyboardService() : void {
     }
 
     //% blockId="send string" block="send keys | $keys" 
-    //% shim=blekeyboard::sendString
+    //% shim=keyboard::sendString
     //% weight=40
     export function sendString(keys: string) : void {
     }
 
     //% blockID="keyboard on status change" block="on keyboard status change" advanced=true
-    //% shim=blekeyboard::setStatusChangeHandler 
+    //% shim=keyboard::setStatusChangeHandler 
     //% weight=20
     export function setStatusChangeHandler(a: Action) {
     }
 
     //% blockId="keyboard enabled" block="keyboard enabled" advanced=true
-    //% shim=blekeyboard::isEnabled
+    //% shim=keyboard::isEnabled
     //% weight=10
      export function isEnabled() : boolean {
         return false;
     }
-
 
     export enum _Modifier {
         //% block="control+"
@@ -106,8 +105,6 @@ namespace blekeyboard {
         return ""
     }
 
-
-
     export enum _Key {
         enter,
         escape,
@@ -122,7 +119,6 @@ namespace blekeyboard {
         //% block="volume down"
         vol_down,
     }
-
 
     //% blockId="key_conv" block="%key"
     //% weight=20
@@ -152,15 +148,14 @@ namespace blekeyboard {
     }
 
     //% blockId="send simultaneous keys" block="send simultaneous keys $keys || hold keys $hold" advanced=true
-    //% shim=blekeyboard::sendSimultaneousKeys
+    //% shim=keyboard::sendSimultaneousKeys
     //% weight=50
     export function sendSimultaneousKeys(keys: string, hold: boolean) : void {
     }
 
     //% blockId="release keys" block="release keys" advanced=true
-    //% shim=blekeyboard::releaseKeys
+    //% shim=keyboard::releaseKeys
     //% weight=40
     export function releaseKeys() : void {
     }
-
 }

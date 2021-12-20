@@ -10,23 +10,34 @@
 #include "EventModel.h"
 #include "debug.h"
 
+#include "HIDReporter.h"
+
+
+const int numReportsMax = 4;
+const int reportMapMaxSize = 100;
+const int reportMaxSize = 10; 
+
+
 
 /**
   * Class definition for a MicroBit BLE HID Service.
   */
 class HIDService : public MicroBitBLEService
 {
-    protected:
+
+    private:
+    static HIDService *service; // Singleton
+    friend class HIDReporter;
+
+    static HIDService *getInstance();
+    int addHIDReporter(HIDReporter& reporter);
+
     /**
      * Constructor.
      * Create a representation of the Bluetooth SIG HID Service
      * @param _ble The instance of a BLE device that we're running on.
      */
-    HIDService( BLEDevice &_ble, 
-                uint8_t *_reportMap, int _reportMapSize, 
-                uint8_t *_report,    int _reportSize, 
-                int _EVT_ID,
-                const char *className) ;
+    HIDService();
 
     /**
       * Invoked when BLE connects.
@@ -48,72 +59,59 @@ class HIDService : public MicroBitBLEService
      */
     void onDataRead( microbit_onDataRead_t *params);
 
-    /*
-    */
-    void setEnabled(bool status);
-
-
-    // Actual service data (must be initialized by subclasses)
-    // Things to initialize in the constructor
-    const uint8_t *reportMap;
-    const int reportMapSize;
-    uint8_t *report;
-    const int reportSize;
-
-
     // Index for each characteristic in arrays of handles and UUIDs
     typedef enum mbbs_cIdx
     {
         mbbs_cIdxProtocolMode,
         mbbs_cIdxHIDInfo,
         mbbs_cIdxReportMap,
-        mbbs_cIdxReport,
+        mbbs_cIdxReport1,
         mbbs_cIdxReport2,
         mbbs_cIdxReport3,
+        mbbs_cIdxReport4,  // NOTE: Adding Reports requires updating chars array in HIDService.cpp
+                           //       and const numReports to be changed
         mbbs_cIdxCOUNT
     } mbbs_cIdx;
+
+    // Service UUID
+    static const uint16_t hidService;
 
     // UUIDs for our service and characteristics
     static const uint16_t charUUID[mbbs_cIdxCOUNT];
     
-    const int EVT_ID;
-    // Data for each characteristic when they are held by Soft Device.
-    MicroBitBLEChar      chars[ mbbs_cIdxCOUNT];
+    static const int EVT_STATUS;
 
+    // Data for each characteristic when they are held by Soft Device.
+    MicroBitBLEChar      chars[mbbs_cIdxCOUNT];
 
     int              characteristicCount()          { return mbbs_cIdxCOUNT; };
-    MicroBitBLEChar *characteristicPtr( int idx)    { return &chars[ idx]; };
-    Action statusChangeHandler;
+    MicroBitBLEChar *characteristicPtr(int idx)     { return &chars[ idx]; };
 
-    public:
+    // HID Info characteristic
+    // Can't be const 
+    static uint16_t HIDInfo[2];
 
-    bool isEnabled() { return enabled; }
-    /*
-    */
-    void setStatusChangeHandler(Action action);
+    uint8_t protocolMode;  // 0=>Boot Protocol; 1=>Report; Always 1 
 
+    // Actual service data 
+    uint8_t reportMap[reportMapMaxSize];
+    unsigned reportMapUsed;
 
-  private:
-      /*
-    */
+    uint8_t   reports[numReportsMax*reportMaxSize];
+    HIDReporter *reporters[numReportsMax];
+    unsigned    numReporters; 
+
+    unsigned addReporter(HIDReporter *reporter);
+    uint8_t *getReportBuffer(int index) { return &(reports[reportMaxSize*index]); }
+
     void addReportDescriptor(uint16_t value_handle, uint8_t reportID, uint8_t reportTypeD);
 
     // Debugging: Print the attribute / info.
     void debugAttribute(int index); 
 
-    // Can't be const 
-    static  uint16_t HIDInfo[2];
-    static const uint16_t hidService;
-
-    static const int EVT_STATUS;
-    static uint8_t   protocolMode;  // 0=>Boot Protocol; 1=>Report
-
-    // Service data (managed by this class)
-    bool enabled;
-
-    static bool advertisingInitialized;
-    const char *className;
     void advertiseHID();
+
+
 
 };
 

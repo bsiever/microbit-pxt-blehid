@@ -22,51 +22,64 @@
 
 using namespace pxt;
 
-bool HIDService::advertisingInitialized = false;
+// Initialize static members
 
+const uint16_t HIDService::hidService = 0x1812; 
 
 const uint16_t HIDService::charUUID[mbbs_cIdxCOUNT] = { 
+  // 0x8A4E,  //  ProtocolMode
+  // 0x8A4A,  //  HIDInfo
+  // 0x8A4B,  //  Report Map
+  // 0x8A4D,  //  Report 0
+  // 0x8A4D,  //  Report 1
+  // 0x8A4D,  //  Report 2
+  // 0x8A4D,  //  Report 3
   0x2A4E,  //  ProtocolMode
   0x2A4A,  //  HIDInfo
   0x2A4B,  //  Report Map
-  0x2A4D,  //  Report 
-  0x2A4D,  //  Report 
-  0x2A4D,  //  Report 
-};
+  0x2A4D,  //  Report 0
+  0x2A4D,  //  Report 1
+  0x2A4D,  //  Report 2
+  0x2A4D,  //  Report 3
 
-const int HIDService::EVT_STATUS = 1;
+};
 
 uint16_t HIDService::HIDInfo[2] = { 
   0x0111,
   0x0002
 };
 
+const int HIDService::EVT_STATUS = 1;  // Event for connect / disconnect
 
-const uint16_t HIDService::hidService = 0x1812; 
-uint8_t HIDService::protocolMode = 0x01;
 
+HIDService *HIDService::service = NULL; // Singleton reference to the service
+
+/**
+ */
+HIDService *HIDService::getInstance()
+{
+    if (service == NULL)
+    {
+        service = new HIDService();
+    }
+    return service;
+}
 
 /**
  * Constructor.
  * Create a representation of the Bluetooth SIG Battery Service
  * @param _ble The instance of a BLE device that we're running on.
  */
-HIDService::HIDService( BLEDevice &_ble, 
-                uint8_t *_reportMap, int _reportMapSize, 
-                uint8_t *_report,    int _reportSize, 
-                int _EVT_ID,
-                const char *_className) :
-  reportMap(_reportMap), 
-  reportMapSize(_reportMapSize),
-  report(_report), 
-  reportSize(_reportSize),
-  EVT_ID(_EVT_ID),
-  className(_className),
+HIDService::HIDService() :
+  protocolMode(0x01),  // Report Protocol
+  numReporters(0), 
+  reportMapUsed(0)
 
-  statusChangeHandler(NULL), 
-  enabled(false)
 {
-    DEBUG("Serv %s starting\n", className);
+  // Initialize all report data 
+    memset(reporters, 0, sizeof(HIDReporter*)*numReportsMax);
+
+    DEBUG("HID Serv starting\n");
     // Update advertisements 
     advertiseHID();
 
@@ -86,34 +99,59 @@ HIDService::HIDService( BLEDevice &_ble,
                         sizeof(HIDInfo), sizeof(HIDInfo),
                         microbit_propREAD );
  
+    memset(reportMap, 0, reportMapMaxSize);
     CreateCharacteristic( mbbs_cIdxReportMap, charUUID[ mbbs_cIdxReportMap ],
                         (uint8_t *)reportMap,
-                        reportMapSize, reportMapSize,
-                        microbit_propREAD  | microbit_propREADAUTH);
+                        0, reportMapMaxSize,
+                        microbit_propREAD | microbit_propREADAUTH );
 
-    memset(report, 0, reportSize);
-    for(int i=mbbs_cIdxReport; i<mbbs_cIdxCOUNT;i++) {
+    memset(reports, 0, numReportsMax*reportMaxSize);
+    for(int i=mbbs_cIdxReport1, idx=0; i<mbbs_cIdxCOUNT;i++, idx++) {
       DEBUG("Adding %d\n", i);
       CreateCharacteristic(i, charUUID[i],
-                          (uint8_t *)report,
-                          1, reportSize,
+                          &reports[reportMaxSize*idx],
+                          0, reportMaxSize,
                           microbit_propREAD  | microbit_propNOTIFY | microbit_propREADAUTH);
-report = new uint8_t[reportSize]; // Testing non-overlappint buffers
       // Must have report discriptor for OS detection
       // NOTE: Assuming INPUT reports
-      addReportDescriptor(charHandles(i)->value, i-mbbs_cIdxReport, 1 /* Input report */);
+      addReportDescriptor(charHandles(i)->value, i-mbbs_cIdxReport1, 1 /* Input report */);
     }
     DEBUG("Done with HID service construction\n");
 }
 
-//  !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
+unsigned HIDService::addReporter(HIDReporter *reporter) {
+  // See if there's room for another
+  DEBUG("HID Adding reporter %s\n", reporter->name);
+  uint16_t mapSize = reporter->reportMapSize;
+  DEBUG("Map Size: %d\n", mapSize);
+  if(numReporters>=numReportsMax || reportMapUsed+mapSize>=reportMapMaxSize) {
+    // TO DO: Throw exception / halt REVIEW
+    DEBUG("ERROR: No more space for reports");
+    target_panic(PANIC_INVALID_ARGUMENT);
+  }
+
+  DEBUG("Copying at %d and size %d\n", reportMapUsed, mapSize);
+  memcpy(reportMap+reportMapUsed, reporter->reportMap, mapSize);
+  reportMapUsed += mapSize;
+  // And update the characteristic
+  //setChrValue(mbbs_cIdxReportMap, reportMap, reportMapUsed);
+
+  // Update the list of reporters
+  unsigned thisReporter = numReporters;
+  reporters[thisReporter] = reporter;
+  numReporters++;
+  // Return index of this reporter
+  return thisReporter+mbbs_cIdxReport1;
+}
+
+
 
 /**
   * Invoked when BLE connects.
   */
 void HIDService::onConnect( const microbit_ble_evt_t *p_ble_evt)
 {
-    DEBUG("%s onConnect\n", className);
+    DEBUG("HID onConnect\n");
 }
 
 /**
@@ -121,13 +159,24 @@ void HIDService::onConnect( const microbit_ble_evt_t *p_ble_evt)
   */
 void HIDService::onDisconnect( const microbit_ble_evt_t *p_ble_evt)
 {
-    DEBUG("%s onDisconnect\n", className);
-    setEnabled(false);
+    DEBUG("HID onDisconnect\n");
+    for(int i=0;i<numReporters;i++) {
+      reporters[i]->setEnabled(false);
+    }
 }
 
 void HIDService::onDataRead( microbit_onDataRead_t *params) {
-      DEBUG("%s onDataRead\n", className);
+      DEBUG("HID onDataRead\n");
       debugAttribute(params->handle);
+      microbit_charattr_t type;
+      int index = charHandleToIdx(params->handle, &type);
+    int offset = params->offset;
+    if(index == mbbs_cIdxReportMap && type == microbit_charattrVALUE) {
+      DEBUG("Reading Report Map offset %d\n", offset);
+      params->data = &(reportMap[offset]);
+      params->length = max(reportMapUsed-offset,0);  // Remaining data
+    }
+
 }
 
 /**
@@ -135,31 +184,21 @@ void HIDService::onDataRead( microbit_onDataRead_t *params) {
   */
 void HIDService::onDataWritten( const microbit_ble_evt_write_t *params)
 {
-    DEBUG("%s onDataWritten\n", className);
+    DEBUG("HID onDataWritten\n");
     debugAttribute(params->handle);
 
     microbit_charattr_t type;
     int index = charHandleToIdx(params->handle, &type);
 
-    if(index == mbbs_cIdxReport && type == microbit_charattrCCCD) {
-      DEBUG("%s Report CCCD Changed\n", className);
-        bool status = params->len>0 && params->data[0] ? true : false;
-        if(status!=enabled) {
-          setEnabled(status);
-        }
+    if(index>=mbbs_cIdxReport1 && index<=mbbs_cIdxCOUNT && type == microbit_charattrCCCD) {
+      DEBUG("HID Report CCCD Changed\n");
+      bool status = params->len>0 && params->data[0] ? true : false;
+      int reporterIdx = index-mbbs_cIdxReport1;
+      HIDReporter *theReporter = reporters[reporterIdx];
+      if(theReporter!=NULL) {
+        theReporter->setEnabled(status);
+      }
   } 
-}
-
-void HIDService::setEnabled(bool status) {
-  DEBUG("%s Setting Enabled %d;  id %d\n", className, status, EVT_ID);
-  enabled = status;
-  // Wrong EVT_ID ????
-  MicroBitEvent(EVT_ID, EVT_STATUS);
-}
-
-void HIDService::setStatusChangeHandler(Action action) {
-  DEBUG("%s Setting Status Handler for %d and status id %d\n", className, EVT_ID, EVT_STATUS);
-  registerWithDal(EVT_ID, EVT_STATUS, action);
 }
 
 /**
@@ -201,12 +240,7 @@ void HIDService::addReportDescriptor(uint16_t value_handle, uint8_t reportID, ui
                                   &reportCCCDHandle); 
 }
 
-
 void HIDService::advertiseHID() {
-        // Only initialize once
-        if(advertisingInitialized) return;
-        advertisingInitialized = true;
-
         // Stop any active advertising
         uBit.bleManager.stopAdvertising();
 
@@ -285,11 +319,16 @@ void HIDService::debugAttribute(int handle) {
       }
       if(index<0 || index>=mbbs_cIdxCOUNT) index = 4;
       char const *charNames[] = {"Protocol", "Info", "Map", "Report", "Invalid"};
-      if(index>=mbbs_cIdxReport && index<mbbs_cIdxCOUNT) 
+      if(index>=mbbs_cIdxReport1 && index<mbbs_cIdxCOUNT) 
       {
-          int report = index-mbbs_cIdxReport;
+          int report = index-mbbs_cIdxReport1;
           index=3;
-          DEBUG("     %s %s (%d)\n", charNames[index], typeName, report);
+          // TODO: Add in reporter name
+          if(reporters[report]) {
+            DEBUG("     %s %s (%d : %s)\n", charNames[index], typeName, report, reporters[report]->name);
+          } else {
+            DEBUG("     %s %s (%d) (BAD INDEX)\n", charNames[index], typeName, report);
+          }
       } else {
         DEBUG("     %s %s\n", charNames[index], typeName);
       }

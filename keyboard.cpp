@@ -14,7 +14,6 @@
 #include "pxt.h"
 #include "MicroBit.h"
 
-
 #include "ble.h"
 #include "ble_hci.h"
 #include "ble_srv_common.h"
@@ -22,57 +21,54 @@
 #include "ble_conn_params.h"
 #include "ble_dis.h"
 
-#include "BLEKeyboardService.h"
+#include "KeyboardReporter.h"
 #include "debug.h"
 
-
-static BLEKeyboardService *hids = NULL;
+static KeyboardReporter *reporter = NULL;
 
 using namespace pxt;
 
-namespace blekeyboard { 
+namespace keyboard { 
 
     //%
     void startKeyboardService() {
-        if(hids == NULL) {
-            hids = new ::BLEKeyboardService(*uBit.ble);
+        if(reporter == NULL) {
+            reporter = KeyboardReporter::getInstance();
        }
     }
 
     //% 
     void sendString(String keys) {
-        if(!hids) return;
-        hids->sendString(keys->ascii.data, keys->ascii.length);
+        if(!reporter) return;
+        reporter->sendString(keys->ascii.data, keys->ascii.length);
     }
 
     //%
     bool isEnabled() {
-        DEBUG("blekeyboard isEnabled in kbd\n");
-        return hids ? hids->isEnabled() : false;
+        DEBUG("Keyboard isEnabled in kbd\n");
+        return reporter ? reporter->isEnabled() : false;
     }
 
     //% 
     void setStatusChangeHandler(Action action) {
-        DEBUG("blekeyboard Setting Status Changed Handler\n");
-        if(!hids) return;
-        hids->setStatusChangeHandler(action);
+        DEBUG("Keyboard Setting Status Changed Handler\n");
+        if(!reporter) return;
+        reporter->setStatusChangeHandler(action);
     }
-
 
     //% 
     void sendSimultaneousKeys(String keys, bool hold) {
-        if(!hids) return;
+        if(!reporter) return;
 
-        hids->sendSimultaneousKeys(keys->ascii.data, keys->ascii.length);
+        reporter->sendSimultaneousKeys(keys->ascii.data, keys->ascii.length);
         if(!hold) {
-            hids->sendScanCode(0,0);
+            reporter->sendScanCode(0,0);
         }
     }
 
     //% 
     void releaseKeys() {
-        if(!hids) return;
-        hids->sendScanCode(0,0);
+        if(!reporter) return;
+        reporter->sendScanCode(0,0);
     }
-
   }

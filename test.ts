@@ -20,18 +20,18 @@ bluetooth.startUartService()
 bluetooth.startLEDService()
 
 serial.writeLine("Calling Adv...")
-blekeyboard.startKeyboardService()
+keyboard.startKeyboardService()
 
 serial.writeLine("Done...")
 input.onButtonPressed(Button.A, function () {
     serial.writeLine("Button A\n")
     // All printable ASCII characters...
-    blekeyboard.sendString(" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~");
+    keyboard.sendString(" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~");
 })
 
-blekeyboard.setStatusChangeHandler(function () {
+keyboard.setStatusChangeHandler(function () {
     serial.writeLine("---Status Change---")
-    if (blekeyboard.isEnabled()) {
+    if (keyboard.isEnabled()) {
         led.plot(0, 0)
     } else {
         led.unplot(0, 0)
@@ -40,21 +40,21 @@ blekeyboard.setStatusChangeHandler(function () {
 
 input.onButtonPressed(Button.B, function () {
     serial.writeLine("Button B\n")
-    for(let i = blekeyboard._Key.enter; i<=blekeyboard._Key.vol_down; i++) {
-        blekeyboard.sendString(blekeyboard.keys(i))
+    for(let i = keyboard._Key.enter; i<=keyboard._Key.vol_down; i++) {
+        keyboard.sendString(keyboard.keys(i))
     }
     
-    for(let i = blekeyboard._Modifier.control; i<=blekeyboard._Modifier.rightWindows; i++) {
-        blekeyboard.sendString(blekeyboard.modifiers(i)+"a")
+    for(let i = keyboard._Modifier.control; i<=keyboard._Modifier.rightWindows; i++) {
+        keyboard.sendString(keyboard.modifiers(i)+"a")
     }
 })
 
 input.onButtonPressed(Button.AB, function () {
     serial.writeLine("Button AB\n")
     // // Print an "x" = 0x1b
-    blekeyboard.sendString(blekeyboard.rawScancode(0x1b))
+    keyboard.sendString(keyboard.rawScancode(0x1b))
 
-    blekeyboard.sendSimultaneousKeys(
+    keyboard.sendSimultaneousKeys(
                 // blehid.modifiers(Modifier.control)+
                 // blehid.modifiers(Modifier.alt)+
                 Modifier.control+Modifier.alt+
