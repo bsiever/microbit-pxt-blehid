@@ -1,4 +1,20 @@
 
+
+# Keyboard
+
+## Complex Keys
+
+Join with text join
+# Mouse
+
+Mouse does stuff
+# Media
+
+Yeah...
+
+# Pairing and Programming Quirks
+
+
 # Supported Platforms and quirks
 
 * [Android BLE HID support list](https://github.com/raghavk92/Android_Bluetooth_HID_Device_Profile_CompatibilityList/blob/master/device_list.txt)
@@ -14,10 +30,29 @@ pins=github:bsiever/microbit-pxt-blehid
 
 
 
+# Cool Ideas
+
+## Accelerometer Mouse
+
+## Computer / Phone Media Remote
+
+## iOS Camera Release
+
+Trick: Use volume up/down
+
+## iOS Screen Keyboard
+
+Use the Media Eject
+
+# Limitations
+
+## iOS 
+
+* iOS doesn't support a mouse
+* iOS Doesn't honor media "Stop"
 
 
 
-This extension allows non-default pins to be used for the micro:bit's excernal I2C.
 # Setting the pins
 
 ```sig
