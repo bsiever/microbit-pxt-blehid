@@ -66,7 +66,7 @@ void AbsoluteMouseReporter::send(uint8_t x, uint8_t y, bool left, bool middle, b
   report[0] = (left?0x1:0) | (right?0x2:0) | (middle?0x4:0);
   report[1] = x;
   report[2] = y; 
-  report[3] = dscroll;
+  report[3] = dscroll; 
   sendReport();
 }
 

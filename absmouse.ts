@@ -39,7 +39,7 @@ namespace absmouse {
         _send(0, 0, 0, 0x4);  
     }
 
-    //% blockId="scroll absolute mouse" block="scroll up |by $scroll"
+    //% blockId="scroll absolute mouse" block="scroll absolute mouse up |by $scroll"
     //% scroll.min=-127 scroll.max=127
     //% weight=5
     export function scroll(scroll: number) : void { 
