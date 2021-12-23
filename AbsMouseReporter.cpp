@@ -28,11 +28,10 @@ static const uint8_t mouseReportMap[] =
     0x05, 0x01,       /*     Usage Page (Generic Desktop),   */     \
     0x09, 0x30,       /*     Usage (X),                      */     \
     0x09, 0x31,       /*     Usage (Y),                      */     \
-    0x09, 0x38,       /*     Usage (Scroll),                 */     \
     0x15, 0x81,       /*     Logical Minimum (-127),         */     \
     0x25, 0x7F,       /*     Logical Maximum (127),          */     \
     0x75, 0x08,       /*     Report Size (8),                */     \
-    0x95, 0x03,       /*     Report Count (3),               */     \
+    0x95, 0x03,       /*     Report Count (2),               */     \
     0x81, 0x02,       /*     Input (Data, Variable, Relative)*/     \
     0xC0,         /*  End Collection,                        */     \
     0xC0,         /* End Collection      */
@@ -54,19 +53,18 @@ AbsoluteMouseReporter *AbsoluteMouseReporter::getInstance()
 
 
 AbsoluteMouseReporter::AbsoluteMouseReporter() : 
-    HIDReporter("Absolute Mouse", 4, mouseReportMap, sizeof(mouseReportMap), 11, 109)  // Name and report size
+    HIDReporter("Absolute Mouse", 3, mouseReportMap, sizeof(mouseReportMap), 11, 109)  // Name and report size
 {
     // Done
     DEBUG("Done w/ AbsMouseReporter\n");
 }
 
-void AbsoluteMouseReporter::send(uint8_t x, uint8_t y, bool left, bool middle, bool right, uint8_t dscroll) {
+void AbsoluteMouseReporter::send(uint8_t x, uint8_t y, bool left, bool middle, bool right) {
   DEBUG("Sending Absolute Mouse Report\n");
   memset(report, 0, reportSize);
   report[0] = (left?0x1:0) | (right?0x2:0) | (middle?0x4:0);
   report[1] = x;
   report[2] = y; 
-  report[3] = dscroll; 
   sendReport();
 }
 

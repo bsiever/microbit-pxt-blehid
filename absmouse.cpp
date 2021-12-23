@@ -36,15 +36,14 @@ namespace absmouse {
     }
 
     //% 
-    void _send(int x, int y, int scroll, int buttons) {
+    void _send(int x, int y, int buttons) {
         if(!reporter) return;
         x = constrain(x,-127, 127);
         y = constrain(y,-127, 127);
-        scroll = constrain(scroll,-127, 127);
         
-        reporter->send(x, y, buttons&0x1, buttons&0x2, buttons&0x4, scroll);
+        reporter->send(x, y, buttons&0x1, buttons&0x2, buttons&0x4);
         if(!(buttons&0x8)) 
-            reporter->send(0,0,false, false, false, 0);
+            reporter->send(0,0,false, false, false);
     }
 
     //%
