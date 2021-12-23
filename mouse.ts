@@ -14,7 +14,7 @@ namespace mouse {
     function _send(x: number, y: number, scroll: number, buttons: number) : void { 
     }
 
-    //% blockId="move mouse xy" block="move mouse | x by $x| y by $y"
+    //% blockId="move mouse xy" block="move mouse | x by $x| and y by $y"
     //% x.min=-127 x.max=127 y.min=-127 y.max=127 scroll.min=-127 scroll.max=127
     //% weight=40
     export function movexy(x: number, y: number) : void { 
