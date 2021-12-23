@@ -7,7 +7,7 @@
 // Report Map from Nordic SDK Example (app_usbd_hid_mouse_desc.h SDK 17.1.0)
 static const uint8_t mouseReportMap[] =
 {
-    0x05, 0x01,       /* Usage Page (Generic Desktop),       */     \
+  0x05, 0x01,       /* Usage Page (Generic Desktop),       */     \
     0x09, 0x02,       /* Usage (Mouse),                      */     \
     0xA1, 0x01,       /*  Collection (Application),          */     \
     0x09, 0x01,       /*   Usage (Pointer),                  */     \
@@ -31,7 +31,7 @@ static const uint8_t mouseReportMap[] =
     0x15, 0x81,       /*     Logical Minimum (-127),         */     \
     0x25, 0x7F,       /*     Logical Maximum (127),          */     \
     0x75, 0x08,       /*     Report Size (8),                */     \
-    0x95, 0x03,       /*     Report Count (2),               */     \
+    0x95, 0x02,       /*     Report Count (2),               */     \
     0x81, 0x02,       /*     Input (Data, Variable, Relative)*/     \
     0xC0,         /*  End Collection,                        */     \
     0xC0,         /* End Collection      */
@@ -53,7 +53,7 @@ AbsoluteMouseReporter *AbsoluteMouseReporter::getInstance()
 
 
 AbsoluteMouseReporter::AbsoluteMouseReporter() : 
-    HIDReporter("Absolute Mouse", 3, mouseReportMap, sizeof(mouseReportMap), 11, 109)  // Name and report size
+    HIDReporter("Absolute Mouse", 3, mouseReportMap, sizeof(mouseReportMap), 11, 109) // Name and report size
 {
     // Done
     DEBUG("Done w/ AbsMouseReporter\n");

@@ -26,8 +26,7 @@ static int constrain(int in, int min, int max) {
 
 using namespace pxt; 
 
-namespace absmouse { 
-
+namespace absmouse {
     //%
     void startAbsoluteMouseService() {
         if(reporter == NULL) {
@@ -42,8 +41,9 @@ namespace absmouse {
         y = constrain(y,-127, 127);
         
         reporter->send(x, y, buttons&0x1, buttons&0x2, buttons&0x4);
+
         if(!(buttons&0x8)) 
-            reporter->send(0,0,false, false, false);
+            reporter->send(x,y,false, false, false);
     }
 
     //%

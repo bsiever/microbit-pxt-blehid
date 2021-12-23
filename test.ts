@@ -1,51 +1,79 @@
 serial.writeLine("starting...")
 
-bluetooth.onBluetoothConnected(function () {
-    serial.writeLine("connected")
 
-    basic.showLeds(`
-        . . . . .
-        . . . . .
-        . . # . #
-        . . # # #
-        . . . # .
-        `)
-})
-bluetooth.onBluetoothDisconnected(function () {
-    basic.showIcon(IconNames.No)
-})
-
-basic.showIcon(IconNames.Yes)
-
-
-
-
-
-
-
-
-bluetooth.onUartDataReceived(serial.delimiters(Delimiters.NewLine), function () {
-    serial.writeLine(bluetooth.uartReadUntil(serial.delimiters(Delimiters.NewLine)))
-})
-bluetooth.startUartService()
-bluetooth.startLEDService()
-
-
-media.startMediaService()
 input.onButtonPressed(Button.A, function () {
-    serial.writeLine("Button A\n")
-    media.sendCode(MediaKey.playPause)
+    absmouse.movexy(126, 126)
 })
 
-media.setStatusChangeHandler(function () {
-    serial.writeLine("---Media Status Change---")
-    if (media.isEnabled()) {
+input.onButtonPressed(Button.B, function () {
+    absmouse.movexy(-126, -126)
+})
+
+input.onButtonPressed(Button.AB, function () {
+    keyboard.sendString("Test")
+})
+keyboard.startKeyboardService()
+absmouse.startAbsoluteMouseService()
+
+
+
+absmouse.setStatusChangeHandler(function () {
+    serial.writeLine("---Abs Mouse Status Change---")
+    if (absmouse.isEnabled()) {
         serial.writeLine("Enabled")
-        led.plot(2, 0)
+        led.plot(0, 0)
     } else {
-        led.unplot(2, 0)
+        led.unplot(0, 0)
     }
 })
+
+
+// bluetooth.onBluetoothConnected(function () {
+//     serial.writeLine("connected")
+
+//     basic.showLeds(`
+//         . . . . .
+//         . . . . .
+//         . . # . #
+//         . . # # #
+//         . . . # .
+//         `)
+// })
+// bluetooth.onBluetoothDisconnected(function () {
+//     basic.showIcon(IconNames.No)
+// })
+
+// basic.showIcon(IconNames.Yes)
+
+
+
+
+
+
+
+
+// bluetooth.onUartDataReceived(serial.delimiters(Delimiters.NewLine), function () {
+//     serial.writeLine(bluetooth.uartReadUntil(serial.delimiters(Delimiters.NewLine)))
+// })
+// bluetooth.startUartService()
+// bluetooth.startLEDService()
+
+
+// media.startMediaService()
+// input.onButtonPressed(Button.A, function () {
+//     serial.writeLine("Button A\n")
+//     media.sendCode(MediaKey.playPause)
+// })
+
+// media.setStatusChangeHandler(function () {
+//     serial.writeLine("---Media Status Change---")
+//     if (media.isEnabled()) {
+//         serial.writeLine("Enabled")
+//         led.plot(2, 0)
+//     } else {
+//         led.unplot(2, 0)
+//     }
+// })
 
 
 // serial.writeLine("Calling Adv...")
