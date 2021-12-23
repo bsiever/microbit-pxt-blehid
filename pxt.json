@@ -30,7 +30,11 @@
         "media.ts",
         "media.cpp",
         "MediaReporter.cpp",
-        "MediaReporter.h"
+        "MediaReporter.h",
+        "absmouse.ts",
+        "absmouse.cpp",
+        "AbsMouseReporter.cpp",
+        "AbsMouseReporter.h"
     ],
     "testFiles": [
         "test.ts"
