@@ -23,6 +23,15 @@ using namespace pxt;
 
 namespace keyboard { 
 
+    bool isInitialized() {
+        if(reporter == NULL) {
+            uBit.display.scroll("Keyboard not started");
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     //%
     void startKeyboardService() {
         if(reporter == NULL) {
@@ -32,7 +41,7 @@ namespace keyboard {
 
     //% 
     void sendString(String keys) {
-        if(!reporter) return;
+        if(!isInitialized()) return;
         reporter->sendString(keys->ascii.data, keys->ascii.length);
     }
 
@@ -50,7 +59,7 @@ namespace keyboard {
 
     //% 
     void sendSimultaneousKeys(String keys, bool hold) {
-        if(!reporter) return;
+        if(!isInitialized()) return;
 
         reporter->sendSimultaneousKeys(keys->ascii.data, keys->ascii.length);
         if(!hold) {
@@ -60,7 +69,7 @@ namespace keyboard {
 
     //% 
     void releaseKeys() {
-        if(!reporter) return;
+        if(!isInitialized()) return;
         reporter->sendScanCode(0,0);
     }
   }

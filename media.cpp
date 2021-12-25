@@ -23,7 +23,15 @@ using namespace pxt;
 
 namespace media { 
 
-    //%
+    bool isInitialized() {
+        if(reporter == NULL) {
+            uBit.display.scroll("Media not started");
+            return false;
+        } else {
+            return true;
+        }
+    }
+        //%
     void startMediaService() {
         if(reporter == NULL) {
             reporter = MediaReporter::getInstance();
@@ -32,7 +40,7 @@ namespace media {
 
     //% 
     void sendCode(uint8_t number) {
-        if(!reporter) return;
+        if(!isInitialized()) return;
         reporter->sendCode(number);
         reporter->sendCode(0);
     }

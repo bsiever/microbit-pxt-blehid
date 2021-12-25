@@ -28,6 +28,15 @@ using namespace pxt;
 
 namespace mouse { 
 
+    bool isInitialized() {
+        if(reporter == NULL) {
+            uBit.display.scroll("Mouse not started");
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     //%
     void startMouseService() {
         if(reporter == NULL) {
@@ -37,7 +46,7 @@ namespace mouse {
 
     //% 
     void _send(int dx, int dy, int scroll, int buttons) {
-        if(!reporter) return;
+        if(!isInitialized()) return;
         dx = constrain(dx,-127, 127);
         dy = constrain(dy,-127, 127);
         scroll = constrain(scroll,-127, 127);
