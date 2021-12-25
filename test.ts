@@ -11,6 +11,7 @@ input.onButtonPressed(Button.B, function () {
 
 input.onButtonPressed(Button.AB, function () {
     keyboard.sendString("Test")
+    absmouse.movexy(1, 1)
 })
 keyboard.startKeyboardService()
 absmouse.startAbsoluteMouseService()
