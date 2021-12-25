@@ -15,7 +15,7 @@ namespace absmouse {
     }
 
     //% blockId="move absolute mouse xy" block="move absolute mouse | x to $x| and y to $y"
-    //% x.min=-127 x.max=127 y.min=-127 y.max=127
+    //% x.min=-32767 x.max=32767 y.min=-32767 y.max=32767
     //% weight=40
     export function movexy(x: number, y: number) : void { 
         _send(x, y, 0);  
@@ -40,7 +40,7 @@ namespace absmouse {
     }
 
     //% blockId="send absolute mouse" block="send absolute mouse motion|set x to $x| and set y to $y|left pressed $left|middle pressed $middle|right pressed $right|change scroll to $scroll|hold buttons $hold" advanced=true
-    //% x.min=-127 x.max=127 y.min=-127 y.max=127 
+    //% x.min=-32767 x.max=32767 y.min=-32767 y.max=32767 
     //% hold.default=false left.default=false middle.default=false right.default=false
     //% blockExternalInputs=true
     //% expandableArgumentMode="toggle"

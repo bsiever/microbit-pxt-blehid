@@ -2,7 +2,14 @@ serial.writeLine("starting...")
 
 
 input.onButtonPressed(Button.A, function () {
-    absmouse.movexy(126, 126)
+    for(let x=-32767; x<32767;x+=5000) {
+        for(let y=-32767; y<32767;y+=5000) {
+            serial.writeLine("x " + x + " y " + y)
+
+            absmouse.movexy(x, y)
+            basic.pause(100)
+        }
+    }
 })
 
 input.onButtonPressed(Button.B, function () {

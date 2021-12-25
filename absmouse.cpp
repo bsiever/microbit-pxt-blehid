@@ -37,8 +37,8 @@ namespace absmouse {
     //% 
     void _send(int x, int y, int buttons) {
         if(!reporter) return;
-        x = constrain(x,-127, 127);
-        y = constrain(y,-127, 127);
+        x = constrain(x,-32767, 32767);
+        y = constrain(y,-32767, 32767);
         
         reporter->send(x, y, buttons&0x1, buttons&0x2, buttons&0x4);
 

@@ -11,7 +11,7 @@ class  AbsoluteMouseReporter : public HIDReporter {
     public:
     static AbsoluteMouseReporter* getInstance();
     
-    void send(uint8_t x, uint8_t y, bool left, bool middle, bool right);
+    void send(uint16_t x, uint16_t y, bool left, bool middle, bool right);
 
     private: 
     AbsoluteMouseReporter();
