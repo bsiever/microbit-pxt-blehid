@@ -13,9 +13,20 @@
 #include "HIDReporter.h"
 
 
+/*
+| Reporter | Map Size | Report Size |
+|:--------:|:--------:|:-----------:|
+| Keyboard |     47   |       8     |
+| Mouse    |     54   |       4     |
+| Abs Mouse|     54   |       5     |
+| Media    |     37   |       1     |
+|          |          |             |
+|Total/Max |   192    |       8     |
+*/
+
 const int numReportsMax = 4;
-const int reportMapMaxSize = 150;
-const int reportMaxSize = 10; 
+const int reportMapMaxSize = 155;  // Any 3
+const int reportMaxSize = 8;       // Min size
 
 
 
@@ -97,12 +108,12 @@ class HIDService : public MicroBitBLEService
     uint8_t reportMap[reportMapMaxSize];
     unsigned reportMapUsed;
 
-    uint8_t   reports[numReportsMax*reportMaxSize];
+    uint8_t   reports[numReportsMax][reportMaxSize];
     HIDReporter *reporters[numReportsMax];
     unsigned    numReporters; 
 
     void addReporter(HIDReporter *reporter);
-    uint8_t *getReportBuffer(int index) { return &(reports[reportMaxSize*index]); }
+    uint8_t *getReportBuffer(int index) { return reports[index]; }
 
     void addReportDescriptor(uint16_t value_handle, uint8_t reportID, uint8_t reportTypeD);
 

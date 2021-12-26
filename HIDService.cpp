@@ -104,10 +104,10 @@ HIDService::HIDService() :
                         0, reportMapMaxSize,
                         microbit_propREAD | microbit_propREADAUTH );
 
-    memset(reports, 0, numReportsMax*reportMaxSize);
     for(int i=mbbs_cIdxReport1, idx=0; i<mbbs_cIdxCOUNT;i++, idx++) {
+      memset(reports[idx], 0, reportMaxSize);
       CreateCharacteristic(i, charUUID[i],
-                          &reports[reportMaxSize*idx],
+                          reports[idx],
                           0, reportMaxSize,
                           microbit_propREAD  | microbit_propNOTIFY | microbit_propREADAUTH);
       // Must have report discriptor for OS detection
