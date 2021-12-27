@@ -34,7 +34,11 @@
         "absmouse.ts",
         "absmouse.cpp",
         "AbsMouseReporter.cpp",
-        "AbsMouseReporter.h"
+        "AbsMouseReporter.h",
+        "gamepad.ts",
+        "gamepad.cpp",
+        "GamepadReporter.cpp",
+        "GamepadReporter.h"
     ],
     "testFiles": [
         "test.ts"

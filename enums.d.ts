@@ -7,5 +7,7 @@ declare namespace media {
 }
 declare namespace absmouse {
 }
+declare namespace gamepad {
+}
 
 // Auto-generated. Do not edit. Really.

@@ -1,33 +1,53 @@
 serial.writeLine("starting...")
 
 
-input.onButtonPressed(Button.A, function () {
-    for(let x=-32767; x<32767;x+=5000) {
-        for(let y=-32767; y<32767;y+=5000) {
-            serial.writeLine("x " + x + " y " + y)
 
-            absmouse.movexy(x, y)
-            basic.pause(100)
-        }
+bluetooth.onBluetoothConnected(function () {
+    serial.writeLine("connected")
+
+    basic.showLeds(`
+        . . . . .
+        . . . . .
+        . . # . #
+        . . # # #
+        . . . # .
+        `)
+})
+bluetooth.onBluetoothDisconnected(function () {
+    basic.showIcon(IconNames.No)
+})
+
+
+// ////////////////////////////// Gamepad /////////////////////////
+serial.writeLine("Starting Gamepad services...")
+gamepad.startGamepadService()
+
+serial.writeLine("Gamepad services started...")
+
+
+let buttonMask = 1
+input.onButtonPressed(Button.A, function () {
+    serial.writeLine("Button Mask "+buttonMask)
+    gamepad.send(buttonMask, 0, 0, 0, 0);
+    buttonMask = buttonMask*2;
+    if(buttonMask>2**15) {
+        buttonMask = 1;
     }
 })
 
+let index = 1
 input.onButtonPressed(Button.B, function () {
-    absmouse.movexy(-126, -126)
+    let vals = [[0,0,0,0], [100,0,0,0], [0,100,0,0], [0,0,100,0], [0,0,0,100]]
+    let names = ["x", "y", "z", "rx"]
+    gamepad.send(0, vals[index][0], vals[index][1], vals[index][2], vals[index][3])
+
+    index = (index+1) % names.length
+
 })
 
-input.onButtonPressed(Button.AB, function () {
-    keyboard.sendString("Test")
-    absmouse.movexy(1, 1)
-})
-keyboard.startKeyboardService()
-absmouse.startAbsoluteMouseService()
-
-
-
-absmouse.setStatusChangeHandler(function () {
-    serial.writeLine("---Abs Mouse Status Change---")
-    if (absmouse.isEnabled()) {
+gamepad.setStatusChangeHandler(function () {
+    serial.writeLine("---Gamepad Status Change---")
+    if (gamepad.isEnabled()) {
         serial.writeLine("Enabled")
         led.plot(0, 0)
     } else {
@@ -36,20 +56,53 @@ absmouse.setStatusChangeHandler(function () {
 })
 
 
-// bluetooth.onBluetoothConnected(function () {
-//     serial.writeLine("connected")
 
-//     basic.showLeds(`
-//         . . . . .
-//         . . . . .
-//         . . # . #
-//         . . # # #
-//         . . . # .
-//         `)
+////////////////////////////// Abs Mouse /////////////////////////
+// absmouse.startAbsoluteMouseService()
+// input.onButtonPressed(Button.A, function () {
+//     for(let x=-32767; x<32767;x+=5000) {
+//         for(let y=-32767; y<32767;y+=5000) {
+//             serial.writeLine("x " + x + " y " + y)
+
+//             absmouse.movexy(x, y)
+//             basic.pause(100)
+//         }
+//     }
 // })
-// bluetooth.onBluetoothDisconnected(function () {
-//     basic.showIcon(IconNames.No)
+// input.onButtonPressed(Button.B, function () {
+//     absmouse.movexy(-126, -126)
 // })
+// absmouse.setStatusChangeHandler(function () {
+//     serial.writeLine("---Abs Mouse Status Change---")
+//     if (absmouse.isEnabled()) {
+//         serial.writeLine("Enabled")
+//         led.plot(0, 0)
+//     } else {
+//         led.unplot(0, 0)
+//     }
+// })
+
+
+
+
+
+
+
+
+
+
+
+
+
+// input.onButtonPressed(Button.AB, function () {
+//     keyboard.sendString("Test")
+//     absmouse.movexy(1, 1)
+// })
+// keyboard.startKeyboardService()
+
+
+
+
 
 // basic.showIcon(IconNames.Yes)
 
