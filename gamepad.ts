@@ -11,7 +11,7 @@ namespace gamepad {
     }
 
     //% shim=gamepad::_send
-    function _send(buttons: number, xyzrx: number) : void { 
+    function _send(buttons: number, xyrxry: number, dpad: number) : void { 
     }
 
     // //% blockId="move gamepad xy" block="move gamepad | x by $x| and y by $y"
@@ -50,19 +50,19 @@ namespace gamepad {
     function constrain(val: number, min: number, max: number) {
         return (val<min) ? min : (val>max ? max : val);
     }
-    //% blockId="send gamepad" block="send gamepad motion|set x to $x|set y to $y| set z to $z| set dx to $dx| set buttons to $buttons" advanced=true
-    //% x.min=-127 x.max=127 y.min=-127 y.max=127 z.min=-127 z.max=127 rx.min=-127 rx.max=127
+    //% blockId="send gamepad" block="send gamepad motion|set x to $x|set y to $y| set rx to $rx| set ry to $ry| set buttons to $buttons | set dpad to $dpad" advanced=true
+    //% x.min=-127 x.max=127 y.min=-127 y.max=127 rx.min=-127 rx.max=127 ry.min=-127 ry.max=127, dpad.min=0, dpad.max=15
     //% buttons.default=0
     //% blockExternalInputs=true
     //% expandableArgumentMode="toggle"
     //% weight=10
-    export function send(buttons: number, x: number, y: number, z: number, rx: number) : void { 
+    export function send(buttons: number, x: number, y: number, rx: number, ry: number, dpad: number) : void { 
         x = (constrain(x, -127, 127) & 0xff)
         y = (constrain(y, -127, 127) & 0xff)
-        z = (constrain(z, -127, 127) & 0xff)
         rx = (constrain(rx, -127, 127) & 0xff)
-        let xyzrx = x<<24 | y<<16 | z<<8 | rx
-        _send(buttons, xyzrx)
+        ry = (constrain(ry, -127, 127) & 0xff)
+        let xyrxry = x<<24 | y<<16 | rx<<8 | ry<<0
+        _send(buttons, xyrxry, dpad)
     }
 
     //% blockID="gamepad on status change" block="on gamepad status change" advanced=true

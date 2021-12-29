@@ -11,7 +11,8 @@ class  GamepadReporter : public HIDReporter {
     public:
     static GamepadReporter* getInstance();
     
-    void send(uint16_t buttons, uint8_t x, uint8_t y, uint8_t z, uint8_t rx);
+    // D-Pad bits:  0000 Up Down Right Left
+    void send(uint16_t buttons, uint8_t x, uint8_t y, uint8_t rx, uint8_t ry, uint8_t dpad);
 
     private: 
     GamepadReporter();

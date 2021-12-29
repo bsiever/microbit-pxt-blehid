@@ -24,14 +24,63 @@ static const uint8_t gamepadReportMap[] =
   0x05, 0x01,                   //USAGE_PAGE (Generic Desktop)
   0x09, 0x30,                   //USAGE (X)
   0x09, 0x31,                   //USAGE (Y)
-  0x09, 0x32,                   //USAGE (Z)
-  0x09, 0x33,                   //USAGE (Rx)
+  0x09, 0x33,                   //USAGE (Rx)  // Or z / 32
+  0x09, 0x34,                   //USAGE (Ry)  // Or Rx / 33
   0x15, 0x81,                   //LOGICAL_MINIMUM(-127)
   0x25, 0x7f,                   //LOGICAL_MAXIMUM(127)
   0x75, 0x08,                   //REPORT_SIZE(8)
   0x95, 0x04,                   //REPORT_COUNT(4)
   0x81, 0x02,                   //INPUT(Data,Var,Abs)
   0xc0,                     //END_Collection
+
+	0x05, 0x01,							/*   USAGE_PAGE (Generic Desktop) */
+	0x09, 0x39,							/*   USAGE (Hat switch) */
+	0x09, 0x39,							/*   USAGE (Hat switch) */
+	0x15, 0x01,							/*   LOGICAL_MINIMUM (1) */
+	0x25, 0x08,							/*   LOGICAL_MAXIMUM (8) */
+	0x95, 0x02,							/*   REPORT_COUNT (2) */
+	0x75, 0x04,							/*   REPORT_SIZE (4) */
+	0x81, 0x02,							/*   INPUT (Data,Var,Abs) */
+
+
+
+  // macOS sees the below as 4 additional switches (after the first 16)
+  // Android doesn't work (shows up pressed)
+	// 0x05, 0x01,							/*   USAGE_PAGE (Generic Desktop) */
+	// 0x09, 0x01,							/*   USAGE (Pointer) */
+	// 0xA1, 0X00,							/*   COLLECTION (Physical) */
+	// 0x75, 0x01,							/*     REPORT_SIZE (1) */
+	// 0x15, 0x00,							/*     LOGICAL_MINIMUM (0) */
+	// 0x25, 0x01,							/*     LOGICAL_MAXIMUM (1) */
+	// 0x35, 0x00,							/*     PHYSICAL_MINIMUM (0) */
+	// 0x45, 0x01,							/*     PHYSICAL__MAXIMUM (1) */
+	// 0x95, 0x04,							/*     REPORT_COUNT (4) */
+	// 0x05, 0x01,							/*     USAGE_PAGE (Generic Desktop) */
+	// 0x09, 0x90,							/*     USAGE (D-PAD UP) */
+	// 0x09, 0x91,							/*     USAGE (D-PAD DOWN) */
+	// 0x09, 0x93,							/*     USAGE (D-PAD LEFT) */
+	// 0x09, 0x92,							/*     USAGE (D-PAD RIGHT) */
+	// 0x81, 0x02,							/*     INPUT (Data,Var,Abs) */
+	// 0xc0,								/*    END_COLLECTION */
+	// /* Padding */
+	// 0x75, 0x01,
+	// 0x95, 0x04,
+	// 0x81, 0x01,
+
+
+  // 0x95, 0x01, //	Report Count (1) // Padding
+  // 0x75, 0x04, //	Report Size (4)
+  // 0x81, 0x01, //	Input (Constant) Reserved byte
+  // 0x09, 0x90, //       USAGE (D Pad Up)
+  // 0x09, 0x91, //       USAGE (D Pad Down)
+  // 0x09, 0x92, //       USAGE (D Pad Right)
+  // 0x09, 0x93, //       USAGE (D Pad Left)
+  // 0x15, 0x00, //       LOGICAL_MINIMUM (0)
+  // 0x25, 0x01, //       LOGICAL_MAXIMUM (1)
+  // 0x75, 0x01, //       REPORT_SIZE (1)
+  // 0x95, 0x04, //       REPORT_COUNT (4)
+  // 0x81, 0x02, //        INPUT (Data,Var,Abs)
+
   0xc0 
 };
 
@@ -51,13 +100,13 @@ GamepadReporter *GamepadReporter::getInstance()
 
 
 GamepadReporter::GamepadReporter() : 
-    HIDReporter("Gamepad", 6, gamepadReportMap, sizeof(gamepadReportMap), 7, 110)  // Name and report size
+    HIDReporter("Gamepad", 7, gamepadReportMap, sizeof(gamepadReportMap), 7, 110)  // Name and report size
 {
     // Done
     DEBUG("Done w/ GamepadReporter\n");
 }
 
-void GamepadReporter::send(uint16_t buttons, uint8_t x, uint8_t y, uint8_t z, uint8_t rx) {
+void GamepadReporter::send(uint16_t buttons, uint8_t x, uint8_t y, uint8_t rx, uint8_t ry, uint8_t dpad) {
   // Little endian
   // x/y/z/rx are absolute
   DEBUG("Sending Gamepad Report\n");
@@ -66,8 +115,10 @@ void GamepadReporter::send(uint16_t buttons, uint8_t x, uint8_t y, uint8_t z, ui
   report[1] = (buttons>>8)&0xff;
   report[2] = x; 
   report[3] = y; 
-  report[4] = z; 
-  report[5] = rx; 
+  report[4] = rx; 
+  report[5] = ry; 
+  // D-pad // 1-8 = directions (north going clockwise) Up Down Right Left
+  report[6] = dpad; 
   sendReport();
 }
 

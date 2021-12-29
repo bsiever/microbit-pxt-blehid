@@ -5,6 +5,7 @@
 #include "AbsMouseReporter.h"
 
 // Report Map from Nordic SDK Example (app_usbd_hid_mouse_desc.h SDK 17.1.0)
+// This is 54 bytes
 static const uint8_t mouseReportMap[] =
 {
   0x05, 0x01,       /* Usage Page (Generic Desktop),       */     \
@@ -31,8 +32,8 @@ static const uint8_t mouseReportMap[] =
     0x16, 0x01, 0x80,       /*     Logical Minimum (-32767 ),         */     \
     0x26, 0xff, 0x7F,       /*     Logical Maximum (32767 ),          */     \
     0x75, 0x10,       /*     Report Size (16),                */     \
-    0x95, 0x02,       /*     Report Count (2),Absolute*/     \
-    0x81, 0x02,       /*     Input (Data, Variable, Relative)*/     \
+    0x95, 0x02,       /*     Report Count (2)*/     \
+    0x81, 0x02,       /*     Input (Data, Variable, Absolute)*/     \
     0xC0,         /*  End Collection,                        */     \
     0xC0,         /* End Collection      */
   };

@@ -41,14 +41,15 @@ namespace gamepad {
     }
 
     //% 
-    void _send(uint16_t buttons, uint32_t xyzrx) {
+    void _send(uint16_t buttons, uint32_t xyrxry, uint8_t dpad) {
         if(!isInitialized()) return;
-        uint8_t x = (xyzrx >> 24)&0xFF;
-        uint8_t y = (xyzrx >> 16)&0xFF;
-        uint8_t z = (xyzrx >> 8)&0xFF;
-        uint8_t rx = (xyzrx)&0xFF;
-        
-        reporter->send(buttons, x, y, z, rx);
+        uint8_t x = (xyrxry >> 24)&0xFF;
+        uint8_t y = (xyrxry >> 16)&0xFF;
+        uint8_t rx = (xyrxry >>  8)&0xFF;
+        uint8_t ry = (xyrxry >>  0)&0xFF;
+
+        DEBUG("x %d, y %d rx %d, ry %d, dpad: 0x%02x\n",x,y,rx,ry, dpad);
+        reporter->send(buttons, x, y, rx, ry, dpad);
     }
 
     //%
