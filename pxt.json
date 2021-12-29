@@ -60,12 +60,12 @@
     ],
     "card": {
         "name": "BLE HID",
-        "feedbackUrl": "http://siever.info"
+        "feedbackUrl": "https://github.com/bsiever/microbit-pxt-blehid/discussions/16"
     },
     "yotta": {
         "config": {
-            "DEVICE_DMESG_BUFFER_SIZE": 8192,
             "DMESG_SERIAL_DEBUG": 1,
+            "DEVICE_DMESG_BUFFER_SIZE": 8192,
             "microbit-dal": {
                 "bluetooth": {
                     "open": 0,

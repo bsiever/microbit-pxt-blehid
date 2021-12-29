@@ -147,7 +147,9 @@ void HIDService::addReporter(HIDReporter *reporter) {
   */
 void HIDService::onConnect( const microbit_ble_evt_t *p_ble_evt)
 {
-    DEBUG("HID onConnect\n");
+  DEBUG("HID onConnect\n");
+  // Reload Peer data 
+
 }
 
 /**
@@ -245,9 +247,7 @@ void HIDService::advertiseHID() {
         static uint8_t  m_enc_advdata[BLE_GAP_ADV_SET_DATA_SIZE_MAX];
         static ble_uuid_t uuid;  // UUID Struct
         uint8_t m_adv_handle;
-
-        MICROBIT_DEBUG_DMESG( "configureAdvertising connectable %d, discoverable %d", (int) connectable, (int) discoverable);
-        MICROBIT_DEBUG_DMESG( "whitelist %d, interval_ms %d, timeout_seconds %d", (int) whitelist, (int) interval_ms, (int) timeout_seconds);
+ 
         uuid.type = BLE_UUID_TYPE_BLE;
         uuid.uuid = 0x1812; // 1812 is HID 
         m_advdata.uuids_complete.uuid_cnt = 1;
@@ -288,7 +288,7 @@ void HIDService::advertiseHID() {
         // WARNING: This will start adv using the static handle in the BLE Manager. 
         // Hopefully the same handle is used as the one returned by sd_ble_gap_adv_set_configure
         uBit.bleManager.advertise();
-    }
+    } 
 
 #ifdef DEBUG_ENABLED
 void HIDService::debugAttribute(int handle) {

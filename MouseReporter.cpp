@@ -56,12 +56,9 @@ MouseReporter *MouseReporter::getInstance()
 MouseReporter::MouseReporter() : 
     HIDReporter("Mouse", 4, mouseReportMap, sizeof(mouseReportMap), 11, 107)  // Name and report size
 {
-    // Done
-    DEBUG("Done w/ MouseReporter\n");
 }
 
 void MouseReporter::send(uint8_t dx, uint8_t dy, bool left, bool middle, bool right, uint8_t dscroll) {
-  DEBUG("Sending Mouse Report\n");
   memset(report, 0, reportSize);
   report[0] = (left?0x1:0) | (right?0x2:0) | (middle?0x4:0);
   report[1] = dx;

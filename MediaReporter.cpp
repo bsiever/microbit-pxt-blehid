@@ -51,7 +51,6 @@ MediaReporter::MediaReporter() :
 
 void MediaReporter::sendCode(uint8_t code) {
   memset(report, 0, reportSize);
-  DEBUG("Sending report id %d\n", reportID);
   report[0] = code; 
   sendReport();
 }

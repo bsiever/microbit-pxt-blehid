@@ -25,8 +25,8 @@
 */
 
 const int numReportsMax = 4;
-const int reportMapMaxSize = 155;  // Any 3
-const int reportMaxSize = 8;       // Min size
+const int reportMapMaxSize = 200;  // Any 3
+const int reportMaxSize = 8;       // Max size  (8 for other than game...)
 
 
 

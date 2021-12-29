@@ -64,12 +64,10 @@ KeyboardReporter *KeyboardReporter::getInstance()
 KeyboardReporter::KeyboardReporter() : 
     HIDReporter("Keyboard", 8, keyboardReportMap, sizeof(keyboardReportMap), 7, 106)  // Name and report size
 {
-    DEBUG("Keyboard Constructor Body\n");
 } 
 
 void KeyboardReporter::sendScanCode(uint8_t c, uint8_t modifiers) {
   memset(report, 0, reportSize);
-  DEBUG("Sending report id %d\n", reportID);
   if(c) {
     report[0] = modifiers; 
     report[1] = modifiers; 
@@ -110,7 +108,7 @@ void KeyboardReporter::sendSimultaneousKeys(char *str, int len) {
 void KeyboardReporter::sendString(char *str, int len) {
         uint8_t lastCode = 0;
         // Iterate over keys and send them
-        DEBUG("Keys: ");
+//        DEBUG("Keys: ");
         uint8_t shift = 0;
         uint8_t code = 0;
         for(int i=0; i<len; i++) {
@@ -156,11 +154,11 @@ void KeyboardReporter::sendString(char *str, int len) {
             }
             uBit.sleep(betweenKeyDelay);
             lastCode = code;
-            DEBUG("%c (%d%d)",str[i], shift, code);
+           // DEBUG("%c (%d%d)",str[i], shift, code);
         }
         // Send final release
         sendScanCode(0, 0);
-        DEBUG("\n");
+       // DEBUG("\n");
 }
 
 #endif 
