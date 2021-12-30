@@ -29,7 +29,7 @@
 const int numReportsMax = 4;
 const int reportMapMaxSize = 200;  // 172 is enough for any 3
 const int reportMaxSize = 8;       // Max size  
-
+const int minTimeBetweenNotifies = 50;  // Minimum amount of time between sending notifies
 
 /**
   * Class definition for a MicroBit BLE HID Service.
@@ -74,6 +74,9 @@ class HIDService : public MicroBitBLEService
 
     // BLE Events...Let's monitor 'em all. 
     bool onBleEvent(const microbit_ble_evt_t *p_ble_evt);
+
+    // Override notification process to enforce minimum time between events. 
+    bool notifyChrValue( int idx, const uint8_t *data, uint16_t length);
 
     // Peer Manager Events (re-enable CCCDs)
     void pm_events( const pm_evt_t* p_event);

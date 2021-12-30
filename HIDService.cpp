@@ -270,6 +270,17 @@ bool HIDService::onBleEvent(const microbit_ble_evt_t *p_ble_evt) {
     return MicroBitBLEService::onBleEvent(p_ble_evt);
 }
 
+bool HIDService::notifyChrValue( int idx, const uint8_t *data, uint16_t length) {
+    // Throttle the BLE traffic to avoid flooding
+    static unsigned lastSend = 0;
+    unsigned now = uBit.systemTime();
+    int diff = now-lastSend;
+    if(diff<minTimeBetweenNotifies) {
+        uBit.sleep(diff);
+    }
+    return MicroBitBLEService::notifyChrValue( idx, data, length);
+}
+
 
 /**
  * 

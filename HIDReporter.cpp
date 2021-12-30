@@ -22,8 +22,6 @@ HIDReporter::HIDReporter(const char *_name, const int _reportSize, const uint8_t
     report = hidService->getReportBuffer(reportIndex);
 }
  
-
-
 void HIDReporter::sendReport() {
     DEBUG("Send Notify %d (size %d)\n", reportIndex, reportSize);
     // Get the instance of the HID service

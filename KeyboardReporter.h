@@ -18,7 +18,6 @@ private:
     KeyboardReporter();
 
 private: 
-    const int betweenKeyDelay = 40; 
     static KeyboardReporter *reporter;
 };
 

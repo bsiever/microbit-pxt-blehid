@@ -19,41 +19,46 @@ bluetooth.onBluetoothDisconnected(function () {
 
 
 // //////////////////////////////// Gamepad /////////////////////////
-gamepad.startGamepadService()
-serial.writeLine("Gamepad service started...")
+// gamepad.startGamepadService()
+// serial.writeLine("Gamepad service started...")
 
-// input.onButtonPressed(Button.A, function () {
-//     serial.writeLine("Start ")
-//     gamepad.send(1<<11, 0, 0, 0, 0, 0);
-// })
-
-// // Infinite loop / prevents all other tests:  
-// //  Use the accelerometer to control the mouse
+// // // Infinite loop / prevents all other tests:  
+// let dpadCmd: number[][] = [[8, 1, 2], [7, 0, 3], [6, 5, 4]]
+// let buttons = 0
+// let ud = 0
 // let y = 0
 // let x = 0
+// let lr = 0
+// let buttonShift = 0
 // basic.forever(function () {
-//     let up = 1;
+//     lr = 1
 //     x = input.acceleration(Dimension.X)
-//     if(x<-300) {
-//         up = 0
-//     } else if(x>300) {
-//         up = 2
+//     if (x < -300) {
+//         lr = 0. // Left
+//     } else if (x > 300) {
+//         lr = 2. // Right
 //     }
 //     y = input.acceleration(Dimension.Y)
-//     let right = 1
-//     if(y<-300) {
-//         right = 0
-//     } else if(y>300) {
-//         right = 2
+//     ud = 1
+//     if (y < -300) {
+//         ud = 0. // Up
+//     } else if (y > 300) {
+//         ud = 2. // Down
 //     }
-//     const dpadCmd = 
-//     [   // Lefts   Neutral   Rights
-//         [    8,      1,        2],   // Ups
-//         [    7,      0,        3],   // Neutral up
-//         [    6,      5,        4]    // Downs
-//     ]
-
-//     gamepad.send(buttonMask, 0, 0, 0, 0, 0)
+//     buttons = 0
+//     if (input.buttonIsPressed(Button.A)) {
+//         buttons = 1<<buttonShift
+//         serial.writeLine("Button shift = " + buttonShift)
+//         buttonShift = (buttonShift + 1) % 15
+//     }
+//     gamepad.send(
+//     buttons,
+//     0,
+//     0,
+//     0,
+//     0,
+//     dpadCmd[ud][lr]
+//     )
 // })
 
 // // Test Buttons (via Button A)
@@ -124,30 +129,30 @@ gamepad.setStatusChangeHandler(function () {
 
 
 
-////////////////////////////// Keyboard /////////////////////////
-// keyboard.startKeyboardService()
-// serial.writeLine("Keyboard service started...")
-// // Button AB:  Print "Test"
-// input.onButtonPressed(Button.AB, function () {
-//     keyboard.sendString("Test")
-// })
+//////////////////////////// Keyboard /////////////////////////
+keyboard.startKeyboardService()
+serial.writeLine("Keyboard service started...")
+// Button AB:  Print "Test"
+input.onButtonPressed(Button.AB, function () {
+    keyboard.sendString("Test")
+})
 
 // Button A: Print the entire supported ASCII table (and then compare to the string that was sent / is embedded here)
-// input.onButtonPressed(Button.A, function () {
-//     serial.writeLine("Button A\n")
-//     // All printable ASCII characters...
-//     keyboard.sendString(" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~");
-// })
-//// Button B: Iterate through all special keys, then iterate through modifiers+"a"
-// input.onButtonPressed(Button.B, function () {
-//     serial.writeLine("Button B\n")
-//     for(let i = keyboard._Key.enter; i<=keyboard._Key.vol_down; i++) {
-//         keyboard.sendString(keyboard.keys(i))
-//     }
-//     for(let i = keyboard._Modifier.control; i<=keyboard._Modifier.rightWindows; i++) {
-//         keyboard.sendString(keyboard.modifiers(i)+"a")
-//     }
-// })
+input.onButtonPressed(Button.A, function () {
+    serial.writeLine("Button A\n")
+    // All printable ASCII characters...
+    keyboard.sendString(" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~");
+})
+// Button B: Iterate through all special keys, then iterate through modifiers+"a"
+input.onButtonPressed(Button.B, function () {
+    serial.writeLine("Button B\n")
+    for(let i = keyboard._Key.enter; i<=keyboard._Key.vol_down; i++) {
+        keyboard.sendString(keyboard.keys(i))
+    }
+    for(let i = keyboard._Modifier.control; i<=keyboard._Modifier.rightWindows; i++) {
+        keyboard.sendString(keyboard.modifiers(i)+"a")
+    }
+})
 
 keyboard.setStatusChangeHandler(function () {
     serial.writeLine("---Keyboard Status Change---")

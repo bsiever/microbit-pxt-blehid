@@ -118,7 +118,6 @@ void KeyboardReporter::sendString(char *str, int len) {
                 // TODO: Is this needed???
                 if(code == lastCode) {
                     sendScanCode(0, 0);
-                    uBit.sleep(betweenKeyDelay);
                 }
                 sendScanCode(code, shift);
 
@@ -148,7 +147,6 @@ void KeyboardReporter::sendString(char *str, int len) {
                 }
 
             }
-            uBit.sleep(betweenKeyDelay);
             lastCode = code;
            // DEBUG("%c (%d%d)",str[i], shift, code);
         }
