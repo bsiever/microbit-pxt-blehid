@@ -18,36 +18,70 @@ bluetooth.onBluetoothDisconnected(function () {
 })
 
 
-// // ////////////////////////////// Gamepad /////////////////////////
+// //////////////////////////////// Gamepad /////////////////////////
 gamepad.startGamepadService()
 serial.writeLine("Gamepad service started...")
 
-// Test Buttons (via Button A)
-let buttonMask = 1
-input.onButtonPressed(Button.A, function () {
-    serial.writeLine("Button Mask "+buttonMask)
-    gamepad.send(buttonMask, 0, 0, 0, 0, 0);
-    buttonMask = buttonMask*2;
-    if(buttonMask>2**15) {
-        buttonMask = 1;
-    }
-})
+// input.onButtonPressed(Button.A, function () {
+//     serial.writeLine("Start ")
+//     gamepad.send(1<<11, 0, 0, 0, 0, 0);
+// })
 
-// Test sticks and Hats (D-pads)
-let index = 1
-input.onButtonPressed(Button.B, function () {
-    let vals = [[0,0,0,0,0], [100,0,0,0,0], [0,100,0,0, 0], [0,0,100,0, 0], [0,0,0,100,0],
-     [0,0,0,0,1], [0,0,0,0,2],[0,0,0,0,3],[0,0,0,0,4],[0,0,0,0,5],[0,0,0,0,16],[0,0,0,0,48],[0,0,0,0,32] ]
-    let names = ["-", "x", "y", "rx", "ry", "N1", "NE1", "E2", "SE1", "S1", "N2", "NE2", "E2"]
-    gamepad.send(0, vals[index][0], vals[index][1], vals[index][2], vals[index][3], vals[index][4])
-    serial.writeLine(names[index] + " = " + vals[index])
-    index = (index+1) % vals.length
-    // let vals = [10,20,30,40,50,60,70,80,90,100,110,120,-120,-110,-100,-90,-80,-70]
-    // gamepad.send(0, vals[index],0,0,0)
-    // serial.writeLine("x = " + vals[index])
-    // index = (index+1) % vals.length
+// // Infinite loop / prevents all other tests:  
+// //  Use the accelerometer to control the mouse
+// let y = 0
+// let x = 0
+// basic.forever(function () {
+//     let up = 1;
+//     x = input.acceleration(Dimension.X)
+//     if(x<-300) {
+//         up = 0
+//     } else if(x>300) {
+//         up = 2
+//     }
+//     y = input.acceleration(Dimension.Y)
+//     let right = 1
+//     if(y<-300) {
+//         right = 0
+//     } else if(y>300) {
+//         right = 2
+//     }
+//     const dpadCmd = 
+//     [   // Lefts   Neutral   Rights
+//         [    8,      1,        2],   // Ups
+//         [    7,      0,        3],   // Neutral up
+//         [    6,      5,        4]    // Downs
+//     ]
 
-})
+//     gamepad.send(buttonMask, 0, 0, 0, 0, 0)
+// })
+
+// // Test Buttons (via Button A)
+// let buttonMask = 1
+// input.onButtonPressed(Button.A, function () {
+//     serial.writeLine("Button Mask "+buttonMask)
+//     gamepad.send(buttonMask, 0, 0, 0, 0, 0);
+//     buttonMask = buttonMask*2;
+//     if(buttonMask>2**15) {
+//         buttonMask = 1;
+//     }
+// })
+
+// // Test sticks and Hats (D-pads)
+// let index = 1
+// input.onButtonPressed(Button.B, function () {
+//     let vals = [[0,0,0,0,0], [100,0,0,0,0], [0,100,0,0, 0], [0,0,100,0, 0], [0,0,0,100,0],
+//      [0,0,0,0,1], [0,0,0,0,2],[0,0,0,0,3],[0,0,0,0,4],[0,0,0,0,5],[0,0,0,0,6],[0,0,0,0,7],[0,0,0,0,8],[0,0,0,0,16],[0,0,0,0,48],[0,0,0,0,32] ]
+//     let names = ["-", "x", "y", "rx", "ry", "N1", "NE1", "E2", "SE1", "S1", "SW1", "W1", "NW1", "N2", "NE2", "E2"]
+//     gamepad.send(0, vals[index][0], vals[index][1], vals[index][2], vals[index][3], vals[index][4])
+//     serial.writeLine(names[index] + " = " + vals[index])
+//     index = (index+1) % vals.length
+//     // let vals = [10,20,30,40,50,60,70,80,90,100,110,120,-120,-110,-100,-90,-80,-70]
+//     // gamepad.send(0, vals[index],0,0,0)
+//     // serial.writeLine("x = " + vals[index])
+//     // index = (index+1) % vals.length
+
+// })
 
 // Show connection state
 gamepad.setStatusChangeHandler(function () {
@@ -91,12 +125,12 @@ gamepad.setStatusChangeHandler(function () {
 
 
 ////////////////////////////// Keyboard /////////////////////////
-keyboard.startKeyboardService()
-serial.writeLine("Keyboard service started...")
-// Button AB:  Print "Test"
-input.onButtonPressed(Button.AB, function () {
-    keyboard.sendString("Test")
-})
+// keyboard.startKeyboardService()
+// serial.writeLine("Keyboard service started...")
+// // Button AB:  Print "Test"
+// input.onButtonPressed(Button.AB, function () {
+//     keyboard.sendString("Test")
+// })
 
 // Button A: Print the entire supported ASCII table (and then compare to the string that was sent / is embedded here)
 // input.onButtonPressed(Button.A, function () {

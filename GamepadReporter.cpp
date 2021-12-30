@@ -44,7 +44,37 @@ static const uint8_t gamepadReportMap[] =
   0xc0,                     //END_Collection
 
 
+/*
+Android Buttons
+0 = A
+1 = B
+2 = -
+3 = X
+4 = Y
+5 = -
+6 = Left Shoulder
+7 = Right Shoulder
+8 = -
+9 = -
+10 = back
+11 = start
+12 = guide
+13 = left stick
+14 = right stick
+15 = -
 
+dpad 
+1 = dpup
+2 = dpright + dpup
+3 = dpright
+4 = dpright + dpdown
+5 = dpdown
+6 = dpdown+doleft
+7 = dpleft
+8 = dpleft + dpup
+
+
+*/
   // Other attempts at Hats / D-pad
 
   // macOS sees the below as 4 additional switches (after the first 16)
