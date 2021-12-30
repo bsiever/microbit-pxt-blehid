@@ -19,14 +19,14 @@
 
 #include "debug.h"
 
-
 using namespace pxt;
 
-// Initialize static members
+//////////////// Initialize static members
 
 const uint16_t HIDService::hidService = 0x1812; 
 
 const uint16_t HIDService::charUUID[mbbs_cIdxCOUNT] = { 
+  // Alternate values to facilitate debugging
   // 0x8A4E,  //  ProtocolMode
   // 0x8A4A,  //  HIDInfo
   // 0x8A4B,  //  Report Map
@@ -48,12 +48,11 @@ uint16_t HIDService::HIDInfo[2] = {
   0x0002
 };
 
-const int HIDService::EVT_STATUS = 1;  // Event for connect / disconnect
-
+const int HIDService::EVT_STATUS = 1;  // Event for connect / disconnect; 
 
 HIDService *HIDService::service = NULL; // Singleton reference to the service
 
-
+// Facilitate debugging Peer_manager events
 // static const char * m_event_str[] =
 // {
 //     "PM_EVT_BONDED_PEER_CONNECTED",
@@ -79,11 +78,13 @@ HIDService *HIDService::service = NULL; // Singleton reference to the service
 //     "PM_EVT_FLASH_GARBAGE_COLLECTION_FAILED",
 // };
 
-// Bounce it to the instance
+
+
+
+// Static method for peer_manager events (Bounce it to the instance, which has access to member vars)
 void HIDService::static_pm_events(const pm_evt_t* p_event) {
   getInstance()->pm_events(p_event);
 }
-
 
 
 void HIDService::pm_events(const pm_evt_t* p_event) {
@@ -94,6 +95,10 @@ void HIDService::pm_events(const pm_evt_t* p_event) {
     //   p_event->params.peer_data_update_succeeded.action,
     //   p_event->params.peer_data_update_succeeded.token,
     //   p_event->params.peer_data_update_succeeded.flash_changed);
+
+    // TODO / REVIEW:  This works, but I'm not entirely sure it's correct. 
+    //   It assumes that CCCDs are re-set to 0 sometime (when disconnecting or when connecting to an unbonded device)
+
     // Iterate through the report characteristics to see if any have CCCD enabled
     for(int i=mbbs_cIdxReport1, idx=0; i<mbbs_cIdxCOUNT;i++, idx++) {
 
@@ -105,16 +110,15 @@ void HIDService::pm_events(const pm_evt_t* p_event) {
       data.p_value = (uint8_t*)&value;
       sd_ble_gatts_value_get(p_event->conn_handle, charHandles(i)->cccd, &data); 
 
-      // Update the reporter
+      // Update the reporters
       int reporterIdx = i-mbbs_cIdxReport1;
       if(reporters[reporterIdx]) {
-        reporters[i-mbbs_cIdxReport1]->setEnabled( value ? true : false);
+        reporters[i-mbbs_cIdxReport1]->setEnabled(value ? true : false);
       }
       // Update the internal characteristic flags
       chars[i].setCCCD(value);
     }
   }
-
 }
 
 /**
@@ -130,57 +134,55 @@ HIDService *HIDService::getInstance()
 
 /** 
  * Constructor.
- * Create a representation of the Bluetooth SIG Battery Service
- * @param _ble The instance of a BLE device that we're running on.
+ * Create a representation of the Bluetooth SIG HID Service
  */
 HIDService::HIDService() :
   protocolMode(0x01),  // Report Protocol
   numReporters(0), 
   reportMapUsed(0)
-
 {
-
   // Initialize all report data 
-    memset(reporters, 0, sizeof(HIDReporter*)*numReportsMax);
+  memset(reporters, 0, sizeof(HIDReporter*)*numReportsMax);
 
-    DEBUG("HID Serv starting\n");
-    // Update advertisements 
-    advertiseHID();
+  DEBUG("HID Serv starting\n");
 
-    // Register the base UUID and create the service.
-    bs_uuid_type = BLE_UUID_TYPE_BLE;  // Set the UUID type to 0x01, which should be Bluetooth SIG ID
-    CreateService( hidService );
+  // Update advertisements 
+  advertiseHID();
 
-    // Create the data structures that represent each of our characteristics in Soft Device.
-    // iOS needs protocol mode characteristic for keyboard support
-    CreateCharacteristic( mbbs_cIdxProtocolMode, charUUID[ mbbs_cIdxProtocolMode ],
-                        (uint8_t *)&protocolMode,
-                        sizeof(protocolMode), sizeof(protocolMode),
-                        microbit_propREAD | microbit_propWRITE_WITHOUT ); 
+  // Register the base UUID and create the service.
+  bs_uuid_type = BLE_UUID_TYPE_BLE;  // Set the UUID type to 0x01, which should be Bluetooth SIG ID
+  CreateService( hidService );
 
-    CreateCharacteristic( mbbs_cIdxHIDInfo, charUUID[ mbbs_cIdxHIDInfo ],
-                        (uint8_t *)HIDInfo,
-                        sizeof(HIDInfo), sizeof(HIDInfo),
-                        microbit_propREAD );
- 
-    memset(reportMap, 0, reportMapMaxSize);
-    CreateCharacteristic( mbbs_cIdxReportMap, charUUID[ mbbs_cIdxReportMap ],
-                        (uint8_t *)reportMap,
-                        0, reportMapMaxSize,
-                        microbit_propREAD | microbit_propREADAUTH );
+  // Create the data structures that represent each of our characteristics in Soft Device.
+  // iOS needs protocol mode characteristic for keyboard support
+  CreateCharacteristic( mbbs_cIdxProtocolMode, charUUID[ mbbs_cIdxProtocolMode ],
+                      (uint8_t *)&protocolMode,
+                      sizeof(protocolMode), sizeof(protocolMode),
+                      microbit_propREAD | microbit_propWRITE_WITHOUT ); 
 
-    for(int i=mbbs_cIdxReport1, idx=0; i<mbbs_cIdxCOUNT;i++, idx++) {
-      memset(reports[idx], 0, reportMaxSize);
-      CreateCharacteristic(i, charUUID[i],
-                          reports[idx],
-                          0, reportMaxSize,
-                          microbit_propREAD  | microbit_propNOTIFY | microbit_propREADAUTH);
-      // Must have report discriptor for OS detection
-      // NOTE: Assuming INPUT reports
-      // Report indices are 1-based and in order of addition
-      addReportDescriptor(charHandles(i)->value, i-mbbs_cIdxReport1+1, 1 /* Input report */);
-    } 
-   pm_register(static_pm_events); 
+  CreateCharacteristic( mbbs_cIdxHIDInfo, charUUID[ mbbs_cIdxHIDInfo ],
+                      (uint8_t *)HIDInfo,
+                      sizeof(HIDInfo), sizeof(HIDInfo),
+                      microbit_propREAD );
+
+  memset(reportMap, 0, reportMapMaxSize);
+  CreateCharacteristic( mbbs_cIdxReportMap, charUUID[ mbbs_cIdxReportMap ],
+                      (uint8_t *)reportMap,
+                      0, reportMapMaxSize,
+                      microbit_propREAD | microbit_propREADAUTH );
+
+  for(int i=mbbs_cIdxReport1, idx=0; i<mbbs_cIdxCOUNT;i++, idx++) {
+    memset(reports[idx], 0, reportMaxSize);
+    CreateCharacteristic(i, charUUID[i],
+                        reports[idx],
+                        0, reportMaxSize,
+                        microbit_propREAD  | microbit_propNOTIFY | microbit_propREADAUTH);
+    // Must have report discriptor for OS detection
+    // NOTE: Assuming INPUT reports
+    // Report indices are 1-based and in order of addition
+    addReportDescriptor(charHandles(i)->value, i-mbbs_cIdxReport1+1, 1 /* Input report */);
+  } 
+  pm_register(static_pm_events); 
 }
 
 void HIDService::addReporter(HIDReporter *reporter) {
@@ -188,12 +190,12 @@ void HIDService::addReporter(HIDReporter *reporter) {
   uint16_t mapSize = reporter->reportMapSize;
   DEBUG("HID Adding reporter %s (%d)\n", reporter->name, mapSize);
   if(numReporters>=numReportsMax || reportMapUsed+mapSize+2>=reportMapMaxSize) {
-    // TO DO: Throw exception / halt REVIEW
+    // TODO / REVIEW: Reconsider error handling
     DEBUG("ERROR: No more space for reports");
     target_panic(PANIC_INVALID_ARGUMENT); 
   }
 
-  // Update reporter data for reporting...
+  // Update reporter data for reporting.
   reporter->reportID = numReporters+1;
   reporter->reportIndex = numReporters+mbbs_cIdxReport1;
 
@@ -215,7 +217,6 @@ void HIDService::onConnect( const microbit_ble_evt_t *p_ble_evt)
 {
   DEBUG("HID onConnect\n");
   // Reload Peer data 
-
 }
 
 /**
@@ -239,7 +240,6 @@ void HIDService::onDataRead( microbit_onDataRead_t *params) {
         params->data = &(reportMap[offset]);
         params->length = max(reportMapUsed-offset,0);  // Remaining data
       }
-
 }
 
 /**
@@ -266,7 +266,6 @@ void HIDService::onDataWritten( const microbit_ble_evt_write_t *params)
 
 bool HIDService::onBleEvent(const microbit_ble_evt_t *p_ble_evt) {
     DEBUG("onBleEvent id = %d\n", p_ble_evt->header.evt_id);
-
     // Let usual process handle it. 
     return MicroBitBLEService::onBleEvent(p_ble_evt);
 }
@@ -359,7 +358,7 @@ void HIDService::advertiseHID() {
         MICROBIT_BLE_ECHK( sd_ble_gap_adv_set_configure( &m_adv_handle, &gap_adv_data, &gap_adv_params));
 
         // Restart advertising
-        // WARNING: This will start adv using the static handle in the BLE Manager. 
+        // TODO / FIXME / REVIEW / WARNING: This will start adv using the static handle in the BLE Manager. 
         // Hopefully the same handle is used as the one returned by sd_ble_gap_adv_set_configure
         uBit.bleManager.advertise();
     } 
@@ -392,7 +391,6 @@ void HIDService::debugAttribute(int handle) {
       {
           int report = index-mbbs_cIdxReport1;
           index=3;
-          // TODO: Add in reporter name
           if(reporters[report]) {
             DEBUG("     %s %s (%d : %s)\n", charNames[index], typeName, report, reporters[report]->name);
           } else {

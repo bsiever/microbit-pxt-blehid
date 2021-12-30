@@ -8,9 +8,8 @@
 
 const int SHIFT_MASK =  0x02;
 
- // Copied from https://docs.silabs.com/bluetooth/2.13/code-examples/applications/ble-hid-keyboard
+// Copied from https://docs.silabs.com/bluetooth/2.13/code-examples/applications/ble-hid-keyboard
 // Actually: https://docs.silabs.com/resources/bluetooth/code-examples/applications/ble-hid-keyboard/source/gatt.xml
-
 // This is 45 bytes
 static const uint8_t keyboardReportMap[] =
 {
@@ -19,11 +18,9 @@ static const uint8_t keyboardReportMap[] =
   0xa1, 0x01, //	Collection (Application)
   0x85, 0x00,   // Report ID OFFSET: 7
 
-
   0x95, 0x01, //	Report Count (1)
   0x75, 0x08, //	Report Size (8)
   0x81, 0x01, //	Input (Constant) Reserved byte
-
 
   0x05, 0x07, //	Usage Page (Keyboard)
   0x19, 0xe0, //	Usage Minimum (Keyboard LeftControl)
@@ -33,7 +30,6 @@ static const uint8_t keyboardReportMap[] =
   0x75, 0x01, //	Report Size (1)
   0x95, 0x08, //	Report Count (8) = Above codes are bit mapped to the first byte
   0x81, 0x02, //	Input (Data, Variable, Absolute) Modifier byte
-
 
   0x95, 0x06, //	Report Count (6)
   0x75, 0x08, //	Report Size (8)

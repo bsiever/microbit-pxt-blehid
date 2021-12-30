@@ -5,6 +5,7 @@
 #include "AbsMouseReporter.h"
 
 // Report Map from Nordic SDK Example (app_usbd_hid_mouse_desc.h SDK 17.1.0)
+// Modified a bit
 // This is 54 bytes
 static const uint8_t mouseReportMap[] =
 {
@@ -52,7 +53,6 @@ AbsoluteMouseReporter *AbsoluteMouseReporter::getInstance()
     return reporter;
 }
 
-
 AbsoluteMouseReporter::AbsoluteMouseReporter() : 
     HIDReporter("Absolute Mouse", 5, mouseReportMap, sizeof(mouseReportMap), 11, 109) // Name and report size
 {
@@ -70,5 +70,4 @@ void AbsoluteMouseReporter::send(uint16_t x, uint16_t y, bool left, bool middle,
   report[4] = (y>>8)&0xff;
   sendReport();
 }
-
 #endif 

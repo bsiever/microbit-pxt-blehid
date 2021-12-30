@@ -5,7 +5,6 @@
 #include "HIDReporter.h"
 #include "HIDService.h"
 
-
 HIDReporter::HIDReporter(const char *_name, const int _reportSize, const uint8_t *_reportMap, const int _reportMapSize, int _reportIDOffset, int _eventID) :
     name(_name),  
     enabled(false), 
@@ -26,10 +25,10 @@ HIDReporter::HIDReporter(const char *_name, const int _reportSize, const uint8_t
 
 
 void HIDReporter::sendReport() {
+    DEBUG("Send Notify %d (size %d)\n", reportIndex, reportSize);
     // Get the instance of the HID service
     HIDService *hidService = HIDService::getInstance();
     // Notify with new data
-    DEBUG("Send Notify %d (size %d)\n", reportIndex, reportSize);
     hidService->notifyChrValue(reportIndex, report, reportSize);    
 }
 
@@ -42,5 +41,4 @@ void HIDReporter::setEnabled(bool status) {
   enabled = status;
   MicroBitEvent(eventID, HIDService::EVT_STATUS);
 }
-
 #endif

@@ -1,7 +1,7 @@
+
+// General connection and start-up oriented indications
+
 serial.writeLine("starting...")
-
-
-
 bluetooth.onBluetoothConnected(function () {
     serial.writeLine("connected")
 
@@ -19,12 +19,10 @@ bluetooth.onBluetoothDisconnected(function () {
 
 
 // // ////////////////////////////// Gamepad /////////////////////////
-serial.writeLine("Starting Gamepad services...")
 gamepad.startGamepadService()
+serial.writeLine("Gamepad service started...")
 
-serial.writeLine("Gamepad services started...")
-
-
+// Test Buttons (via Button A)
 let buttonMask = 1
 input.onButtonPressed(Button.A, function () {
     serial.writeLine("Button Mask "+buttonMask)
@@ -35,6 +33,7 @@ input.onButtonPressed(Button.A, function () {
     }
 })
 
+// Test sticks and Hats (D-pads)
 let index = 1
 input.onButtonPressed(Button.B, function () {
     let vals = [[0,0,0,0,0], [100,0,0,0,0], [0,100,0,0, 0], [0,0,100,0, 0], [0,0,0,100,0],
@@ -50,30 +49,32 @@ input.onButtonPressed(Button.B, function () {
 
 })
 
-// gamepad.setStatusChangeHandler(function () {
-//     serial.writeLine("---Gamepad Status Change---")
-//     if (gamepad.isEnabled()) {
-//         serial.writeLine("Enabled")
-//         led.plot(0, 0)
-//     } else {
-//         led.unplot(0, 0)
-//     }
-// })
-
+// Show connection state
+gamepad.setStatusChangeHandler(function () {
+    serial.writeLine("---Gamepad Status Change---")
+    if (gamepad.isEnabled()) {
+        serial.writeLine("Enabled")
+        led.plot(0, 0)
+    } else {
+        led.unplot(0, 0)
+    }
+})
 
 
 ////////////////////////////// Abs Mouse /////////////////////////
 // absmouse.startAbsoluteMouseService()
+// serial.writeLine("AbsMouse service started...")
+//// Button A: Move the mouse top-to-bottom, left-to-right
 // input.onButtonPressed(Button.A, function () {
 //     for(let x=-32767; x<32767;x+=5000) {
 //         for(let y=-32767; y<32767;y+=5000) {
 //             serial.writeLine("x " + x + " y " + y)
-
 //             absmouse.movexy(x, y)
 //             basic.pause(100)
 //         }
 //     }
 // })
+//// Button B: Place mouse a little above/right of center of screen
 // input.onButtonPressed(Button.B, function () {
 //     absmouse.movexy(-126, -126)
 // })
@@ -89,67 +90,29 @@ input.onButtonPressed(Button.B, function () {
 
 
 
-
-
-
-
-
-
-
-
-
-
+////////////////////////////// Keyboard /////////////////////////
 keyboard.startKeyboardService()
+serial.writeLine("Keyboard service started...")
+// Button AB:  Print "Test"
 input.onButtonPressed(Button.AB, function () {
     keyboard.sendString("Test")
-    // absmouse.movexy(1, 1)
 })
 
-
-
-
-
-// basic.showIcon(IconNames.Yes)
-
-
-
-
-
-
-
-
-// bluetooth.onUartDataReceived(serial.delimiters(Delimiters.NewLine), function () {
-//     serial.writeLine(bluetooth.uartReadUntil(serial.delimiters(Delimiters.NewLine)))
-// })
-// bluetooth.startUartService()
-// bluetooth.startLEDService()
-
-
-// media.startMediaService()
-// input.onButtonPressed(Button.A, function () {
-//     serial.writeLine("Button A\n")
-//     media.sendCode(MediaKey.playPause)
-// })
-
-// media.setStatusChangeHandler(function () {
-//     serial.writeLine("---Media Status Change---")
-//     if (media.isEnabled()) {
-//         serial.writeLine("Enabled")
-//         led.plot(2, 0)
-//     } else {
-//         led.unplot(2, 0)
-//     }
-// })
-
-
-// serial.writeLine("Calling Adv...")
-// keyboard.startKeyboardService()
-
-// serial.writeLine("Done...")
+// Button A: Print the entire supported ASCII table (and then compare to the string that was sent / is embedded here)
 // input.onButtonPressed(Button.A, function () {
 //     serial.writeLine("Button A\n")
 //     // All printable ASCII characters...
 //     keyboard.sendString(" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~");
+// })
+//// Button B: Iterate through all special keys, then iterate through modifiers+"a"
+// input.onButtonPressed(Button.B, function () {
+//     serial.writeLine("Button B\n")
+//     for(let i = keyboard._Key.enter; i<=keyboard._Key.vol_down; i++) {
+//         keyboard.sendString(keyboard.keys(i))
+//     }
+//     for(let i = keyboard._Modifier.control; i<=keyboard._Modifier.rightWindows; i++) {
+//         keyboard.sendString(keyboard.modifiers(i)+"a")
+//     }
 // })
 
 keyboard.setStatusChangeHandler(function () {
@@ -162,70 +125,48 @@ keyboard.setStatusChangeHandler(function () {
     }
 })
 
-// input.onButtonPressed(Button.B, function () {
-//     serial.writeLine("Button B\n")
-//     for(let i = keyboard._Key.enter; i<=keyboard._Key.vol_down; i++) {
-//         keyboard.sendString(keyboard.keys(i))
-//     }
-    
-//     for(let i = keyboard._Modifier.control; i<=keyboard._Modifier.rightWindows; i++) {
-//         keyboard.sendString(keyboard.modifiers(i)+"a")
-//     }
-// })
-
+// Button A+B: Send a raw scancode and then some simultaneous keys
 // input.onButtonPressed(Button.AB, function () {
 //     serial.writeLine("Button AB\n")
 //     // // Print an "x" = 0x1b
 //     keyboard.sendString(keyboard.rawScancode(0x1b))
-
 //     keyboard.sendSimultaneousKeys(
 //                 Modifier.control+Modifier.alt+
 //                 "ac"+
 //                 Key.enter,     
 //             false)
-
 // })
 
 
+////////////////////////////// Media Keys /////////////////////////
 
-
-
-
-
-
-
-////////////////// Mouse
-
-// serial.writeLine("starting...")
-
-// bluetooth.onBluetoothConnected(function () {
-//     basic.showLeds(`
-//         . . . . .
-//         . . . . .
-//         . . # . #
-//         . . # # #
-//         . . . # .
-//         `)
+// media.startMediaService()
+// serial.writeLine("Media service started...")
+//// Button A: Hit Play/Pause
+// input.onButtonPressed(Button.A, function () {
+//     serial.writeLine("Button A\n")
+//     media.sendCode(MediaKey.playPause)
 // })
-// bluetooth.onBluetoothDisconnected(function () {
-//     basic.showIcon(IconNames.No)
+// TODO: More exhaustive testing.
+// media.setStatusChangeHandler(function () {
+//     serial.writeLine("---Media Status Change---")
+//     if (media.isEnabled()) {
+//         serial.writeLine("Enabled")
+//         led.plot(2, 0)
+//     } else {
+//         led.unplot(2, 0)
+//     }
 // })
-// bluetooth.onUartDataReceived(serial.delimiters(Delimiters.NewLine), function () {
-//     serial.writeLine(bluetooth.uartReadUntil(serial.delimiters(Delimiters.NewLine)))
-// })
-// basic.showIcon(IconNames.Yes)
-// bluetooth.startUartService()
-// bluetooth.startLEDService()
 
-// serial.writeLine("Calling Adv...")
+
+////////////////////////////// Mouse /////////////////////////
 // mouse.startMouseService()
-// serial.writeLine("Done...")
-
+// serial.writeLine("Mouse service started...")
+//// Button B: Move mouse 75 units to the right
 // input.onButtonPressed(Button.B, function () {
 //     serial.writeLine("Button B\n")
 //     mouse.send(75, 0, false, false, false, 0, false);
 // })
-
 // mouse.setStatusChangeHandler(function () {
 //     serial.writeLine("---Mouse Status Change---")
 //     if (mouse.isEnabled()) {
@@ -236,12 +177,12 @@ keyboard.setStatusChangeHandler(function () {
 //     }
 // })
 
+// Infinite loop / prevents all other tests:  
+//  Use the accelerometer to control the mouse
 // let y = 0
 // let my = 0
 // let x = 0
 // let mx = 0
-// basic.showIcon(IconNames.Heart)
-// blemouse.startMouseService()
 // basic.forever(function () {
 //     mx = 0
 //     x = input.acceleration(Dimension.X)
@@ -257,7 +198,6 @@ keyboard.setStatusChangeHandler(function () {
 //     } else if(y>300) {
 //         my = Math.map(y, 400, 1023, 0, 127)
 //     }
-
 //     serial.writeValue("mx", mx)
 //     serial.writeValue("my", my)
 //     blemouse.send(
@@ -269,5 +209,22 @@ keyboard.setStatusChangeHandler(function () {
 //         0, 
 //         true
 //         )
-
 // })
+
+
+//////// DEBRIS
+
+// bluetooth.onUartDataReceived(serial.delimiters(Delimiters.NewLine), function () {
+//     serial.writeLine(bluetooth.uartReadUntil(serial.delimiters(Delimiters.NewLine)))
+// })
+// bluetooth.startUartService()
+// bluetooth.startLEDService()
+
+// bluetooth.onUartDataReceived(serial.delimiters(Delimiters.NewLine), function () {
+//     serial.writeLine(bluetooth.uartReadUntil(serial.delimiters(Delimiters.NewLine)))
+// })
+// basic.showIcon(IconNames.Yes)
+// bluetooth.startUartService()
+// bluetooth.startLEDService()
+
+// serial.writeLine("Calling Adv...")

@@ -3,7 +3,6 @@
 //% icon="\uf245"
 //% block="Absolute Mouse"
 namespace absmouse {
-
     //% blockId="absolute mouse service" block="bluetooth absolute mouse service"
     //% shim=absmouse::startAbsoluteMouseService
     //% weight=50
@@ -61,5 +60,4 @@ namespace absmouse {
      export function isEnabled() : boolean {
         return false;
     }
-
 }

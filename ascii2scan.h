@@ -9,5 +9,4 @@
 // 0x0000 => No valid scan code 
 uint16_t ascii2scan(char c); 
 
-
 #endif

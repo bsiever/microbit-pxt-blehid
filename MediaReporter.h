@@ -17,8 +17,6 @@ class  MediaReporter : public HIDReporter {
 
     private: 
     static MediaReporter *reporter;
-
 };
-
 #endif
 #endif 

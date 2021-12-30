@@ -24,18 +24,17 @@ protected:
     const char* name;
     bool enabled;
 
-    unsigned reportIndex; // Actual index into characteristics
-    unsigned reportID;
-    uint8_t *report;
-    const int reportSize;
-    const int reportIDOffset;
+    unsigned reportIndex;      // Actual index into characteristics
+    unsigned reportID;         // The report ID that will be used for corresponding reports
+    uint8_t *report;           // Buffer to be used for report data
+    const int reportSize;      // Size of the reports
+    const int reportIDOffset;  // 0-based offset of report ID in report map
 
-    const uint8_t *reportMap;
-    const int reportMapSize;
-    const int eventID; 
+    const uint8_t *reportMap;  // The report map (must include a report ID)
+    const int reportMapSize;   // Size of report
+    const int eventID;         // Event ID used to notify of changes in report CCCD status
+
     void sendReport();
     void setEnabled(bool status);
 };
-
-
 #endif

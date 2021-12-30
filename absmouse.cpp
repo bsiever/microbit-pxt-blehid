@@ -17,7 +17,6 @@
 #include "AbsMouseReporter.h"
 #include "debug.h"
 
-
 static AbsoluteMouseReporter *reporter = NULL;
 
 static int constrain(int in, int min, int max) {
@@ -65,5 +64,4 @@ namespace absmouse {
         if(!reporter) return;
         reporter->setStatusChangeHandler(action);
     }
-
   }

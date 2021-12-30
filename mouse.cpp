@@ -17,7 +17,6 @@
 #include "MouseReporter.h"
 #include "debug.h"
 
-
 static MouseReporter *reporter = NULL;
 
 static int constrain(int in, int min, int max) {
@@ -66,5 +65,4 @@ namespace mouse {
         if(!reporter) return;
         reporter->setStatusChangeHandler(action);
     }
-
   }

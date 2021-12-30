@@ -8,15 +8,14 @@
 #include "HIDService.h"
 
 class  AbsoluteMouseReporter : public HIDReporter {
-    public:
+  public:
     static AbsoluteMouseReporter* getInstance();
     
     void send(uint16_t x, uint16_t y, bool left, bool middle, bool right);
 
-    private: 
+  private: 
     AbsoluteMouseReporter();
     static AbsoluteMouseReporter *reporter;
-
 };
 #endif
 #endif 

@@ -8,19 +8,18 @@
 #include "HIDReporter.h"
 
 class  KeyboardReporter : public HIDReporter {
-    public:
+public:
     static KeyboardReporter* getInstance();
     void sendScanCode(uint8_t c, uint8_t modifiers);
     void sendString(char *str, int len);
     void sendSimultaneousKeys(char *str, int len);
 
-    private: 
+private: 
     KeyboardReporter();
 
-    private: 
+private: 
     const int betweenKeyDelay = 40; 
     static KeyboardReporter *reporter;
-
 };
 
 #endif

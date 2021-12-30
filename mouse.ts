@@ -3,7 +3,6 @@
 //% icon="\uf245"
 //% block="Mouse"
 namespace mouse {
-
     //% blockId="mouse service" block="bluetooth mouse service"
     //% shim=mouse::startMouseService
     //% weight=50
@@ -68,5 +67,4 @@ namespace mouse {
      export function isEnabled() : boolean {
         return false;
     }
-
 }
