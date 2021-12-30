@@ -48,7 +48,7 @@ namespace gamepad {
         uint8_t rx = (xyrxry >>  8)&0xFF;
         uint8_t ry = (xyrxry >>  0)&0xFF;
 
-        DEBUG("x %d, y %d rx %d, ry %d, dpad: 0x%02x\n",x,y,rx,ry, dpad);
+        //DEBUG("x %d, y %d rx %d, ry %d, dpad: 0x%02x\n",x,y,rx,ry, dpad);
         reporter->send(buttons, x, y, rx, ry, dpad);
     }
 

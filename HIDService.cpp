@@ -265,7 +265,7 @@ void HIDService::onDataWritten( const microbit_ble_evt_write_t *params)
 }
 
 bool HIDService::onBleEvent(const microbit_ble_evt_t *p_ble_evt) {
-    DEBUG("onBleEvent id = %d\n", p_ble_evt->header.evt_id);
+    //DEBUG("onBleEvent id = %d\n", p_ble_evt->header.evt_id);
     // Let usual process handle it. 
     return MicroBitBLEService::onBleEvent(p_ble_evt);
 }
