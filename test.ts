@@ -35,20 +35,20 @@ input.onButtonPressed(Button.A, function () {
     }
 })
 
-// let index = 1
-// input.onButtonPressed(Button.B, function () {
-//     let vals = [[0,0,0,0,0], [100,0,0,0,0], [0,100,0,0, 0], [0,0,100,0, 0], [0,0,0,100,0],
-//      [0,0,0,0,1], [0,0,0,0,2],[0,0,0,0,3],[0,0,0,0,4],[0,0,0,0,5],[0,0,0,0,16],[0,0,0,0,17],[0,0,0,0,18] ]
-//     let names = ["-", "x", "y", "rx", "ry", "N1", "NE1", "E2", "SE1", "S1", "N2", "NE2", "E2"]
-//     gamepad.send(0, vals[index][0], vals[index][1], vals[index][2], vals[index][3], vals[index][4])
-//     serial.writeLine(names[index] + " = " + vals[index])
-//     index = (index+1) % vals.length
-//     // let vals = [10,20,30,40,50,60,70,80,90,100,110,120,-120,-110,-100,-90,-80,-70]
-//     // gamepad.send(0, vals[index],0,0,0)
-//     // serial.writeLine("x = " + vals[index])
-//     // index = (index+1) % vals.length
+let index = 1
+input.onButtonPressed(Button.B, function () {
+    let vals = [[0,0,0,0,0], [100,0,0,0,0], [0,100,0,0, 0], [0,0,100,0, 0], [0,0,0,100,0],
+     [0,0,0,0,1], [0,0,0,0,2],[0,0,0,0,3],[0,0,0,0,4],[0,0,0,0,5],[0,0,0,0,16],[0,0,0,0,48],[0,0,0,0,32] ]
+    let names = ["-", "x", "y", "rx", "ry", "N1", "NE1", "E2", "SE1", "S1", "N2", "NE2", "E2"]
+    gamepad.send(0, vals[index][0], vals[index][1], vals[index][2], vals[index][3], vals[index][4])
+    serial.writeLine(names[index] + " = " + vals[index])
+    index = (index+1) % vals.length
+    // let vals = [10,20,30,40,50,60,70,80,90,100,110,120,-120,-110,-100,-90,-80,-70]
+    // gamepad.send(0, vals[index],0,0,0)
+    // serial.writeLine("x = " + vals[index])
+    // index = (index+1) % vals.length
 
-// })
+})
 
 // gamepad.setStatusChangeHandler(function () {
 //     serial.writeLine("---Gamepad Status Change---")
