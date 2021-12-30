@@ -54,7 +54,7 @@ gamepad.setStatusChangeHandler(function () {
     serial.writeLine("---Gamepad Status Change---")
     if (gamepad.isEnabled()) {
         serial.writeLine("Enabled")
-        led.plot(0, 0)
+        led.plot(1, 0)
     } else {
         led.unplot(0, 0)
     }

@@ -7,11 +7,18 @@
 Join with text join
 # Mouse
 
-Mouse does stuff
+Mouse does stuff.
+
+Can work in iOS with accessibility features enabled ([Assistive Touch](https://support.apple.com/en-us/HT210546) [here](https://www.macworld.com/article/232969/how-to-use-a-mouse-with-your-ipad-or-iphone.html))
 # Media
 
 Yeah...
 
+# Absolute Mouse
+
+macOS and Windows only
+
+# Game Pad
 # Pairing and Programming Quirks
 
 
@@ -48,8 +55,15 @@ Use the Media Eject
 
 ## iOS 
 
-* iOS doesn't support a mouse
+* iOS doesn't support a mouse (well, does with assistive touch)
+* iOS only supports gamepad with assistive touch
 * iOS Doesn't honor media "Stop"
+
+
+
+General details on HID [here](https://support.apple.com/en-us/HT204387).  Highlights: "iPhone 5s and later, iPad Air and later, and iPod touch (6th generation) and later".
+
+Hmmm... https://support.apple.com/en-us/HT210414
 
 
 
