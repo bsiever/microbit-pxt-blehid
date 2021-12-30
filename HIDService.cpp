@@ -53,6 +53,70 @@ const int HIDService::EVT_STATUS = 1;  // Event for connect / disconnect
 
 HIDService *HIDService::service = NULL; // Singleton reference to the service
 
+
+// static const char * m_event_str[] =
+// {
+//     "PM_EVT_BONDED_PEER_CONNECTED",
+//     "PM_EVT_CONN_SEC_START",
+//     "PM_EVT_CONN_SEC_SUCCEEDED",
+//     "PM_EVT_CONN_SEC_FAILED",
+//     "PM_EVT_CONN_SEC_CONFIG_REQ",
+//     "PM_EVT_CONN_SEC_PARAMS_REQ",
+//     "PM_EVT_STORAGE_FULL",
+//     "PM_EVT_ERROR_UNEXPECTED",
+//     "PM_EVT_PEER_DATA_UPDATE_SUCCEEDED",
+//     "PM_EVT_PEER_DATA_UPDATE_FAILED",
+//     "PM_EVT_PEER_DELETE_SUCCEEDED",
+//     "PM_EVT_PEER_DELETE_FAILED",
+//     "PM_EVT_PEERS_DELETE_SUCCEEDED",
+//     "PM_EVT_PEERS_DELETE_FAILED",
+//     "PM_EVT_LOCAL_DB_CACHE_APPLIED",
+//     "PM_EVT_LOCAL_DB_CACHE_APPLY_FAILED",
+//     "PM_EVT_SERVICE_CHANGED_IND_SENT",
+//     "PM_EVT_SERVICE_CHANGED_IND_CONFIRMED",
+//     "PM_EVT_SLAVE_SECURITY_REQ",
+//     "PM_EVT_FLASH_GARBAGE_COLLECTED",
+//     "PM_EVT_FLASH_GARBAGE_COLLECTION_FAILED",
+// };
+
+// Bounce it to the instance
+void HIDService::static_pm_events(const pm_evt_t* p_event) {
+  getInstance()->pm_events(p_event);
+}
+
+
+
+void HIDService::pm_events(const pm_evt_t* p_event) {
+  //DEBUG("PM Event %s conn %d, peer %d\n",m_event_str[p_event->evt_id], p_event->conn_handle,  p_event->peer_id );
+  if(p_event->evt_id == PM_EVT_PEER_DATA_UPDATE_SUCCEEDED) {
+    // DEBUG("data %d, action %d, token %d, flash changed %d\n", 
+    //   p_event->params.peer_data_update_succeeded.data_id,
+    //   p_event->params.peer_data_update_succeeded.action,
+    //   p_event->params.peer_data_update_succeeded.token,
+    //   p_event->params.peer_data_update_succeeded.flash_changed);
+    // Iterate through the report characteristics to see if any have CCCD enabled
+    for(int i=mbbs_cIdxReport1, idx=0; i<mbbs_cIdxCOUNT;i++, idx++) {
+
+      // Get the CCCD
+      ble_gatts_value_t data;
+      memset(&data, 0, sizeof(ble_gatts_value_t));
+      uint16_t value;
+      data.len = 2;
+      data.p_value = (uint8_t*)&value;
+      sd_ble_gatts_value_get(p_event->conn_handle, charHandles(i)->cccd, &data); 
+
+      // Update the reporter
+      int reporterIdx = i-mbbs_cIdxReport1;
+      if(reporters[reporterIdx]) {
+        reporters[i-mbbs_cIdxReport1]->setEnabled( value ? true : false);
+      }
+      // Update the internal characteristic flags
+      chars[i].setCCCD(value);
+    }
+  }
+
+}
+
 /**
  */
 HIDService *HIDService::getInstance()
@@ -75,6 +139,7 @@ HIDService::HIDService() :
   reportMapUsed(0)
 
 {
+
   // Initialize all report data 
     memset(reporters, 0, sizeof(HIDReporter*)*numReportsMax);
 
@@ -115,6 +180,7 @@ HIDService::HIDService() :
       // Report indices are 1-based and in order of addition
       addReportDescriptor(charHandles(i)->value, i-mbbs_cIdxReport1+1, 1 /* Input report */);
     } 
+   pm_register(static_pm_events); 
 }
 
 void HIDService::addReporter(HIDReporter *reporter) {
@@ -198,6 +264,14 @@ void HIDService::onDataWritten( const microbit_ble_evt_write_t *params)
   } 
 }
 
+bool HIDService::onBleEvent(const microbit_ble_evt_t *p_ble_evt) {
+    DEBUG("onBleEvent id = %d\n", p_ble_evt->header.evt_id);
+
+    // Let usual process handle it. 
+    return MicroBitBLEService::onBleEvent(p_ble_evt);
+}
+
+
 /**
  * 
  * 
@@ -256,7 +330,7 @@ void HIDService::advertiseHID() {
         // Name needed to be identified by Android
         m_advdata.name_type = BLE_ADVDATA_FULL_NAME;
         
-        // Appearance isn't stricly needed for detection 
+        // Appearance isn't strictly needed for detection 
         sd_ble_gap_appearance_set(BLE_APPEARANCE_GENERIC_HID );
 
         // The flags below ensure "pairing mode" so it shows up in Android

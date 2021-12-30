@@ -11,6 +11,7 @@
 #include "debug.h"
 
 #include "HIDReporter.h"
+#include"peer_manager.h"
 
 
 /*
@@ -20,8 +21,9 @@
 | Mouse    |     54   |       4     |
 | Abs Mouse|     54   |       5     |
 | Media    |     37   |       1     |
+| Gamepad  |     64   |       7     |
 |          |          |             |
-|Total/Max |   192    |       8     |
+|Total/Max |   249    |       8     |
 */
 
 const int numReportsMax = 4;
@@ -35,12 +37,13 @@ const int reportMaxSize = 8;       // Max size  (8 for other than game...)
   */
 class HIDService : public MicroBitBLEService
 {
+  public:
+    static HIDService *getInstance();
 
     private:
     static HIDService *service; // Singleton
     friend class HIDReporter;
 
-    static HIDService *getInstance();
     int addHIDReporter(HIDReporter& reporter);
 
     /**
@@ -69,6 +72,15 @@ class HIDService : public MicroBitBLEService
      * Callback. Invoked when any of our attributes are read via BLE.
      */
     void onDataRead( microbit_onDataRead_t *params);
+
+
+    // BLE Events...Let's monitor 'em all. 
+    bool onBleEvent(            const microbit_ble_evt_t *p_ble_evt);
+
+    // Peer Manager Events (re-enable CCCDs)
+    void pm_events(const pm_evt_t* p_event);
+    // Peer Manager Events (re-enable CCCDs)
+    static void static_pm_events(const pm_evt_t* p_event);
 
     // Index for each characteristic in arrays of handles and UUIDs
     typedef enum mbbs_cIdx
