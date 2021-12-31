@@ -24,6 +24,7 @@ namespace media {
 
     //% blockId="send code" block="send code | $code" 
     //% shim=media::sendCode
+    //% code.shadow="mediakey_conv"
     //% weight=40
     export function sendCode(code: number) : void {
     }
@@ -40,6 +41,8 @@ namespace media {
      export function isEnabled() : boolean {
         return false;
     }
+
+
 
     export enum _MediaKey {
         next, 
