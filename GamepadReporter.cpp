@@ -135,7 +135,7 @@ GamepadReporter::GamepadReporter() :
 {
 }
 
-void GamepadReporter::send(uint16_t buttons, uint8_t x, uint8_t y, uint8_t rx, uint8_t ry, uint8_t dpad) {
+void GamepadReporter::send(uint16_t buttons, uint8_t x, uint8_t y, uint8_t z, uint8_t rx, uint8_t dpad) {
   // Little endian
   // x/y/z/rx are absolute
   memset(report, 0, reportSize);
@@ -144,8 +144,8 @@ void GamepadReporter::send(uint16_t buttons, uint8_t x, uint8_t y, uint8_t rx, u
   report[1] = (buttons>>8)&0xff;
   report[2] = x; 
   report[3] = y; 
-  report[4] = rx; 
-  report[5] = ry; 
+  report[4] = z; 
+  report[5] = rx; 
   // D-pad // 1-8 = directions (north going clockwise) Up Down Right Left
   report[6] = dpad; 
   sendReport();
