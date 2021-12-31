@@ -55,14 +55,22 @@ basic.forever(function () {
             basic.pause(5)
         }
     }
+    // gamepad.send(
+    //     buttons,
+    //     0,
+    //     0,
+    //     dpadCmd[ud][lr],
+    //     0,
+    //     0
+    //     )
     gamepad.send(
-    buttons,
-    0,
-    0,
-    dpadCmd[ud][lr],
-    0,
-    0
-    )
+        buttons,
+        Math.map(x, -1023, 1023, -126, 126),
+        Math.map(y, -1023, 1023, -126, 126),
+        0,
+        0,
+        0
+        )
 })
 
 // // Test Buttons (via Button A)
