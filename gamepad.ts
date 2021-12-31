@@ -1,4 +1,49 @@
 
+
+/*
+Android Buttons
+
+dpad 
+1 = dpup
+2 = dpright + dpup
+3 = dpright
+4 = dpright + dpdown
+5 = dpdown
+6 = dpdown+doleft
+7 = dpleft
+8 = dpleft + dpup
+*/
+
+
+export enum GameButton {
+    A = 1<<0,
+    B = 1<<1,
+    X = 1<<3,
+    Y = 1<<4,
+    //% block="left shoulder"
+    leftShoulder = 1<<6, 
+    //% block="right shoulder"
+    rightShoulder = 1<<7,
+    back = 1<<10,
+    start = 1<<11,
+    guide = 1<<12,
+    //% block="left stick"
+    leftStick = 1<<13,
+    //% block="right stick"
+    rightStick = 1<<14
+}
+
+class GameDirection {
+    static readonly up = 1
+    static readonly upRight = 2
+    static readonly right = 3
+    static readonly downRight = 4
+    static readonly down = 5
+    static readonly downLeft = 6
+    static readonly left = 7
+    static readonly upLeft = 8
+}
+
 //% color=#0000FF 
 //% icon="\uf11b"
 //% block="Gamepad"
@@ -12,6 +57,19 @@ namespace gamepad {
 
     //% shim=gamepad::_send
     function _send(buttons: number, xyrxry: number, dpad: number) : void { 
+    }
+
+
+
+
+
+    //% blockId="button_conv" block="$button on $active"
+    //% active.defl=true
+    //% weight=20
+    export function buttons(button: GameButton, active: boolean) : number {
+        if(button<GameButton.A || button>GameButton.rightStick)
+            return 0
+        return active ? button : 0
     }
 
     // //% blockId="move gamepad xy" block="move gamepad | x by $x| and y by $y"
