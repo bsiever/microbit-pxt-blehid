@@ -59,9 +59,9 @@ basic.forever(function () {
     buttons,
     0,
     0,
+    dpadCmd[ud][lr],
     0,
-    0,
-    dpadCmd[ud][lr]
+    0
     )
 })
 

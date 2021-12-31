@@ -8,10 +8,13 @@
 HIDReporter::HIDReporter(const char *_name, const int _reportSize, const uint8_t *_reportMap, const int _reportMapSize, int _reportIDOffset, int _eventID) :
     name(_name),  
     enabled(false), 
+    reportIndex(-1),
+    reportID(-1),
+    report(NULL),
     reportSize(_reportSize), 
+    reportIDOffset(_reportIDOffset),
     reportMap(_reportMap), 
     reportMapSize(_reportMapSize), 
-    reportIDOffset(_reportIDOffset),
     eventID(_eventID)
 {
     DEBUG("Name %s ReportSize %d\n", name, reportMapSize);

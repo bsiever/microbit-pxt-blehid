@@ -138,8 +138,8 @@ HIDService *HIDService::getInstance()
  */
 HIDService::HIDService() :
   protocolMode(0x01),  // Report Protocol
-  numReporters(0), 
-  reportMapUsed(0)
+  reportMapUsed(0),
+  numReporters(0)
 {
   // Initialize all report data 
   memset(reporters, 0, sizeof(HIDReporter*)*numReportsMax);
@@ -225,7 +225,7 @@ void HIDService::onConnect( const microbit_ble_evt_t *p_ble_evt)
 void HIDService::onDisconnect( const microbit_ble_evt_t *p_ble_evt)
 {
     DEBUG("HID onDisconnect\n");
-    for(int i=0;i<numReporters;i++) {
+    for(unsigned i=0;i<numReporters;i++) {
       reporters[i]->setEnabled(false);
     }
 }
