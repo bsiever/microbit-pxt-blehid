@@ -50,10 +50,22 @@ namespace gamepad {
     function _send(buttons: number, xyzrx: number, dpad: number) : void { 
     }
 
-    //% blockId="button_conv" block="$button on $active"
-    //% active.defl=true
+
+    //% blockId="dpad_conv" block="D-Pad $direction"
+    //% direction.defl=GameDirection.none
     //% weight=20
-    export function buttons(button: GameButton, active: boolean) : number {
+    export function _dpad(direction: GameDirection): number {
+        if (direction < GameDirection.up || direction > GameDirection.upLeft)
+            return 0
+        return direction
+    }
+
+    //% blockId="button_conv" block="Button $button pressed $active"
+    //% active.defl=true
+    //% button.defl=GameButton.none
+    //% weight=20
+    export function _buttons(button: GameButton, active: boolean) : number {
+        //let active = true
         if(button<GameButton.A || button>GameButton.rightStick)
             return 0
         return active ? button : 0
@@ -62,13 +74,15 @@ namespace gamepad {
     function constrain(val: number, min: number, max: number) {
         return (val<min) ? min : (val>max ? max : val);
     }
-    //% blockId="send gamepad" block="send gamepad motion|set x to $x|set y to $y| set buttons to $buttons | set dpad to $dpad || set z to $z| set rx to $rx| " 
-    //% x.min=-127 x.max=127 y.min=-127 y.max=127 z.min=-127 z.max=127 ry.min=-127 ry.max=127, dpad.min=0, dpad.max=15
-    //% buttons.defl=GameButton.none dpad.defl=GameDirection.none z.defl=0 rx.defl=0
-    //% blockExternalInputs=true
-    //% expandableArgumentMode="toggle"
+    
+    //% blockId="send gamepad" block="send gamepad motion|set x to $x|set y to $y| set buttons to $buttons | set dpad to $dpad | set z to $z set rx to $rx| " 
+    //% x.min=-127 x.max=127 y.min=-127 y.max=127 z.min=-127 z.max=127 rx.min=-127 rx.max=127 dpad.min=0 dpad.max=15
+    //% buttons.shadow="button_conv"
+    //% dpad.shadow="dpad_conv"
+    //% z.defl=0 rx.defl=1
     //% weight=10
-    export function send(buttons: GameButton, x: number, y: number, z: number, rx: number, dpad: GameDirection) : void { 
+    // TODO: Use expandable block (didn't work initially)
+    export function send(buttons: number, x: number, y: number, dpad: number, z: number, rx: number) : void {
         x = (constrain(x, -127, 127) & 0xff)
         y = (constrain(y, -127, 127) & 0xff)
         z = (constrain(z, -127, 127) & 0xff)
