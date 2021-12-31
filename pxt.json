@@ -38,7 +38,8 @@
         "gamepad.ts",
         "gamepad.cpp",
         "GamepadReporter.cpp",
-        "GamepadReporter.h"
+        "GamepadReporter.h",
+        "main.ts"
     ],
     "testFiles": [
         "test.ts"
@@ -51,7 +52,7 @@
     "supportedTargets": [
         "microbit"
     ],
-    "preferredEditor": "tsprj",
+    "preferredEditor": "pyprj",
     "disablesVariants": [
         "mbdal"
     ],
