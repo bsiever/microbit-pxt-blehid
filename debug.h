@@ -12,7 +12,7 @@
 //#define DEBUG(...) MICROBIT_DEBUG_DMESG( __VA_ARGS__ )
 
 #else 
-#define DEBUG(str) ((void)0)
+#define DEBUG(...) ((void)0)
 #endif
 
 #endif

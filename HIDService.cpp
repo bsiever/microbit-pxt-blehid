@@ -374,8 +374,8 @@ void HIDService::advertiseHID() {
         uBit.bleManager.advertise();
     } 
 
-#ifdef DEBUG_ENABLED
 void HIDService::debugAttribute(int handle) {
+#ifdef DEBUG_ENABLED
       microbit_charattr_t type;
       int index = charHandleToIdx(handle, &type);
 
@@ -410,7 +410,6 @@ void HIDService::debugAttribute(int handle) {
       } else {
         DEBUG("     %s %s\n", charNames[index], typeName);
       }
-}
 #endif
-
+}
 #endif
