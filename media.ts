@@ -56,7 +56,7 @@ namespace media {
     }
 
     //% blockId="mediakey_conv" block="%key"
-    //% weight=20
+    //% weight=20 
     export function keys(key : _MediaKey) : number {
         let keys = [
             MediaKey.next, 
