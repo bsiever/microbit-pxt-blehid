@@ -185,12 +185,20 @@ gamepad.setStatusChangeHandler(function () {
 
 // media.startMediaService()
 // serial.writeLine("Media service started...")
-//// Button A: Hit Play/Pause
+// // Button A: Hit Play/Pause
 // input.onButtonPressed(Button.A, function () {
 //     serial.writeLine("Button A\n")
 //     media.sendCode(MediaKey.playPause)
 // })
-// TODO: More exhaustive testing.
+
+// // Iterate through all codes
+// input.onButtonPressed(Button.B, function () {
+//     serial.writeLine("Button B\n")
+//     for(let i = media._MediaKey.next; i<=media._MediaKey.vol_down i++) {
+//         media.sendCode(media.keys(i))
+//     }
+// })
+
 // media.setStatusChangeHandler(function () {
 //     serial.writeLine("---Media Status Change---")
 //     if (media.isEnabled()) {

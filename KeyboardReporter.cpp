@@ -114,8 +114,6 @@ void KeyboardReporter::sendString(char *str, int len) {
                 shift = (full>>8) ? SHIFT_MASK : 0;
                 code = full & 0xFF;
                 // Send blank when repeated keys or just a change in modifier
-
-                // TODO: Is this needed???
                 if(code == lastCode) {
                     sendScanCode(0, 0);
                 }
