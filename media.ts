@@ -55,7 +55,7 @@ namespace media {
         vol_down,
     }
 
-    //% blockId="key_conv" block="%key"
+    //% blockId="mediakey_conv" block="%key"
     //% weight=20
     export function keys(key : _MediaKey) : number {
         let keys = [
