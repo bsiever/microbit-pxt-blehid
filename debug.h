@@ -1,7 +1,7 @@
 #ifndef DEBUG_DISP 
 #define DEBUG_DISP
 
-#define DEBUG_ENABLED 1
+//#define DEBUG_ENABLED 1
 
 #ifdef DEBUG_ENABLED 
 
@@ -12,7 +12,7 @@
 //#define DEBUG(...) MICROBIT_DEBUG_DMESG( __VA_ARGS__ )
 
 #else 
-#define DEBUG(str) 
+#define DEBUG(str) ((void)0)
 #endif
 
 #endif
