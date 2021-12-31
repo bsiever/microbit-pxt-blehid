@@ -1,20 +1,4 @@
 
-
-/*
-Android Buttons
-
-dpad 
-1 = dpup
-2 = dpright + dpup
-3 = dpright
-4 = dpright + dpdown
-5 = dpdown
-6 = dpdown+doleft
-7 = dpleft
-8 = dpleft + dpup
-*/
-
-
 enum GameButton {
     none = 0,
     A = 1<<0,
