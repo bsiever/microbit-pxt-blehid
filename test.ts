@@ -23,7 +23,9 @@ gamepad.startGamepadService()
 serial.writeLine("Gamepad service started...")
 
 // // Infinite loop / prevents all other tests:  
-let dpadCmd: number[][] = [[8, 1, 2], [7, 0, 3], [6, 5, 4]]
+let dpadCmd: number[][] = [[GameDirection.upLeft,   GameDirection.up,          GameDirection.upRight], 
+                           [GameDirection.left,     GameDirection.noDirection, GameDirection.right],
+                           [GameDirection.downLeft, GameDirection.down,        GameDirection.downRight]]
 let buttons = 0
 let ud = 0
 let y = 0
@@ -46,15 +48,20 @@ basic.forever(function () {
         ud = 2. // Down
     }
     buttons = 0
-    if (input.buttonIsPressed(Button.A)) {
-        buttons = 1<<buttonShift
-        serial.writeLine("Button shift = " + buttonShift)
-        buttonShift = (buttonShift + 1) % 15
-        // Wait for release / debounce
-        while(input.buttonIsPressed(Button.A)) {
-            basic.pause(5)
-        }
-    }
+    // if (input.buttonIsPressed(Button.A)) {
+    //     buttons = 1<<buttonShift
+    //     serial.writeLine("Button shift = " + buttonShift)
+    //     buttonShift = (buttonShift + 1) % 15
+    //     // Wait for release / debounce
+    //     while(input.buttonIsPressed(Button.A)) {
+    //         basic.pause(5)
+    //     }
+    // }    buttons = 0
+
+    // First two buttons only. 
+    buttons = (input.buttonIsPressed(Button.A) ? 1 : 0) | 
+              (input.buttonIsPressed(Button.B) ? 2 : 0) 
+    // D-Pad Control (binary)
     // gamepad.send(
     //     buttons,
     //     0,
@@ -63,6 +70,7 @@ basic.forever(function () {
     //     0,
     //     0
     //     )
+    // x/y Control (analog)
     gamepad.send(
         buttons,
         Math.map(x, -1023, 1023, -126, 126),
