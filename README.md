@@ -34,7 +34,43 @@ Note 1: iOS can support mouse control if [AssistiveTouch](#assistivetouch) is en
 
 # Pairing and Programming Quirks
 
-# Keyboard
+Security is really important for wireless Human Interface Devices, like keyboards.  The Micro:bit's Bluetooth communication goes through a process called "pairing" to ensure data exchanged is secure.  The pairing process works like this:
+
+1. You complete your program and download it to the micro:bit.  Here's an example:
+    ```block
+    input.onButtonPressed(Button.A, function () {
+        keyboard.sendString("Hello Bluetooth HID!")
+    })
+    keyboard.startKeyboardService()
+   ```
+2. You a) open bluetooth preferences on the device you want to interact with (a computer, phone, or tablet), b) select the micro:bit that you want to connect to, and c)your phone/computer/tablet may ask if you want to "Pair"  (Some devices, like Macs and PCs assume  you want to "Pair" because you selected the micro:bit).  Here are examples of all three:
+    * iOS Connection
+    * Windows Connection
+    * Android Connection
+    * macOS Connection
+3. Every time "pairing" happens a new "key" is created to encrypt all future communication.  The micro:bit and the other device will both store the key so they can immediately communicate in the future without going through this pairing process.  For example, if your micro:bit loses power and re-starts, the other device will automatically connect to it without going through the pairing process again.  **Unless the micro:bit's key is destroyed!**
+
+## Re-programming and keys
+
+Reprogramming the micro:bit can cause the micro:bit's version of the key to be destroyed, but the other device (computer/phone/tablet) will still have its copy of the key.  The other device will still try to connect to the micro:bit, but it will ignore any messages from the micro:bit (since the micro:bit doesn't have a key to encrypt communication).  To be able to communicate the devices will have to exchange keys again. You'll need to make the other device (computer/phone/tablet) "forget" the key and then go through the pairing process again.  You also use bluetooth settings to cause devices to forget keys:
+    * iOS Forget Pair
+    * Windows Forget Pair
+    * Android Forget Pair
+    * macOS Forget Pair
+
+### ~hint
+#### Reprogramming without pairing
+
+In some cases you can reprogram the micro:bit without losing any stored keys.  This is usually possible if you are making small changes in the program (and are working in the same environment: same computer/browser/etc.)
+
+### ~
+ # Keyboard
+
+```sig
+keyboard.startKeyboardService()
+```
+
+Starts the keyboard service.  This must execute in the `start` block.
 
 ## Complex Keys
 
@@ -65,12 +101,13 @@ macOS and Windows only
 * Create a mouse using the accelerometer
 * Create a gamepad using the accelerometer
 * Use the keyboard support to control a slideshow (Google Slides, PowerPoint, Keynote, etc.)
-* Use the micro:bit to take pictures and start/stop recordings on your phone/tablet.  Hint: most mobile devices' camera app will take a picture when a volume button is pressed.
-* Make a remote control to play/pause music and/or control volume.
+* Use the micro:bit to take pictures and start/stop recordings on your phone/tablet.  Hint: most mobile devices' camera app will take a picture when a volume button is pressed
+* Make a remote control to play/pause music and/or control volume
+* Automate repetitive tasks
 
 ## iOS Screen Keyboard
 
-Use the Media Eject
+Use the Media Eject to allow the keyboard to be used while also using the Keyboar service.
 
 # Limitations
 
