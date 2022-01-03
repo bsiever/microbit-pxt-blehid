@@ -52,7 +52,7 @@
     "supportedTargets": [
         "microbit"
     ],
-    "preferredEditor": "pyprj",
+    "preferredEditor": "tsprj",
     "disablesVariants": [
         "mbdal"
     ],

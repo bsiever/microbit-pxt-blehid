@@ -1,80 +1,114 @@
+# blehid
 
 ```package
-microbit-pxt-blehid=github:bsiever/microbit-pxt-blehid
+blehid=github:bsiever/microbit-pxt-blehid
 ```
 
-# Bluetooth-HID
+This extension allows the micro:bit V2 to be Bluetooth [Human Interface Devices](https://en.wikipedia.org/wiki/Human_interface_device) (HID).  It currently supports services for [Keyboard](#keyboard), [Mouse](#mouse), [Media Keys](#media-keys) (play, pause, volume up, etc.), a [Gamepad](#gamepad), and an [Absolute Mouse](absolute-mouse) (puts the mouse at a specific position on the screen).
 
-This extension allows the micro:bit V2 to act like Bluetooth [Human Interface Devices](https://en.wikipedia.org/wiki/Human_interface_device) (HID).  It currently supports [Keyboard](#keyboard), [Mouse](#mouse), [Media Keys](#media-keys) (play, pause, volume up, etc.), a [Gamepad](#gamepad), and an [Absolute Mouse](absolute-mouse) (puts the mouse at a specific position on the screen).
+Not all services are supported on all devices or operating systems. Operating systems with some support
 
-Not all modules are supported on all devices or operating systems:
+* Android 11 and later (May work on some Android 9+ devices)
+  * Tested on a Galaxy Tab A (8", 2019)
+  * Here's the [Android BLE HID support list](https://github.com/raghavk92/Android_Bluetooth_HID_Device_Profile_CompatibilityList/blob/master/device_list.txt), which includes details on HID support for about 120 different Android devices.
+* Windows 10 Pro and later
+  * Tested on a Microsoft Surface Pro (5th Gen)
+* iOS: Tested on 15.1
+  * According to [Apple Support](https://support.apple.com/en-us/HT204387), the HID Profile is supported on "iPhone 5s and later, iPad Air and later, and iPod touch (6th generation) and later".
+  * Tested on an iPhone 11 Pro
+* macOS:  Tested on 11.4 (Big Sur)
+  * Tested on an M1 Air, but it should work on any mac made after 2014 running Big Sur or later
 
-* Operating systems with some support
-  * Android 11 and later (May work on some Android 9+ devices)
-    * Tested on a Galaxy Tab A (8", 2019)
-    * Here's the [Android BLE HID support list](https://github.com/raghavk92/Android_Bluetooth_HID_Device_Profile_CompatibilityList/blob/master/device_list.txt), which includes details on HID support for about 120 different Android devices.
-  * Windows 10 Pro and later
-    * Tested on a Microsoft Surface Pro (5th Gen)
-  * iOS: Tested on 15.1
-    * According to [Apple Support](https://support.apple.com/en-us/HT204387), the HID Profile is suppported on "iPhone 5s and later, iPad Air and later, and iPod touch (6th generation) and later".
-    * Tested on an iPhone 11 Pro
-  * macOS:  Tested on 11.4 (Big Sur)
-    * Tested on an M1 Air, but it should work on any mac made after 2014 running Big Sur or later
-* Modules support on each operating system
+ Service support on each operating system <br />
 
-| Module         | Windows  | macOS  | Android  | iOS  |
-|:---------------|:--------:|:------:|:--------:|:----:|
-| Keyboard       | X        | X      | X       | X     |
-| Media          | X        | X      | X       |       |
-| Mouse          | X        | X      | X       | Note 1 |
-| Gamepad        | X        | X      | X       |       |
-| Absolute Mouse | X        | X      |         |       |
-
-Note 1: iOS can support mouse control if [AssistiveTouch](#assistivetouch) is enabled.
+>  | Service         | Windows  | macOS  | Android | iOS |
+>  |:---------------|:--------:|:------:|:--------:|:----:|
+>  | Keyboard       | X        | X      | X       | X     |
+>  | Media          | X        | X      | X       |       |
+>  | Mouse          | X        | X      | X       | Note 1 |
+>  | Gamepad        | X        | X      | X       |       |
+>  | Absolute Mouse | X        | X      |         |       | 
+>  | 
+>
+> Note 1: iOS can support mouse control if [AssistiveTouch](#assistivetouch) is enabled.
 
 # Pairing and Programming Quirks
 
 Security is really important for wireless Human Interface Devices, like keyboards.  The Micro:bit's Bluetooth communication goes through a process called "pairing" to ensure data exchanged is secure.  The pairing process works like this:
 
 1. You complete your program and download it to the micro:bit.  Here's an example:
-    ```block
-    input.onButtonPressed(Button.A, function () {
-        keyboard.sendString("Hello Bluetooth HID!")
-    })
-    keyboard.startKeyboardService()
-   ```
+
+> ```blocks
+> input.onButtonPressed(Button.A, function () {
+>     keyboard.sendString("Hello Bluetooth HID!")
+> })
+> keyboard.startKeyboardService()
+> ```
 2. You a) open bluetooth preferences on the device you want to interact with (a computer, phone, or tablet), b) select the micro:bit that you want to connect to, and c)your phone/computer/tablet may ask if you want to "Pair"  (Some devices, like Macs and PCs assume  you want to "Pair" because you selected the micro:bit).  Here are examples of all three:
     * iOS Connection
     * Windows Connection
     * Android Connection
     * macOS Connection
-3. Every time "pairing" happens a new "key" is created to encrypt all future communication.  The micro:bit and the other device will both store the key so they can immediately communicate in the future without going through this pairing process.  For example, if your micro:bit loses power and re-starts, the other device will automatically connect to it without going through the pairing process again.  **Unless the micro:bit's key is destroyed!**
+3. Every time pairing happens a new "key" is created to encrypt all future communication.  The micro:bit and the other device will both store the key so they can immediately communicate in the future without going through this pairing process.  For example, if your micro:bit loses power and re-starts, the other device will automatically connect to it without going through the pairing process again.  **Unless the micro:bit's key is destroyed!**
 
 ## Re-programming and keys
 
 Reprogramming the micro:bit can cause the micro:bit's version of the key to be destroyed, but the other device (computer/phone/tablet) will still have its copy of the key.  The other device will still try to connect to the micro:bit, but it will ignore any messages from the micro:bit (since the micro:bit doesn't have a key to encrypt communication).  To be able to communicate the devices will have to exchange keys again. You'll need to make the other device (computer/phone/tablet) "forget" the key and then go through the pairing process again.  You also use bluetooth settings to cause devices to forget keys:
-    * iOS Forget Pair
-    * Windows Forget Pair
-    * Android Forget Pair
-    * macOS Forget Pair
+> * iOS Forget Pair
+> * Windows Forget Pair
+> * Android Forget Pair
+> * macOS Forget Pair
 
 ### ~hint
 #### Reprogramming without pairing
 
-In some cases you can reprogram the micro:bit without losing any stored keys.  This is usually possible if you are making small changes in the program (and are working in the same environment: same computer/browser/etc.)
+If you are just making small changes to an already-paired micro:bit soon after you completed pairing (and using the same computer/browser), you can usually reprogram if without losing the stored key. 
 
 ### ~
- # Keyboard
+
+# Keyboard
 
 ```sig
 keyboard.startKeyboardService()
 ```
 
-Starts the keyboard service.  This must execute in the `start` block.
+Starts the keyboard service.  This must execute in the `start` block.  All other keyboard blocks require the service is started. 
 
-## Complex Keys
 
-Join with text join
+```sig
+keyboard.sendString()
+```
+
+Send a sequence of characters one-at-a-time.  For example, ``[keyboard.sendString('Hello Keyboard!')]``
+
+```sig
+keyboard.keys()
+```
+
+
+Keys that can't be typed in strings.  For example, 
+
+```blocks
+keyboard.sendString(keyboard.keys(_Key.enter))
+```
+
+These can be combined with typed characters by joining them together: ``[keyboard.sendString('Hello Keyboard!'+keyboard.keys(_Key.enter) )]``
+
+```sig
+keyboard.modifiers()
+```
+
+Modifiers.  Multiple moduifiers can be combined with a single character.  
+
+
+```sig
+keyboard.sendSimultaneousKeys()
+```
+Send several keys at the same time (up to 6).
+
+```sig
+keyboard.rawScancode()
+```
 
 # Mouse
 
