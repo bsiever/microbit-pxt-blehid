@@ -66,7 +66,7 @@ namespace keyboard {
         alt, 
         //% block="option+"
         option,
-        //% block="control+"
+        //% block="command+"
         apple, 
         //% block="windows+"
         windows, 

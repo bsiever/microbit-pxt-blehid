@@ -66,7 +66,9 @@ If you are just making small changes to an already-paired micro:bit soon after y
 
 ### ~
 
-# Keyboard
+# Keyboard API
+
+## Starting the Keyboard Service #keyboard-startKeyboardService
 
 ```sig
 keyboard.startKeyboardService()
@@ -74,61 +76,289 @@ keyboard.startKeyboardService()
 
 Starts the keyboard service.  This must execute in the `start` block.  All other keyboard blocks require the service is started. 
 
+## Sending keystrokes #keyboard-sendString
 
 ```sig
 keyboard.sendString()
 ```
 
-Send a sequence of characters one-at-a-time.  For example, ``[keyboard.sendString('Hello Keyboard!')]``
+Send a sequence of characters one-at-a-time.  For example, ``[keyboard.sendString('Hello Keyboard!')]`` is equivalent to typing the individual letters one-at-a-time.
+
+## Special Keys #keyboard-keys
+
 
 ```sig
 keyboard.keys()
 ```
 
+Keys that can't be typed in strings.  To simulate pressing enter ``[keyboard.sendString(keyboard.keys(keyboard._Key.enter))]``
 
-Keys that can't be typed in strings.  For example, 
+These can be combined with typed characters by joining them together: ``[keyboard.sendString('Hello Keyboard!'+keyboard.keys(keyboard._Key.enter))]``
 
-```blocks
-keyboard.sendString(keyboard.keys(_Key.enter))
-```
-
-These can be combined with typed characters by joining them together: ``[keyboard.sendString('Hello Keyboard!'+keyboard.keys(_Key.enter) )]``
+## Key Modifiers #keyboard-modifiers
 
 ```sig
 keyboard.modifiers()
 ```
 
-Modifiers.  Multiple moduifiers can be combined with a single character.  
+Modifiers are keys like Control, or Alt, or the Windows key on a PC / Command key on a Mac. Modifiers modify another key and are 
+often used for special commands.  Pressing Control and "S" is often used to save files (Command and "S" on Macs).  You can send 
+a "Contrl+S" by joining the Control modifier: ``[keyboard.sendString("" + keyboard.modifiers(keyboard._Modifier.control) + "s")]``.  
+The Modifier modifies the first character joined after the "+".  For example, ``[keyboard.sendString("" + keyboard.modifiers(keyboard._Modifier.control) + "stop")]`` would send "Contrl+s" and then sent "t", "o", and finally "p". 
 
+Some command require multiple modifiers, which can also be joined with the Text join.  All the modifiers in a series add to the first non-modifier ``[keyboard.sendString("" + keyboard.modifiers(keyboard._Modifier.control) + keyboard.modifiers(keyboard._Modifier.alt) + keyboard.keys(keyboard._Key.delete))]``
+
+It's also possible to send a sequence of modified keys.  For example, on Macs Command and "c" copy and Command and "c" paste. A copy/paste/paste could be done by:
+``[keyboard.sendString("" + keyboard.modifiers(keyboard._Modifier.apple) + "c" + keyboard.modifiers(keyboard._Modifier.apple) + "v" + keyboard.modifiers(keyboard._Modifier.apple) + "v")
+]``
+
+## Sending several simultaneously pressed keys #keyboard-sendSimultaneousKeys
 
 ```sig
 keyboard.sendSimultaneousKeys()
 ```
-Send several keys at the same time (up to 6).
+
+This command is in the "... more" palette of advanced commands.  It allows up to 6 keys can be sent at the same time. This is like smashing down keys at the exact same time. The "+" on the block can 
+be expanded to give additional control over when keys are released.  For example, while playing a video game you may want to hold down on the right arrow to move right: ``[keyboard.sendSimultaneousKeys(keyboard.keys(keyboard._Key.right), true)]``.
+
+At some point you may also want to simulate pushinng the space bar to jump while still moving to the right: ``[keyboard.sendSimultaneousKeys("" + keyboard.keys(keyboard._Key.right) + " ", true)]``
+
+Finally, you may want to release all the keys: ``[keyboard.releaseKeys()]``
+
+## Releasing any "held" keys #keyboard-releaseKeys
+
+```sig
+keyboard.releaseKeys()
+```
+
+Release any keys that were held down by use of ``[keyboard.sendSimultaneousKeys("...", true)]``
+
+## Raw scancodes for additional keys #keyboard-rawScanCode
+
 
 ```sig
 keyboard.rawScancode()
 ```
 
+HID keyboards send "scancodes" that represent keys.  You may want to send keys that aren't covered here, like the Function Keys (F1, etc.). 
+ You can do this by sending the scancode for the key.  Supported scancodes can be found on page 83 of the 
+ "[HID Usage Tables for Universal Serial Bus (USB) v 1.21](https://usb.org/sites/default/files/hut1_21.pdf#page=83)".  If you look up Keyboard F1 
+ in the table (page 83) you'll find it has a scancode of 112 (in the AT-101 column of the table). To send an F1: ``[keyboard.sendString(keyboard.rawScancode(112))]`` 
+
+## Detecting if the keyboard service use has changed #keyboard-setStatusChangeHandler
+
+
+```sig 
+keyboard.setStatusChangeHandler()
+```
+
+The device using the service needs to "subscribe" to the service.  This event hander will indicate that the status of the subscription has changed (either 
+the other device has subscribed or unsubscribed).  This is an indicator that the device is "listening" to your code.  However, it isn't perfect.  Some operating systems, like Android, subscribe to every service whether they use it or not.
+
+## Detecting if the keyboard service may be in use #keyboard-isEnabled
+
+
+```sig 
+keyboard.isEnabled()
+```
+
+`true` indicates that the device is currently subscribed to the service.  `false` indicates the device is _not_ currently subscribed to the service. This may mean that the other device is off our out of range. 
+
+
+
+# Media Keys 
+
+## Starting the Media Service #media-startMediaService
+
+```sig
+media.startMediaService()
+```
+
+Starts the media service.  This must execute in the `start` block.  All other media blocks require the service is started. 
+
+```sig
+media.keys(media._MediaKey.next)
+```
+
+Select a specific media key to send (only the keys listed may be sent).
+
+```sig
+media.keys()
+```
+
+Send a media key.  For example, to send "Play/pause" ``[media.sendCode(media.keys(media._MediaKey.playPause))]`` 
+
+### ~hint
+#### Reprogramming without pairing
+
+When the regular [Keyboard](#keyboard) service is used with iOS it will disable use of the on-screen keyboard.  You can re-enable 
+it by sending an eject: ``[media.sendCode(media.keys(media._MediaKey.eject))]``
+### ~
+
+```sig 
+media.setStatusChangeHandler()
+```
+
+The device using the service needs to "subscribe" to the service.  This event hander will indicate that the status of the subscription has changed (either 
+the other device has subscribed or unsubscribed).  This is an indicator that the device is "listening" to your code.  However, it isn't perfect.  Some operating systems, like Android, subscribe to every service whether they use it or not.
+
+
+```sig 
+media.isEnabled()
+```
+
+`true` indicates that the device is currently subscribed to the service.  `false` indicates the device is _not_ currently subscribed to the service. This may mean that the other device is off our out of range. 
+
+
 # Mouse
 
-Mouse does stuff.
+## Starting the Mouse Service #mouse-startMouseService
+
+
+```sig
+mouse.startMouseService()
+```
+
+Starts the mouse service.  This must execute in the `start` block.  All other mous blocks require the service is started. 
+
+
+```sig 
+mouse.movexy()
+```
+
+Move the mouse by the given amounts in the x (horizontal) and y (vertical) directions.  x can be from -127 to 127.  y can be from -127 to 127.
+
+```sig 
+mouse.click()
+```
+
+Click the left mouse button.
+
+```sig 
+mouse.middleClick()
+```
+Click the middle mouse button.
+
+
+```sig 
+mouse.rightClick()
+```
+
+Click the right mouse button.
+
+```sig 
+mouse.scroll()
+```
+
+Scroll the scroll wheel by the given number of "clicks".  The clicks can be from -127 to 127. 
+
+```sig 
+mouse.send()
+```
+
+TODO
+
+```sig 
+mouse.setStatusChangeHandler()
+```
+
+The device using the service needs to "subscribe" to the service.  This event hander will indicate that the status of the subscription has changed (either 
+the other device has subscribed or unsubscribed).  This is an indicator that the device is "listening" to your code.  However, it isn't perfect.  Some operating systems, like Android, subscribe to every service whether they use it or not.
+
+
+```sig 
+mouse.isEnabled()
+```
+
+`true` indicates that the device is currently subscribed to the service.  `false` indicates the device is _not_ currently subscribed to the service. This may mean that the other device is off our out of range. 
+
 
 ## AssistiveTouch
 
 Can work in iOS with accessibility features enabled ([Assistive Touch](https://support.apple.com/en-us/HT210546) [here](https://www.macworld.com/article/232969/how-to-use-a-mouse-with-your-ipad-or-iphone.html))
 
-# Media Keys
-
-Yeah...
-
 # Absolute Mouse
 
-macOS and Windows only
+Absolute mouse currently only works on macOS and Windows.  Interactions beteen Absolute Mouse and Mouse may not be well defined. 
+
+## Starting the Absolute Mouse Service #absmouse-startAbsoluteMouseService
+
+
+```sig
+absmouse.startAbsoluteMouseService()
+```
+
+Starts the Absolute Mouse service.  This must execute in the `start` block.  All other Absolute Mouse blocks require the service is started. 
+
+```sig
+absmouse.movexy()
+```
+Move the mouse pointer to the specific location.  x goes from -32767 to 32767.  -32767 represents the left side of the screen and 32767 represents the right side of the screen.  y goes from -32767 to 32767.  -32767 represents the top of the screen and 32767 represents the bottom of the screen. (0,0)
+ is the center of the screen. 
+
+```sig
+absmouse.click()
+```
+Click the left mouse button.
+
+```sig
+absmouse.middleClick()
+```
+
+Click the middle mouse button.
+
+
+```sig
+absmouse.rightClick()
+```
+
+Click the right mouse button.
+
+```sig
+absmouse.send()
+```
+
+TODO
+
+```sig 
+absmouse.setStatusChangeHandler()
+```
+
+The device using the service needs to "subscribe" to the service.  This event hander will indicate that the status of the subscription has changed (either 
+the other device has subscribed or unsubscribed).  This is an indicator that the device is "listening" to your code.  However, it isn't perfect.  Some operating systems, like Android, subscribe to every service whether they use it or not.
+
+
+```sig 
+absmouse.isEnabled()
+```
+
+`true` indicates that the device is currently subscribed to the service.  `false` indicates the device is _not_ currently subscribed to the service. This may mean that the other device is off our out of range. 
+
 
 # Game Pad
 
-# Programming and Pairing
+## Starting the Gamepad Service #gamepad-startGamepadService
+
+```sig
+gamepad.startGamepadService()
+```
+
+Starts the Gamepad service.  This must execute in the `start` block.  All other Gamepad blocks require the service is started. 
+
+```sig 
+gamepad.setStatusChangeHandler()
+```
+
+The device using the service needs to "subscribe" to the service.  This event hander will indicate that the status of the subscription has changed (either 
+the other device has subscribed or unsubscribed).  This is an indicator that the device is "listening" to your code.  However, it isn't perfect.  Some operating systems, like Android, subscribe to every service whether they use it or not.
+
+
+```sig 
+gamepad.isEnabled()
+```
+
+`true` indicates that the device is currently subscribed to the service.  `false` indicates the device is _not_ currently subscribed to the service. This may mean that the other device is off our out of range. 
+
 
 # Cool Ideas / Challenges
 
