@@ -35,7 +35,7 @@ enum GameDirection {
     upLeft = 8
 }
 
-//% color=#0000FF 
+//% color=#ff0000 
 //% icon="\uf11b"
 //% block="Gamepad"
 namespace gamepad {

@@ -1,5 +1,5 @@
 
-//% color=#0000FF 
+//% color=#ff0080 
 //% icon="\uf245"
 //% block="Absolute Mouse"
 namespace absmouse {

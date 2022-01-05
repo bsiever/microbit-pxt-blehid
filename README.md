@@ -135,7 +135,6 @@ Release any keys that were held down by use of ``[keyboard.sendSimultaneousKeys(
 
 ## Raw scancodes for additional keys #keyboard-rawScanCode
 
-
 ```sig
 keyboard.rawScancode()
 ```
@@ -147,7 +146,6 @@ HID keyboards send "scancodes" that represent keys.  You may want to send keys t
 
 ## Detecting if the keyboard service use has changed #keyboard-setStatusChangeHandler
 
-
 ```sig 
 keyboard.setStatusChangeHandler()
 ```
@@ -157,14 +155,11 @@ the other device has subscribed or unsubscribed).  This is an indicator that the
 
 ## Detecting if the keyboard service may be in use #keyboard-isEnabled
 
-
 ```sig 
 keyboard.isEnabled()
 ```
 
 `true` indicates that the device is currently subscribed to the service.  `false` indicates the device is _not_ currently subscribed to the service. This may mean that the other device is off our out of range. 
-
-
 
 # Media Keys 
 
@@ -176,24 +171,31 @@ media.startMediaService()
 
 Starts the media service.  This must execute in the `start` block.  All other media blocks require the service is started. 
 
+## Specific Media Keys #media-keys
+
 ```sig
 media.keys(media._MediaKey.next)
 ```
 
 Select a specific media key to send (only the keys listed may be sent).
 
+## Sending a media key #media-sendCode
+
 ```sig
-media.keys()
+media.sendCode()
 ```
 
 Send a media key.  For example, to send "Play/pause" ``[media.sendCode(media.keys(media._MediaKey.playPause))]`` 
 
 ### ~hint
-#### Reprogramming without pairing
+#### Showing the iOS Keyboard with Keyboard Service
 
 When the regular [Keyboard](#keyboard) service is used with iOS it will disable use of the on-screen keyboard.  You can re-enable 
 it by sending an eject: ``[media.sendCode(media.keys(media._MediaKey.eject))]``
 ### ~
+
+
+## Detecting if the media service use has changed #media-setStatusChangeHandler
 
 ```sig 
 media.setStatusChangeHandler()
@@ -201,6 +203,8 @@ media.setStatusChangeHandler()
 
 The device using the service needs to "subscribe" to the service.  This event hander will indicate that the status of the subscription has changed (either 
 the other device has subscribed or unsubscribed).  This is an indicator that the device is "listening" to your code.  However, it isn't perfect.  Some operating systems, like Android, subscribe to every service whether they use it or not.
+
+## Detecting if the media service may be in use #media-isEnabled
 
 
 ```sig 
@@ -256,7 +260,12 @@ Scroll the scroll wheel by the given number of "clicks".  The clicks can be from
 mouse.send()
 ```
 
-TODO
+Send all mouse behavior simultaneously.  `x` is the amount to move horizontaly (-127 to 127), `y` is the amount to move vertically (-127 to 127), 
+`left` indicates if the left mouse button is pressed, `middle` indicates if the middle mouse button is pressed, `right` indicates if the right 
+mouse button is pressed, `scroll` is the amount to scroll (-127 to 127), and `hold` indicates if the buttons should be "held" until the next mouse command (when `false` 
+the buttons are "clicked").
+
+## Detecting if the mouse service use has changed #mouse-setStatusChangeHandler
 
 ```sig 
 mouse.setStatusChangeHandler()
@@ -265,6 +274,7 @@ mouse.setStatusChangeHandler()
 The device using the service needs to "subscribe" to the service.  This event hander will indicate that the status of the subscription has changed (either 
 the other device has subscribed or unsubscribed).  This is an indicator that the device is "listening" to your code.  However, it isn't perfect.  Some operating systems, like Android, subscribe to every service whether they use it or not.
 
+## Detecting if the mouse service may be in use #mouse-isEnabled
 
 ```sig 
 mouse.isEnabled()
@@ -272,17 +282,15 @@ mouse.isEnabled()
 
 `true` indicates that the device is currently subscribed to the service.  `false` indicates the device is _not_ currently subscribed to the service. This may mean that the other device is off our out of range. 
 
-
 ## AssistiveTouch
 
-Can work in iOS with accessibility features enabled ([Assistive Touch](https://support.apple.com/en-us/HT210546) [here](https://www.macworld.com/article/232969/how-to-use-a-mouse-with-your-ipad-or-iphone.html))
+A mouse can be used in iOS when ([Assistive Touch](https://support.apple.com/en-us/HT210546) features are enabled,  See [here](https://www.macworld.com/article/232969/how-to-use-a-mouse-with-your-ipad-or-iphone.html) for more detail.
 
 # Absolute Mouse
 
 Absolute mouse currently only works on macOS and Windows.  Interactions beteen Absolute Mouse and Mouse may not be well defined. 
 
 ## Starting the Absolute Mouse Service #absmouse-startAbsoluteMouseService
-
 
 ```sig
 absmouse.startAbsoluteMouseService()
@@ -307,7 +315,6 @@ absmouse.middleClick()
 
 Click the middle mouse button.
 
-
 ```sig
 absmouse.rightClick()
 ```
@@ -318,7 +325,14 @@ Click the right mouse button.
 absmouse.send()
 ```
 
-TODO
+Send all absolute mouse behavior simultaneously.  x: number, y: number, left: boolean, middle: boolean, right: boolean, hold: boolean): void;
+
+`x` is the horizontal location to place the mouse (-32767 to 32767), `y` is the vertical location to place the mouse (-32767 to 327679),
+`left` indicates if the left mouse button is pressed, `middle` indicates if the middle mouse button is pressed, `right` indicates if the right 
+mouse button is pressed,  and `hold` indicates if the buttons should be "held" until the next mouse command (when `false` 
+the buttons are "clicked").
+
+## Detecting if the absmouse service use has changed #absmouse-setStatusChangeHandler
 
 ```sig 
 absmouse.setStatusChangeHandler()
@@ -327,6 +341,7 @@ absmouse.setStatusChangeHandler()
 The device using the service needs to "subscribe" to the service.  This event hander will indicate that the status of the subscription has changed (either 
 the other device has subscribed or unsubscribed).  This is an indicator that the device is "listening" to your code.  However, it isn't perfect.  Some operating systems, like Android, subscribe to every service whether they use it or not.
 
+## Detecting if the absmouse service may be in use #absmouse-isEnabled
 
 ```sig 
 absmouse.isEnabled()
@@ -345,6 +360,34 @@ gamepad.startGamepadService()
 
 Starts the Gamepad service.  This must execute in the `start` block.  All other Gamepad blocks require the service is started. 
 
+## Direction Pad keys (D-Pad) #gamepad-_dpad 
+
+```sig
+gamepad._dpad(GameDirection.noDirection)
+```
+
+TODO
+
+## Buttons #gamepad-_buttons 
+
+```sig 
+gamepad._buttons()
+
+```
+
+TODO
+
+## Send a gamepad command #gamepad-send
+
+```sig 
+gamepad.send()
+```
+
+TODO
+
+
+## Detecting if the gamepad service use has changed #gamepad-setStatusChangeHandler
+
 ```sig 
 gamepad.setStatusChangeHandler()
 ```
@@ -352,13 +395,13 @@ gamepad.setStatusChangeHandler()
 The device using the service needs to "subscribe" to the service.  This event hander will indicate that the status of the subscription has changed (either 
 the other device has subscribed or unsubscribed).  This is an indicator that the device is "listening" to your code.  However, it isn't perfect.  Some operating systems, like Android, subscribe to every service whether they use it or not.
 
+## Detecting if the gamepad service may be in use #gamepad-isEnabled
 
 ```sig 
 gamepad.isEnabled()
 ```
 
 `true` indicates that the device is currently subscribed to the service.  `false` indicates the device is _not_ currently subscribed to the service. This may mean that the other device is off our out of range. 
-
 
 # Cool Ideas / Challenges
 

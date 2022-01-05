@@ -11,7 +11,7 @@ class MediaKey {
     static readonly vol_down = 0x80
 }
 
-//% color=#0000FF 
+//% color=#ff00FF 
 //% icon="\uf04b"
 //% block="Media"
 namespace media {
@@ -23,6 +23,7 @@ namespace media {
     }
 
     //% blockId="send code" block="send code | $code" 
+    //% code.shadow="mediakey_conv"
     //% shim=media::sendCode
     //% weight=40
     export function sendCode(code: number) : void {

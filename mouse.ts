@@ -1,5 +1,5 @@
 
-//% color=#0000FF 
+//% color=#8000FF 
 //% icon="\uf245"
 //% block="Mouse"
 namespace mouse {
