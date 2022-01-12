@@ -278,6 +278,7 @@ bool HIDService::notifyChrValue( int idx, const uint8_t *data, uint16_t length) 
     if(diff<minTimeBetweenNotifies) {
         uBit.sleep(diff);
     }
+    lastSend = now;
     return MicroBitBLEService::notifyChrValue( idx, data, length);
 }
 

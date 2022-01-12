@@ -29,7 +29,7 @@
 const int numReportsMax = 4;
 const int reportMapMaxSize = 200;  // 172 is enough for any 3
 const int reportMaxSize = 8;       // Max size  
-const int minTimeBetweenNotifies = 50;  // Minimum amount of time between sending notifies
+const int minTimeBetweenNotifies = 100;  // Minimum amount of time between sending notifies
 
 /**
   * Class definition for a MicroBit BLE HID Service.
