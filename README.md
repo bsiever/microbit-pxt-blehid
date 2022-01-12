@@ -44,11 +44,17 @@ Security is really important for wireless Human Interface Devices, like keyboard
 > })
 > keyboard.startKeyboardService()
 > ```
+
 2. You a) open bluetooth preferences on the device you want to interact with (a computer, phone, or tablet), b) select the micro:bit that you want to connect to, and c)your phone/computer/tablet may ask if you want to "Pair"  (Some devices, like Macs and PCs assume  you want to "Pair" because you selected the micro:bit).  Here are examples of all three:
-    * iOS Connection
+
+### iOS Pairing
+
+https://user-images.githubusercontent.com/1421446/149055788-594206e2-3ec7-477f-8c7f-28380c855a23.mp4
+
     * Windows Connection
     * Android Connection
-    * macOS Connection
+
+###  macOS Pairing
 
 https://user-images.githubusercontent.com/1421446/149054357-aed2a475-ddfb-4786-8f2d-72e843a1811f.mp4
 
@@ -57,10 +63,21 @@ https://user-images.githubusercontent.com/1421446/149054357-aed2a475-ddfb-4786-8
 ## Re-programming and keys
 
 Reprogramming the micro:bit can cause the micro:bit's version of the key to be destroyed, but the other device (computer/phone/tablet) will still have its copy of the key.  The other device will still try to connect to the micro:bit, but it will ignore any messages from the micro:bit (since the micro:bit doesn't have a key to encrypt communication).  To be able to communicate the devices will have to exchange keys again. You'll need to make the other device (computer/phone/tablet) "forget" the key and then go through the pairing process again.  You also use bluetooth settings to cause devices to forget keys:
-> * iOS Forget Pair
+
+### iOS Un Pair
+
+
+
+https://user-images.githubusercontent.com/1421446/149056052-7e46139f-718e-443a-a550-fae258d8e9c2.mp4
+
+
+
 > * Windows Forget Pair
 > * Android Forget Pair
-> * macOS Forget Pair
+
+### macOS Un Pair
+
+https://user-images.githubusercontent.com/1421446/149055265-510663ac-4243-4d7d-a922-9b40f27a1d3a.mp4
 
 ### ~hint
 #### Reprogramming without pairing
