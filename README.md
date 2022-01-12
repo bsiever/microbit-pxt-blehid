@@ -49,7 +49,8 @@ Security is really important for wireless Human Interface Devices, like keyboard
     * Windows Connection
     * Android Connection
     * macOS Connection
-      * https://user-images.githubusercontent.com/1421446/149054357-aed2a475-ddfb-4786-8f2d-72e843a1811f.mp4
+
+https://user-images.githubusercontent.com/1421446/149054357-aed2a475-ddfb-4786-8f2d-72e843a1811f.mp4
 
 3. Every time pairing happens a new "key" is created to encrypt all future communication.  The micro:bit and the other device will both store the key so they can immediately communicate in the future without going through this pairing process.  For example, if your micro:bit loses power and re-starts, the other device will automatically connect to it without going through the pairing process again.  **Unless the micro:bit's key is destroyed!**
 
