@@ -49,6 +49,8 @@ Security is really important for wireless Human Interface Devices, like keyboard
 
 ### iOS Pairing
 
+<iframe id="video" width="560" height="315" src="https://user-images.githubusercontent.com/1421446/149055788-594206e2-3ec7-477f-8c7f-28380c855a23.mp4" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen=""></iframe>
+
 https://user-images.githubusercontent.com/1421446/149055788-594206e2-3ec7-477f-8c7f-28380c855a23.mp4
 
     * Windows Connection
