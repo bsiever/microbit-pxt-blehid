@@ -21,16 +21,16 @@ Not all services are supported on all devices or operating systems. Operating sy
 
  Service support on each operating system <br />
 
->  | Service         | Windows  | macOS  | Android | iOS |
->  |:---------------|:--------:|:------:|:--------:|:----:|
->  | Keyboard       | X        | X      | X       | X     |
->  | Media          | X        | X      | X       |       |
->  | Mouse          | X        | X      | X       | Note 1 |
->  | Gamepad        | X        | X      | X       |       |
->  | Absolute Mouse | X        | X      |         |       | 
->  | 
->
-> Note 1: iOS can support mouse control if [AssistiveTouch](#assistivetouch) is enabled.
+| Service         | Windows  | macOS  | Android | iOS |
+|:---------------|:--------:|:------:|:--------:|:----:|
+| Keyboard       | X        | X      | X       | X     |
+| Media          | X        | X      | X       |       |
+| Mouse          | X        | X      | X       | Note 1 |
+| Gamepad        | X        | X      | X       |       |
+| Absolute Mouse | X        | X      |         |       | 
+| 
+
+Note 1: iOS can support mouse control if [AssistiveTouch](#assistivetouch) is enabled.
 
 # Pairing and Programming Quirks
 
@@ -60,24 +60,33 @@ https://user-images.githubusercontent.com/1421446/149054357-aed2a475-ddfb-4786-8
 
 3. Every time pairing happens a new "key" is created to encrypt all future communication.  The micro:bit and the other device will both store the key so they can immediately communicate in the future without going through this pairing process.  For example, if your micro:bit loses power and re-starts, the other device will automatically connect to it without going through the pairing process again.  **Unless the micro:bit's key is destroyed!**
 
+### Android Pairing
+
+https://user-images.githubusercontent.com/1421446/149252209-67c847b2-aa58-4785-869f-91105304ef8f.mp4
+
+### Windows Pairing
+
+https://user-images.githubusercontent.com/1421446/149252173-0dd6ebf0-fa2b-4070-8c2c-92288513195c.mp4
+
 ## Re-programming and keys
 
 Reprogramming the micro:bit can cause the micro:bit's version of the key to be destroyed, but the other device (computer/phone/tablet) will still have its copy of the key.  The other device will still try to connect to the micro:bit, but it will ignore any messages from the micro:bit (since the micro:bit doesn't have a key to encrypt communication).  To be able to communicate the devices will have to exchange keys again. You'll need to make the other device (computer/phone/tablet) "forget" the key and then go through the pairing process again.  You also use bluetooth settings to cause devices to forget keys:
 
 ### iOS Un Pair
 
-
-
 https://user-images.githubusercontent.com/1421446/149056052-7e46139f-718e-443a-a550-fae258d8e9c2.mp4
-
-
-
-> * Windows Forget Pair
-> * Android Forget Pair
 
 ### macOS Un Pair
 
 https://user-images.githubusercontent.com/1421446/149055265-510663ac-4243-4d7d-a922-9b40f27a1d3a.mp4
+
+### Android Un Pair
+
+https://user-images.githubusercontent.com/1421446/149252273-4bd5c3ae-7389-4ef5-ac34-43e34076cbaf.mp4
+
+### Windows Un Pair
+
+https://user-images.githubusercontent.com/1421446/149252110-cc18c5ba-0cdd-4823-af8b-047f2a683a6d.mp4
 
 ### ~hint
 #### Reprogramming without pairing
