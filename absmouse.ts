@@ -23,19 +23,22 @@ namespace absmouse {
     //% blockId="absolute mouse click" block="click absolute mouse"
     //% weight=30
     export function click() : void { 
-        _send(0, 0, 0x1);  
+        // Sentinel values for x & y to use "last" x & y
+        _send(0xFFFF, 0xFFFF, 0x1);  
     }
 
     //% blockId="absolute mouse middle click" block="middle click absolute mouse"
     //% weight=20
     export function middleClick() : void { 
-        _send(0, 0, 0x2);  
+        // Sentinel values for x & y to use "last" x & y
+        _send(0xFFFF, 0xFFFF, 0x2);  
     }
     
     //% blockId="absolute mouse right click" block="right click absolute mouse"
     //% weight=10
     export function rightClick() : void { 
-        _send(0, 0, 0x4);  
+        // Sentinel values for x & y to use "last" x & y
+        _send(0xFFFF, 0xFFFF, 0x4);  
     }
 
     //% blockId="send absolute mouse" block="send absolute mouse motion|set x to $x| and set y to $y|left pressed $left|middle pressed $middle|right pressed $right|change scroll to $scroll|hold buttons $hold" advanced=true

@@ -26,6 +26,9 @@ static int constrain(int in, int min, int max) {
 using namespace pxt; 
 
 namespace absmouse {
+    static int lastX = 0;
+    static int lastY = 0;
+
     bool isInitialized() {
         if(reporter == NULL) {
             uBit.display.scroll("Absolute Mouse not started");
@@ -45,6 +48,10 @@ namespace absmouse {
     //% 
     void _send(int x, int y, int buttons) {
         if(!isInitialized()) return;
+
+        x = x==0xFFFF ? lastX : x;
+        y = y==0xFFFF ? lastY : y;
+
         x = constrain(x,-32767, 32767);
         y = constrain(y,-32767, 32767);
         
@@ -52,6 +59,8 @@ namespace absmouse {
 
         if(!(buttons&0x8)) 
             reporter->send(x,y,false, false, false);
+        lastX = x;
+        lastY = y;
     }
 
     //%
