@@ -1,2 +1,2 @@
 makecode:
-  home_url: @homeurl@
+  home_url: "@homeurl@"
