@@ -1,2 +1,2 @@
 makecode:
-  home_url: https://makecode.microbit.org/
+  home_url: "@homeurl@"
