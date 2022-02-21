@@ -44,10 +44,12 @@ namespace gamepad {
     //% shim=gamepad::startGamepadService
     //% weight=50
     export function startGamepadService() : void {
+        return
     }
 
     //% shim=gamepad::_send
     function _send(buttons: number, xyzrx: number, dpad: number) : void { 
+        return
     }
 
 
@@ -95,6 +97,7 @@ namespace gamepad {
     //% shim=gamepad::setStatusChangeHandler 
     //% weight=20
     export function setStatusChangeHandler(a: Action) {
+        return
     }
 
     //% blockId="gamepad enabled" block="gamepad enabled" advanced=true

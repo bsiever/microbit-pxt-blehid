@@ -7,10 +7,12 @@ namespace mouse {
     //% shim=mouse::startMouseService
     //% weight=50
     export function startMouseService() : void {
+        return
     }
 
     //% shim=mouse::_send
     function _send(x: number, y: number, scroll: number, buttons: number) : void { 
+        return
     }
 
     //% blockId="move mouse xy" block="move mouse | x by $x| and y by $y"
@@ -59,6 +61,7 @@ namespace mouse {
     //% shim=mouse::setStatusChangeHandler 
     //% weight=20
     export function setStatusChangeHandler(a: Action) {
+        return
     }
 
     //% blockId="mouse enabled" block="mouse enabled" advanced=true

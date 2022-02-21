@@ -20,6 +20,7 @@ namespace media {
     //% shim=media::startMediaService
     //% weight=50
     export function startMediaService() : void {
+        return
     }
 
     //% blockId="send code" block="send code | $code" 
@@ -27,12 +28,14 @@ namespace media {
     //% shim=media::sendCode
     //% weight=40
     export function sendCode(code: number) : void {
+        return
     }
 
     //% blockID="media on status change" block="on media status change" advanced=true
     //% shim=media::setStatusChangeHandler 
     //% weight=20
     export function setStatusChangeHandler(a: Action) {
+        return
     }
 
     //% blockId="media enabled" block="media enabled" advanced=true

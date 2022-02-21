@@ -36,18 +36,21 @@ namespace keyboard {
     //% shim=keyboard::startKeyboardService
     //% weight=50
     export function startKeyboardService() : void {
+        return
     }
 
     //% blockId="send string" block="send keys | $keys" 
     //% shim=keyboard::sendString
     //% weight=40
     export function sendString(keys: string) : void {
+        return
     }
 
     //% blockID="keyboard on status change" block="on keyboard status change" advanced=true
     //% shim=keyboard::setStatusChangeHandler 
     //% weight=20
     export function setStatusChangeHandler(a: Action) {
+        return
     }
 
     //% blockId="keyboard enabled" block="keyboard enabled" advanced=true
@@ -152,11 +155,13 @@ namespace keyboard {
     //% shim=keyboard::sendSimultaneousKeys
     //% weight=50
     export function sendSimultaneousKeys(keys: string, hold: boolean) : void {
+        return
     }
 
     //% blockId="release keys" block="release keys" advanced=true
     //% shim=keyboard::releaseKeys
     //% weight=40
     export function releaseKeys() : void {
+        return
     }
 }

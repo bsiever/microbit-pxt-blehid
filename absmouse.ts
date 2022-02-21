@@ -7,10 +7,12 @@ namespace absmouse {
     //% shim=absmouse::startAbsoluteMouseService
     //% weight=50
     export function startAbsoluteMouseService() : void {
+        return
     }
 
     //% shim=absmouse::_send
     function _send(x: number, y: number, buttons: number) : void { 
+        return
     }
 
     //% blockId="move absolute mouse xy" block="move absolute mouse | x to $x| and y to $y"
@@ -55,6 +57,7 @@ namespace absmouse {
     //% shim=absmouse::setStatusChangeHandler 
     //% weight=20
     export function setStatusChangeHandler(a: Action) {
+        return
     }
 
     //% blockId="absolute mouse enabled" block="absolute mouse enabled" advanced=true
