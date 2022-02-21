@@ -25,7 +25,7 @@ using namespace pxt;
 
 const uint16_t HIDService::hidService = 0x1812; 
 
-const uint16_t HIDService::charUUID[mbbs_cIdxCOUNT] = { 
+const uint16_t HIDService::charUUID[mbbs_cIdxCOUNT] = {  
   // Alternate values to facilitate debugging
   // 0x8A4E,  //  ProtocolMode
   // 0x8A4A,  //  HIDInfo
