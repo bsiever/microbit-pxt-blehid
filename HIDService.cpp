@@ -322,10 +322,20 @@ void HIDService::addReportDescriptor(uint16_t value_handle, uint8_t reportID, ui
                                   &reportCCCDHandle); 
 }
 
+void HIDService::setName() {
+    // set fixed gap name
+    // Name has to be <= 12 chars (to fit Adv packet)  
+    //  Maybe:  "mcrobt XXXXX"   or "uBit [XXXXX]"   
+    int len = sprintf(gapName, "uBit [%s]", microbit_friendly_name());
+    ble_gap_conn_sec_mode_t permissions;
+    BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS( &permissions);
+    MICROBIT_BLE_ECHK( sd_ble_gap_device_name_set( &permissions, (uint8_t *)gapName, len) );
+}
+
 void HIDService::advertiseHID() {
         // Stop any active advertising
         uBit.bleManager.stopAdvertising();
-
+        setName();
         // m_advdata _must_ be static / retained!
         static ble_advdata_t m_advdata;
         // m_enc_advdata _must_ be static / retained!

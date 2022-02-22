@@ -44,6 +44,8 @@ class HIDService : public MicroBitBLEService
     friend class HIDReporter;
 
     int addHIDReporter(HIDReporter& reporter);
+    
+    void setName();
 
     /**
      * Constructor.
@@ -129,6 +131,8 @@ class HIDService : public MicroBitBLEService
     uint8_t   reports[numReportsMax][reportMaxSize];
     HIDReporter *reporters[numReportsMax];
     unsigned    numReporters; 
+    
+    char gapName[14];
 
     void addReporter(HIDReporter *reporter);
     uint8_t *getReportBuffer(int index) { return reports[index]; }

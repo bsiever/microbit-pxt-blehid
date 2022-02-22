@@ -151,19 +151,19 @@ bluetooth.onBluetoothDisconnected(function () {
 
 
 //////////////////////////// Keyboard /////////////////////////
-// keyboard.startKeyboardService()
-// serial.writeLine("Keyboard service started...")
-// // Button AB:  Print "Test"
-// input.onButtonPressed(Button.AB, function () {
-//     keyboard.sendString("Test")
-// })
+keyboard.startKeyboardService()
+serial.writeLine("Keyboard service started...")
+// Button AB:  Print "Test"
+input.onButtonPressed(Button.AB, function () {
+    keyboard.sendString("Test")
+})
 
-// // Button A: Print the entire supported ASCII table (and then compare to the string that was sent / is embedded here)
-// input.onButtonPressed(Button.A, function () {
-//     serial.writeLine("Button A\n")
-//     // All printable ASCII characters...
-//     keyboard.sendString(" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~");
-// })
+// Button A: Print the entire supported ASCII table (and then compare to the string that was sent / is embedded here)
+input.onButtonPressed(Button.A, function () {
+    serial.writeLine("Button A\n")
+    // All printable ASCII characters...
+    keyboard.sendString(" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~");
+})
 // // Button B: Iterate through all special keys, then iterate through modifiers+"a"
 // input.onButtonPressed(Button.B, function () {
 //     serial.writeLine("Button B\n")
