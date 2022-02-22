@@ -60,7 +60,8 @@
         "Bill Siever <bsiever@gmail.com>"
     ],
     "card": {
-        "name": "BLE HID",
+        "name": "Bluetooth Human Interfaces",
+        "imageUrl": "file:../icon.png",
         "feedbackUrl": "https://github.com/bsiever/microbit-pxt-blehid/discussions/16"
     },
     "yotta": {
