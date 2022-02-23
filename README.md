@@ -4,22 +4,27 @@
 blehid=github:bsiever/microbit-pxt-blehid
 ```
 
-This extension allows the micro:bit V2 to be Bluetooth [Human Interface Devices](https://en.wikipedia.org/wiki/Human_interface_device) (HID).  It currently supports services for [Keyboard](#keyboard), [Mouse](#mouse), [Media Keys](#media-keys) (play, pause, volume up, etc.), a [Gamepad](#gamepad), and an [Absolute Mouse](absolute-mouse) (puts the mouse at a specific position on the screen).
+This extension allows the micro:bit V2 to act like a [Human Interface Devices](https://en.wikipedia.org/wiki/Human_interface_device) (HID) over Bluetooth.  It currently supports services for [Keyboard](#keyboard), [Mouse](#mouse), [Media Keys](#media-keys) (play, pause, volume up, etc.), a [Gamepad](#gamepad), and an [Absolute Mouse](absolute-mouse) (puts the mouse at a specific position on the screen).
 
-Not all services are supported on all devices or operating systems. Operating systems with some support
+Not all services are supported on all devices or operating systems. Operating systems with some support are:
 
 * Android 11 and later (May work on some Android 9+ devices)
   * Tested on a Galaxy Tab A (8", 2019)
-  * Here's the [Android BLE HID support list](https://github.com/raghavk92/Android_Bluetooth_HID_Device_Profile_CompatibilityList/blob/master/device_list.txt), which includes details on HID support for about 120 different Android devices.
+  * Here's an unofficial [Android BLE HID support list](https://github.com/raghavk92/Android_Bluetooth_HID_Device_Profile_CompatibilityList/blob/master/device_list.txt), which includes details on HID support for about 120 different Android devices.
 * Windows 10 Pro and later
   * Tested on a Microsoft Surface Pro (5th Gen)
 * iOS: Tested on 15.1
   * According to [Apple Support](https://support.apple.com/en-us/HT204387), the HID Profile is supported on "iPhone 5s and later, iPad Air and later, and iPod touch (6th generation) and later".
   * Tested on an iPhone 11 Pro
 * macOS:  Tested on 11.4 (Big Sur)
-  * Tested on an M1 Air, but it should work on any mac made after 2014 running Big Sur or later
+  * Tested on an M1 Air, but it should work on any Mac made after 2014 running Big Sur or later
 
- Service support on each operating system <br />
+You are welcome to use the Extensions's discussions forum to share any new/different platforms that work or don't:
+* [List of working devices](https://github.com/bsiever/microbit-pxt-blehid/discussions/21)
+* [List of *NON*-working devices](https://github.com/bsiever/microbit-pxt-blehid/discussions/23)
+* [All discussiont](https://github.com/bsiever/microbit-pxt-blehid/discussions)
+
+Not all features are supported on each operating system: <br />
 
 | Service         | Windows  | macOS  | Android | iOS |
 |:---------------|:--------:|:------:|:--------:|:----:|
@@ -27,25 +32,36 @@ Not all services are supported on all devices or operating systems. Operating sy
 | Media          | X        | X      | X       |       |
 | Mouse          | X        | X      | X       | Note 1 |
 | Gamepad        | X        | X      | X       |       |
-| Absolute Mouse | X        | X      |         |       | 
-| 
+| Absolute Mouse | X        | X      |         | &nbsp;      | 
 
 Note 1: iOS can support mouse control if [AssistiveTouch](#assistivetouch) is enabled.
 
 # Pairing and Programming Quirks
 
-Security is really important for wireless Human Interface Devices, like keyboards.  The Micro:bit's Bluetooth communication goes through a process called "pairing" to ensure data exchanged is secure.  The pairing process works like this:
+Security is important for wireless Human Interface Devices, like keyboards.  The Micro:bit's Bluetooth communication goes through a process called "pairing" to ensure data exchanged is secure.  The pairing process works like this:
 
-1. You complete your program and download it to the micro:bit.  Here's an example:
+## 1. Program the micro:bit
 
-> ```blocks
-> input.onButtonPressed(Button.A, function () {
->     keyboard.sendString("Hello Bluetooth HID!")
-> })
-> keyboard.startKeyboardService()
-> ```
+Here's an example program:
 
-2. You a) open bluetooth preferences on the device you want to interact with (a computer, phone, or tablet), b) select the micro:bit that you want to connect to, and c)your phone/computer/tablet may ask if you want to "Pair"  (Some devices, like Macs and PCs assume  you want to "Pair" because you selected the micro:bit).  Here are examples of all three:
+```blocks
+input.onButtonPressed(Button.A, function () {
+    keyboard.sendString("Hello Bluetooth HID!")
+})
+keyboard.startKeyboardService()
+```
+
+Notice that it starts a service in the ```start```.
+
+## 2. Have your device connect to the micro:bit
+
+1. Open bluetooth preferences on the device you want to interact with (a computer, phone, or tablet),
+2. select the micro:bit that you want to connect to, and 
+3. your phone/computer/tablet may ask if you want to "Pair"  (Some devices, like Macs and PCs assume  you want to "Pair" because you selected the micro:bit).  
+
+Every time pairing happens a new "key" is created to encrypt all future communication.  The micro:bit and the other device will both store the key so they can immediately communicate in the future without going through this pairing process.  For example, if your micro:bit loses power and re-starts, the other device will automatically connect to it without going through the pairing process again.  However, sometimes changes to your program will cause the micro:bit's key to be destroyed! (See [Re-programming and keys](#re-programming-and-keys))
+
+Here are examples of all three steps on each operating system:
 
 ### iOS Pairing
 
@@ -63,8 +79,6 @@ https://user-images.githubusercontent.com/1421446/149055788-594206e2-3ec7-477f-8
 
 https://user-images.githubusercontent.com/1421446/149054357-aed2a475-ddfb-4786-8f2d-72e843a1811f.mp4
 
-3. Every time pairing happens a new "key" is created to encrypt all future communication.  The micro:bit and the other device will both store the key so they can immediately communicate in the future without going through this pairing process.  For example, if your micro:bit loses power and re-starts, the other device will automatically connect to it without going through the pairing process again.  **Unless the micro:bit's key is destroyed!**
-
 ### Android Pairing
 
 <video width="320" height="240" controls>
@@ -81,9 +95,13 @@ https://user-images.githubusercontent.com/1421446/149252209-67c847b2-aa58-4785-8
 
 https://user-images.githubusercontent.com/1421446/149252173-0dd6ebf0-fa2b-4070-8c2c-92288513195c.mp4
 
+
+
 ## Re-programming and keys
 
-Reprogramming the micro:bit can cause the micro:bit's version of the key to be destroyed, but the other device (computer/phone/tablet) will still have its copy of the key.  The other device will still try to connect to the micro:bit, but it will ignore any messages from the micro:bit (since the micro:bit doesn't have a key to encrypt communication).  To be able to communicate the devices will have to exchange keys again. You'll need to make the other device (computer/phone/tablet) "forget" the key and then go through the pairing process again.  You also use bluetooth settings to cause devices to forget keys:
+Reprogramming the micro:bit can cause the micro:bit's version of the key to be destroyed, but the other device (computer, phone, tablet, etc.) will still have its copy of the key.  The other device will still try to connect to the micro:bit, but then it will ignore any commands from the micro:bit since the micro:bit doesn't have a valid key.  To be able to communicate the devices will have to exchange keys again. You'll need to make the other device (computer, phone, tablet, etc.) "forget" the key and then go through the pairing process again.  You also use bluetooth settings to cause devices to forget keys (un-pair). 
+
+Here are examples of unpairing on each operating system:
 
 ### iOS Un Pair
 
@@ -120,11 +138,11 @@ https://user-images.githubusercontent.com/1421446/149252110-cc18c5ba-0cdd-4823-a
 ### ~hint
 #### Reprogramming without pairing
 
-If you are just making small changes to an already-paired micro:bit soon after you completed pairing (and using the same computer/browser), you can usually reprogram if without losing the stored key. 
+If you are just making small changes to a paired micro:bit, you can usually reprogram if without losing the stored key. 
 
 ### ~
 
-# Keyboard API
+# Keyboard Service #keyboard
 
 ## Starting the Keyboard Service #keyboard-startKeyboardService
 
@@ -132,7 +150,14 @@ If you are just making small changes to an already-paired micro:bit soon after y
 keyboard.startKeyboardService()
 ```
 
-Starts the keyboard service.  This must execute in the `start` block.  All other keyboard blocks require the service is started. 
+Starts the keyboard service.  This must execute in the `start` block.  All other keyboard blocks require the service be started. 
+
+### ~hint
+#### Showing the iOS Keyboard with Keyboard Service
+
+When the regular [Keyboard](#keyboard) service is used with iOS it will disable use of the on-screen keyboard.  You can re-enable 
+it by sending an ``eject`` with the [`media service`](#media)
+### ~
 
 ## Sending keystrokes #keyboard-sendString
 
@@ -149,7 +174,7 @@ Send a sequence of characters one-at-a-time.  For example, ``[keyboard.sendStrin
 keyboard.keys()
 ```
 
-Keys that can't be typed in strings.  To simulate pressing enter ``[keyboard.sendString(keyboard.keys(keyboard._Key.enter))]``
+Keys that can't be typed in strings.  To simulate pressing enter send ``enter``, like: ``[keyboard.sendString(keyboard.keys(keyboard._Key.enter))]``
 
 These can be combined with typed characters by joining them together: ``[keyboard.sendString('Hello Keyboard!'+keyboard.keys(keyboard._Key.enter))]``
 
@@ -159,14 +184,14 @@ These can be combined with typed characters by joining them together: ``[keyboar
 keyboard.modifiers()
 ```
 
-Modifiers are keys like Control, or Alt, or the Windows key on a PC / Command key on a Mac. Modifiers modify another key and are 
-often used for special commands.  Pressing Control and "S" is often used to save files (Command and "S" on Macs).  You can send 
-a "Contrl+S" by joining the Control modifier: ``[keyboard.sendString("" + keyboard.modifiers(keyboard._Modifier.control) + "s")]``.  
-The Modifier modifies the first character joined after the "+".  For example, ``[keyboard.sendString("" + keyboard.modifiers(keyboard._Modifier.control) + "stop")]`` would send "Contrl+s" and then sent "t", "o", and finally "p". 
+Modifiers are keys like Control, or Alt, the Windows key on a PC, or the Command key on a Mac. Modifiers modify another key and are 
+often used for special commands.  For example, pressing Control and "S" is often used to save files (Command and "S" on Macs).  You can send 
+a "Contrl+S" by joining the Control modifier to ``"s"``: ``[keyboard.sendString("" + keyboard.modifiers(keyboard._Modifier.control) + "s")]``.  
+The Modifier modifies the first character joined after the "+".  For example, ``[keyboard.sendString("" + keyboard.modifiers(keyboard._Modifier.control) + "stop")]`` would send "Contrl+s" and then send "t", "o", and finally "p". 
 
-Some command require multiple modifiers, which can also be joined with the Text join.  All the modifiers in a series add to the first non-modifier ``[keyboard.sendString("" + keyboard.modifiers(keyboard._Modifier.control) + keyboard.modifiers(keyboard._Modifier.alt) + keyboard.keys(keyboard._Key.delete))]``
+Some commands require multiple modifiers, which can also be joined.  All the modifiers in a series add to the first non-modifier. For example, simultaneouslypressing Control and Alt and the ``delete`` key can be done via: ``[keyboard.sendString("" + keyboard.modifiers(keyboard._Modifier.control) + keyboard.modifiers(keyboard._Modifier.alt) + keyboard.keys(keyboard._Key.delete))]``
 
-It's also possible to send a sequence of modified keys.  For example, on Macs Command and "c" copy and Command and "c" paste. A copy/paste/paste could be done by:
+It's also possible to send a sequence of modified keys.  For example, on Macs Command with "c" copies items and Command with "c" pastes a copied items. A copy/paste/paste could be done by:
 ``[keyboard.sendString("" + keyboard.modifiers(keyboard._Modifier.apple) + "c" + keyboard.modifiers(keyboard._Modifier.apple) + "v" + keyboard.modifiers(keyboard._Modifier.apple) + "v")
 ]``
 
@@ -176,7 +201,7 @@ It's also possible to send a sequence of modified keys.  For example, on Macs Co
 keyboard.sendSimultaneousKeys()
 ```
 
-This command is in the "... more" palette of advanced commands.  It allows up to 6 keys can be sent at the same time. This is like smashing down keys at the exact same time. The "+" on the block can 
+This command is in the "... more" palette of advanced commands.  It allows up to 6 simultaneous keys to be sent at the same time. This is like smashing down keys at the exact same time. The "+" on the block can 
 be expanded to give additional control over when keys are released.  For example, while playing a video game you may want to hold down on the right arrow to move right: ``[keyboard.sendSimultaneousKeys(keyboard.keys(keyboard._Key.right), true)]``.
 
 At some point you may also want to simulate pushinng the space bar to jump while still moving to the right: ``[keyboard.sendSimultaneousKeys("" + keyboard.keys(keyboard._Key.right) + " ", true)]``
@@ -198,9 +223,9 @@ keyboard.rawScancode()
 ```
 
 HID keyboards send "scancodes" that represent keys.  You may want to send keys that aren't covered here, like the Function Keys (F1, etc.). 
- You can do this by sending the scancode for the key.  Supported scancodes can be found on page 83 of the 
+ You can do this by sending the scancode for the key.  Supported scancodes can be found starting on page 83 of the 
  "[HID Usage Tables for Universal Serial Bus (USB) v 1.21](https://usb.org/sites/default/files/hut1_21.pdf#page=83)".  If you look up Keyboard F1 
- in the table (page 83) you'll find it has a scancode of 112 (in the AT-101 column of the table). To send an F1: ``[keyboard.sendString(keyboard.rawScancode(112))]`` 
+ in the table, you'll find it has a scancode of 112 (in the AT-101 column of the table). So, to send an F1: ``[keyboard.sendString(keyboard.rawScancode(112))]`` 
 
 ## Detecting if the keyboard service use has changed #keyboard-setStatusChangeHandler
 
@@ -209,7 +234,7 @@ keyboard.setStatusChangeHandler()
 ```
 
 The device using the service needs to "subscribe" to the service.  This event hander will indicate that the status of the subscription has changed (either 
-the other device has subscribed or unsubscribed).  This is an indicator that the device is "listening" to your code.  However, it isn't perfect.  Some operating systems, like Android, subscribe to every service whether they use it or not.
+the other device has subscribed or unsubscribed).  This is an indicator that the device is "listening" to your code.  Some operating systems, like Android, subscribe to every service whether they use it or not.
 
 ## Detecting if the keyboard service may be in use #keyboard-isEnabled
 
@@ -217,9 +242,9 @@ the other device has subscribed or unsubscribed).  This is an indicator that the
 keyboard.isEnabled()
 ```
 
-`true` indicates that the device is currently subscribed to the service.  `false` indicates the device is _not_ currently subscribed to the service. This may mean that the other device is off our out of range. 
+`true` indicates that the device is currently subscribed to the service.  `false` indicates the device is _not_ currently subscribed to the service. This may mean that the other device is off or out of range. 
 
-# Media Keys 
+# Media Service #media 
 
 ## Starting the Media Service #media-startMediaService
 
@@ -227,7 +252,7 @@ keyboard.isEnabled()
 media.startMediaService()
 ```
 
-Starts the media service.  This must execute in the `start` block.  All other media blocks require the service is started. 
+Starts the media service.  This must execute in the `start` block.  All other media blocks require the service be started. 
 
 ## Specific Media Keys #media-keys
 
@@ -235,7 +260,7 @@ Starts the media service.  This must execute in the `start` block.  All other me
 media.keys(media._MediaKey.next)
 ```
 
-Select a specific media key to send (only the keys listed may be sent).
+Select a specific media key to send. Only the keys listed may be sent.
 
 ## Sending a media key #media-sendCode
 
@@ -269,10 +294,10 @@ the other device has subscribed or unsubscribed).  This is an indicator that the
 media.isEnabled()
 ```
 
-`true` indicates that the device is currently subscribed to the service.  `false` indicates the device is _not_ currently subscribed to the service. This may mean that the other device is off our out of range. 
+`true` indicates that the device is currently subscribed to the service.  `false` indicates the device is _not_ currently subscribed to the service. This may mean that the other device is off or out of range. 
 
 
-# Mouse
+# Mouse Service #mouse
 
 ## Starting the Mouse Service #mouse-startMouseService
 
@@ -281,7 +306,7 @@ media.isEnabled()
 mouse.startMouseService()
 ```
 
-Starts the mouse service.  This must execute in the `start` block.  All other mous blocks require the service is started. 
+Starts the mouse service.  This must execute in the `start` block.  All other mouse blocks require the service be started. 
 
 
 ```sig 
@@ -338,13 +363,13 @@ the other device has subscribed or unsubscribed).  This is an indicator that the
 mouse.isEnabled()
 ```
 
-`true` indicates that the device is currently subscribed to the service.  `false` indicates the device is _not_ currently subscribed to the service. This may mean that the other device is off our out of range. 
+`true` indicates that the device is currently subscribed to the service.  `false` indicates the device is _not_ currently subscribed to the service. This may mean that the other device is off or out of range. 
 
 ## AssistiveTouch
 
 A mouse can be used in iOS when ([Assistive Touch](https://support.apple.com/en-us/HT210546) features are enabled,  See [here](https://www.macworld.com/article/232969/how-to-use-a-mouse-with-your-ipad-or-iphone.html) for more detail.
 
-# Absolute Mouse
+# Absolute Mouse Service #amsolute-mouse
 
 Absolute mouse currently only works on macOS and Windows.  Interactions beteen Absolute Mouse and Mouse may not be well defined. 
 
@@ -354,7 +379,7 @@ Absolute mouse currently only works on macOS and Windows.  Interactions beteen A
 absmouse.startAbsoluteMouseService()
 ```
 
-Starts the Absolute Mouse service.  This must execute in the `start` block.  All other Absolute Mouse blocks require the service is started. 
+Starts the Absolute Mouse service.  This must execute in the `start` block.  All other Absolute Mouse blocks require the service be started. 
 
 ```sig
 absmouse.movexy()
@@ -405,10 +430,10 @@ the other device has subscribed or unsubscribed).  This is an indicator that the
 absmouse.isEnabled()
 ```
 
-`true` indicates that the device is currently subscribed to the service.  `false` indicates the device is _not_ currently subscribed to the service. This may mean that the other device is off our out of range. 
+`true` indicates that the device is currently subscribed to the service.  `false` indicates the device is _not_ currently subscribed to the service. This may mean that the other device is off or out of range. 
 
 
-# Game Pad
+# Gamepad Service #gamepad-service
 
 ## Starting the Gamepad Service #gamepad-startGamepadService
 
@@ -416,7 +441,7 @@ absmouse.isEnabled()
 gamepad.startGamepadService()
 ```
 
-Starts the Gamepad service.  This must execute in the `start` block.  All other Gamepad blocks require the service is started. 
+Starts the Gamepad service.  This must execute in the `start` block.  All other Gamepad blocks require the service be started. 
 
 ## Direction Pad keys (D-Pad) #gamepad-_dpad 
 
@@ -459,7 +484,7 @@ the other device has subscribed or unsubscribed).  This is an indicator that the
 gamepad.isEnabled()
 ```
 
-`true` indicates that the device is currently subscribed to the service.  `false` indicates the device is _not_ currently subscribed to the service. This may mean that the other device is off our out of range. 
+`true` indicates that the device is currently subscribed to the service.  `false` indicates the device is _not_ currently subscribed to the service. This may mean that the other device is off or out of range. 
 
 # Cool Ideas / Challenges
 
