@@ -268,7 +268,7 @@ Select a specific media key to send. Only the keys listed may be sent.
 media.sendCode()
 ```
 
-Send a media key.  For example, to send "Play/pause" ``[media.sendCode(media.keys(media._MediaKey.playPause))]`` 
+Send a media key.  For example, to send "play/pause" ``[media.sendCode(media.keys(media._MediaKey.playPause))]`` 
 
 ### ~hint
 #### Showing the iOS Keyboard with Keyboard Service
@@ -365,11 +365,14 @@ mouse.isEnabled()
 
 `true` indicates that the device is currently subscribed to the service.  `false` indicates the device is _not_ currently subscribed to the service. This may mean that the other device is off or out of range. 
 
-## AssistiveTouch
+### ~hint
+#### iOS AssistiveTouch
 
-A mouse can be used in iOS when ([Assistive Touch](https://support.apple.com/en-us/HT210546) features are enabled,  See [here](https://www.macworld.com/article/232969/how-to-use-a-mouse-with-your-ipad-or-iphone.html) for more detail.
+A mouse can be used in iOS when [AssistiveTouch](https://support.apple.com/en-us/HT210546) features are enabled,  See [here](https://www.macworld.com/article/232969/how-to-use-a-mouse-with-your-ipad-or-iphone.html) for more detail.
+### ~
 
-# Absolute Mouse Service #amsolute-mouse
+
+# Absolute Mouse Service #absolute-mouse
 
 Absolute mouse currently only works on macOS and Windows.  Interactions beteen Absolute Mouse and Mouse may not be well defined. 
 
@@ -379,13 +382,33 @@ Absolute mouse currently only works on macOS and Windows.  Interactions beteen A
 absmouse.startAbsoluteMouseService()
 ```
 
-Starts the Absolute Mouse service.  This must execute in the `start` block.  All other Absolute Mouse blocks require the service be started. 
+Starts the absolute mouse service.  This must execute in the `start` block.  All other absolute mouse blocks require the service be started. 
 
 ```sig
 absmouse.movexy()
 ```
 Move the mouse pointer to the specific location.  x goes from -32767 to 32767.  -32767 represents the left side of the screen and 32767 represents the right side of the screen.  y goes from -32767 to 32767.  -32767 represents the top of the screen and 32767 represents the bottom of the screen. (0,0)
  is the center of the screen. 
+
+### ~hint 
+#### Screen coordinates and mapping
+
+You can:
+* Identify the resolution of your screen (Ex: 2560x1600)
+* Measure the distance over and down to something you want to interact with as well as the total screen width and height. 
+* Use the above to compute the approximate coordinates of an item on the sceen
+* Take advantage of the `map` block (``[y=Math.map(0,0,0,0,0)]``) to convert from the desired screen coordinate to the absolute mouse coodrinage. 
+
+For example, if:
+* Screen is 28cm wide and 2560 pixels horizontal resolution
+* The item you want to click on the screen is 6cm from the left
+
+The x coordinate is approximately: 6cm/28cm*2560pix = 548pix
+
+The absolute y coordinate can be computed by: ``[y=Math.map(548,0,2560,-32767,32767)]``
+
+
+### ~
 
 ```sig
 absmouse.click()
@@ -441,7 +464,7 @@ absmouse.isEnabled()
 gamepad.startGamepadService()
 ```
 
-Starts the Gamepad service.  This must execute in the `start` block.  All other Gamepad blocks require the service be started. 
+Starts the gamepad service.  This must execute in the `start` block.  All other gamepad blocks require the service be started. 
 
 ## Direction Pad keys (D-Pad) #gamepad-_dpad 
 
@@ -449,7 +472,7 @@ Starts the Gamepad service.  This must execute in the `start` block.  All other 
 gamepad._dpad(GameDirection.noDirection)
 ```
 
-TODO
+A direction value for the direction pad
 
 ## Buttons #gamepad-_buttons 
 
@@ -458,7 +481,7 @@ gamepad._buttons()
 
 ```
 
-TODO
+A value indicating if a designated button is pressed or not. 
 
 ## Send a gamepad command #gamepad-send
 
@@ -466,8 +489,8 @@ TODO
 gamepad.send()
 ```
 
-TODO
-
+Send all gamepad behavior simultaneously.  `buttons` is a set of buttons and their current state, `x` is the amount to move horizontaly (-127 to 127), `y` is the amount to move vertically (-127 to 127), 
+`dpad` is the value of the direction pad, `z` is the amount to move on the z-axis (-127 to 127), `rx` is the rotation about the x-axis.
 
 ## Detecting if the gamepad service use has changed #gamepad-setStatusChangeHandler
 
@@ -493,21 +516,21 @@ gamepad.isEnabled()
 * Use the keyboard support to control a slideshow (Google Slides, PowerPoint, Keynote, etc.)
 * Use the micro:bit to take pictures and start/stop recordings on your phone/tablet.  Hint: most mobile devices' camera app will take a picture when a volume button is pressed
 * Make a remote control to play/pause music and/or control volume
-* Automate repetitive tasks
+* Automate repetitive computer tasks
+
+# Tips 
 
 ## iOS Screen Keyboard
 
-Use the Media Eject to allow the keyboard to be used while also using the Keyboar service.
+Use the Media Eject to allow the keyboard to be used while also using the Keyboard service.
 
-# Limitations
+# Known Limitations
 
 ## iOS
 
 * iOS doesn't support a mouse (well, does with assistive touch)
 * iOS only supports gamepad with assistive touch
 * iOS Doesn't honor media "Stop"
-
-Hmmm... https://support.apple.com/en-us/HT210414
 
 <script src="https://makecode.com/gh-pages-embed.js"></script>
 <script>makeCodeRender("{{ site.makecode.home_url }}", "{{ site.github.owner_name }}/{{ site.github.repository_name }}");</script>

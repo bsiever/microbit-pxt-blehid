@@ -81,7 +81,7 @@ namespace gamepad {
     //% x.min=-127 x.max=127 y.min=-127 y.max=127 z.min=-127 z.max=127 rx.min=-127 rx.max=127 dpad.min=0 dpad.max=15
     //% buttons.shadow="button_conv"
     //% dpad.shadow="dpad_conv"
-    //% z.defl=0 rx.defl=1
+    //% z.defl=0 rx.defl=0
     //% weight=10
     // TODO: Use expandable block (didn't work initially)
     export function send(buttons: number, x: number, y: number, dpad: number, z: number, rx: number) : void {
