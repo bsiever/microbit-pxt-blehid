@@ -538,7 +538,7 @@ Use the Media Eject to allow the keyboard to be used while also using the Keyboa
 
 ## Misc Links & References
 
-- I develop micro:bit extensions in my spare time to support activities I'm enthusiastic about, like summer camps and science curricula.  You are welcome to become a sponsor of my micro:bit work (one time or recurring payments), which helps offset equipment costs: https://github.com/sponsors/bsiever . Any support at all is greatly appreciated!
+- I develop micro:bit extensions in my spare time to support activities I'm enthusiastic about, like summer camps and science curricula.  You are welcome to become a sponsor of my micro:bit work (one time or recurring payments), which helps offset equipment costs: [[here](https://github.com/sponsors/bsiever)](https://github.com/sponsors/bsiever) . Any support at all is greatly appreciated!
 
 <script src="https://makecode.com/gh-pages-embed.js"></script>
 <script>makeCodeRender("{{ site.makecode.home_url }}", "{{ site.github.owner_name }}/{{ site.github.repository_name }}");</script>
