@@ -6,7 +6,7 @@ blehid=github:bsiever/microbit-pxt-blehid
 
 This extension allows the micro:bit V2 to act like a [Human Interface Devices](https://en.wikipedia.org/wiki/Human_interface_device) (HID) over Bluetooth.  It currently supports services for [Keyboard](#keyboard), [Mouse](#mouse), [Media Keys](#media-keys) (play, pause, volume up, etc.), a [Gamepad](#gamepad), and an [Absolute Mouse](absolute-mouse) (puts the mouse at a specific position on the screen).
 
-See (Cool Ideas and Challenges)[#cool-ideas-and-challenges] for some examples of how this extension can be used.
+See [Cool Ideas and Challenges](#cool-ideas-and-challenges) for some examples of how this extension can be used.
 
 Not all services are supported on all devices or operating systems. Operating systems with some support are:
 
@@ -538,7 +538,7 @@ Use the Media Eject to allow the keyboard to be used while also using the Keyboa
 
 ## Misc Links & References
 
-- I develop micro:bit extensions in my spare time to support activities I'm enthusiastic about, like summer camps and science curricula.  You are welcome to become a sponsor of my micro:bit work (one time or recurring payments), which helps offset equipment costs: [[here](https://github.com/sponsors/bsiever)](https://github.com/sponsors/bsiever) . Any support at all is greatly appreciated!
+- I develop micro:bit extensions in my spare time to support activities I'm enthusiastic about, like summer camps and science curricula.  You are welcome to become a sponsor of my micro:bit work (one time or recurring payments), which helps offset equipment costs: [here](https://github.com/sponsors/bsiever). Any support at all is greatly appreciated!
 
 <script src="https://makecode.com/gh-pages-embed.js"></script>
 <script>makeCodeRender("{{ site.makecode.home_url }}", "{{ site.github.owner_name }}/{{ site.github.repository_name }}");</script>
