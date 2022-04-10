@@ -501,7 +501,7 @@ gamepad.isEnabled()
 
 # Cool Ideas and Challenges
 
-Here are some examples: https://youtu.be/n4J5GN72N_4
+Here are some examples: [https://youtu.be/n4J5GN72N_4](https://youtu.be/n4J5GN72N_4)
 
 * Create a mouse using the accelerometer
 * Create a gamepad using the accelerometer
