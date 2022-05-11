@@ -4,7 +4,7 @@
 blehid=github:bsiever/microbit-pxt-blehid
 ```
 
-This extension allows the micro:bit V2 to act like a [Human Interface Devices](https://en.wikipedia.org/wiki/Human_interface_device) (HID) over Bluetooth.  It currently supports services for [Keyboard](#keyboard), [Mouse](#mouse), [Media Keys](#media-keys) (play, pause, volume up, etc.), a [Gamepad](#gamepad), and an [Absolute Mouse](absolute-mouse) (puts the mouse at a specific position on the screen).
+This extension allows the micro:bit V2 to act like a [Human Interface Devices](https://en.wikipedia.org/wiki/Human_interface_device) (HID) over Bluetooth.  It currently supports services for [Keyboard](#keyboard), [Mouse](#mouse), [Media Keys](#media-keys) (play, pause, volume up, etc.), a [Gamepad](#gamepad), and an [Absolute Mouse](#absolute-mouse) (puts the mouse at a specific position on the screen).
 
 See [Cool Ideas and Challenges](#cool-ideas-and-challenges) for some examples of how this extension can be used.
 
@@ -67,10 +67,11 @@ Here are examples of all three steps on each operating system:
 
 ### iOS Pairing
 
+<iframe>
 <video width="320" height="240" controls>
   <source src="https://user-images.githubusercontent.com/1421446/149055788-594206e2-3ec7-477f-8c7f-28380c855a23.mp4" type="video/mp4">
 </video>
-
+</iframe>
 https://user-images.githubusercontent.com/1421446/149055788-594206e2-3ec7-477f-8c7f-28380c855a23.mp4
 
 In the video the micro:bit's bluetooth name is "BBC micro:bit". Yours will be named something like "uBit [XXXXX]", where "XXXXX" will be the unique name of your micro:bit.
@@ -203,6 +204,7 @@ Modifiers are keys like Control, or Alt, the Windows key on a PC, or the Command
 Some commands require multiple modifiers, which can also be joined.  All the modifiers in a series add to the first non-modifier. For example, simultaneously pressing Control and Alt and the ``delete`` key can be done via: ``[keyboard.sendString("" + keyboard.modifiers(keyboard._Modifier.control) + keyboard.modifiers(keyboard._Modifier.alt) + keyboard.keys(keyboard._Key.delete))]``
 
 It's also possible to send a sequence of modified keys.  For example, on Macs Command with "c" copies items and Command with "v" pastes a copied items. A copy/paste/paste could be done by:
+
 ``[keyboard.sendString("" + keyboard.modifiers(keyboard._Modifier.apple) + "c" + keyboard.modifiers(keyboard._Modifier.apple) + "v" + keyboard.modifiers(keyboard._Modifier.apple) + "v")
 ]``
 
@@ -250,7 +252,7 @@ keyboard.isEnabled()
 
 `true` indicates that the device is currently subscribed to the service.  `false` indicates the device is _not_ currently subscribed to the service. This may mean that the other device is off or out of range.
 
-# Media Service #media 
+# Media Service #media #media-keys
 
 ## Starting the Media Service #media-startMediaService
 
@@ -260,7 +262,7 @@ media.startMediaService()
 
 Starts the media service.  This must execute in the `start` block.  All other media blocks require the service be started.
 
-## Specific Media Keys #media-keys
+## Specific Media Keys 
 
 ```sig
 media.keys(media._MediaKey.next)
@@ -362,9 +364,9 @@ mouse.isEnabled()
 `true` indicates that the device is currently subscribed to the service.  `false` indicates the device is _not_ currently subscribed to the service. This may mean that the other device is off or out of range.
 
 ### ~hint
-#### iOS AssistiveTouch
+#### iOS AssistiveTouch #assistivetouch
 
-A mouse can be used in iOS when [AssistiveTouch](https://support.apple.com/en-us/HT210546) features are enabled,  See [here](https://www.macworld.com/article/232969/how-to-use-a-mouse-with-your-ipad-or-iphone.html) for more detail.
+A mouse can be used in iOS when [AssistiveTouch](https://support.apple.com/en-us/HT210546) features are enabled,  See [(https://www.macworld.com/article/232969/how-to-use-a-mouse-with-your-ipad-or-iphone.html](https://www.macworld.com/article/232969/how-to-use-a-mouse-with-your-ipad-or-iphone.html) for more detail.
 ### ~
 
 
@@ -448,7 +450,7 @@ absmouse.isEnabled()
 
 `true` indicates that the device is currently subscribed to the service.  `false` indicates the device is _not_ currently subscribed to the service. This may mean that the other device is off or out of range.
 
-# Gamepad Service #gamepad-service
+# Gamepad Service #gamepad
 
 ## Starting the Gamepad Service #gamepad-startGamepadService
 
