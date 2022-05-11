@@ -67,10 +67,11 @@ Here are examples of all three steps on each operating system:
 
 ### iOS Pairing
 
-<iframe>
+
 <video width="320" height="240" controls>
   <source src="https://user-images.githubusercontent.com/1421446/149055788-594206e2-3ec7-477f-8c7f-28380c855a23.mp4" type="video/mp4">
 </video>
+<iframe src="https://user-images.githubusercontent.com/1421446/149055788-594206e2-3ec7-477f-8c7f-28380c855a23.mp4">
 </iframe>
 https://user-images.githubusercontent.com/1421446/149055788-594206e2-3ec7-477f-8c7f-28380c855a23.mp4
 
