@@ -67,12 +67,17 @@ Here are examples of all three steps on each operating system:
 
 ### iOS Pairing
 
-
 <video width="320" height="240" controls>
   <source src="https://user-images.githubusercontent.com/1421446/149055788-594206e2-3ec7-477f-8c7f-28380c855a23.mp4" type="video/mp4">
 </video>
+
+abc
+
 <iframe src="https://user-images.githubusercontent.com/1421446/149055788-594206e2-3ec7-477f-8c7f-28380c855a23.mp4">
 </iframe>
+
+def
+
 https://user-images.githubusercontent.com/1421446/149055788-594206e2-3ec7-477f-8c7f-28380c855a23.mp4
 
 In the video the micro:bit's bluetooth name is "BBC micro:bit". Yours will be named something like "uBit [XXXXX]", where "XXXXX" will be the unique name of your micro:bit.
