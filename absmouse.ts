@@ -43,8 +43,8 @@ namespace absmouse {
         _send(0xFFFF, 0xFFFF, 0x4);  
     }
 
-    //% blockId="send absolute mouse" block="send absolute mouse motion|set x to $x| and set y to $y|left pressed $left|middle pressed $middle|right pressed $right|change scroll to $scroll|hold buttons $hold" advanced=true
-    //% x.min=-32767 x.max=32767 y.min=-32767 y.max=32767 
+    //% blockId="send absolute mouse" block="send absolute mouse motion|set x to $x| and set y to $y|left pressed $left|middle pressed $middle|right pressed $right|hold buttons $hold" advanced=true
+    //% x.min=-32767 x.max=32767 y.min=-32767 y.max=32767
     //% hold.default=false left.default=false middle.default=false right.default=false
     //% blockExternalInputs=true
     //% expandableArgumentMode="toggle"
