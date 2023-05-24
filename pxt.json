@@ -66,8 +66,6 @@
     },
     "yotta": {
         "config": {
-            "DMESG_SERIAL_DEBUG": 1,
-            "DEVICE_DMESG_BUFFER_SIZE": 8192,
             "microbit-dal": {
                 "bluetooth": {
                     "open": 0,
