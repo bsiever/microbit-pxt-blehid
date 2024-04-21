@@ -84,11 +84,19 @@ void HIDService::static_pm_events(const pm_evt_t* p_event) {
 }
 
 // Static method to update timing
-void HIDService::setEventsPerSecond(uint32_t time) {
+void HIDService::setEventsPerSecond(uint32_t rate) {
   // Valid range of ~5 - 30 events
   // Apply thresholds / checks
-  if(time==0) time = defaultTimeBetweenNotifies;
-  time = min(max((int)(1000.0/time), minTimeBetweenNotifies), maxTimeBetweenNotifies);
+  DEBUG("Setting rate to %d\n",rate);
+  uint32_t time=defaultTimeBetweenNotifies; 
+  if(rate>0) {
+      time = (int)(1000.0/rate);
+      if(time<minTimeBetweenNotifies)
+        time = minTimeBetweenNotifies;
+      if(time>maxTimeBetweenNotifies)
+        time = maxTimeBetweenNotifies;
+  }
+  DEBUG("Setting time to %d\n",time);
   getInstance()->timeBetweenNotifies = time;
 }
 
@@ -280,11 +288,13 @@ bool HIDService::notifyChrValue( int idx, const uint8_t *data, uint16_t length) 
     // Throttle the BLE traffic to avoid flooding
     static unsigned lastSend = 0;
     unsigned now = uBit.systemTime();
-    int diff = now-lastSend;
+    unsigned diff = now-lastSend;
     if(diff<timeBetweenNotifies) {
-        uBit.sleep(diff);
+        unsigned waitTime = min(timeBetweenNotifies-diff, maxTimeBetweenNotifies);
+        DEBUG("wait: %d (now: %d. lastSend: %d)\n",waitTime, now, lastSend);
+        uBit.sleep(waitTime);
     }
-    lastSend = now;
+    lastSend = uBit.systemTime();
     return MicroBitBLEService::notifyChrValue( idx, data, length);
 }
 

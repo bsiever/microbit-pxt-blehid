@@ -12,7 +12,7 @@ class Modifier {
     static readonly rightOption = "\x07"
     static readonly rightApple = "\x08"
     static readonly rightWindows = "\x08"
-}
+} 
 // Special Keys
 class Key {
     static readonly enter = "\x10\x28"
@@ -166,8 +166,8 @@ namespace keyboard {
     }
 
     //% block="set events per second | %rate keys/s" advanced=true
-    //% rate.min=5 rate.max=30
-    //% shim=HIDService::updateEventsPerSecond
+    //% rate.min=5 rate.max=165 rate.defl=100
+    //% shim=keyboard::setEventsPerSecond
     //% weight=50
     export function setEventsPerSecond(rate: number) : void {
         return 

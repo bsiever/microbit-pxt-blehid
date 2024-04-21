@@ -15,6 +15,7 @@
 #include "MicroBit.h"
 
 #include "KeyboardReporter.h"
+#include "HIDService.h"
 #include "debug.h"
 
 static KeyboardReporter *reporter = NULL;
@@ -72,4 +73,10 @@ namespace keyboard {
         if(!isInitialized()) return;
         reporter->sendScanCode(0,0);
     }
+
+    //% 
+    void setEventsPerSecond(uint32_t rate) {
+        HIDService::setEventsPerSecond(rate);
+    }
+
   }

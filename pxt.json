@@ -1,5 +1,5 @@
 {
-    "name": "microbit-pxt-blehid",
+    "name": "microbit-pxt-blehid - Copy",
     "version": "0.0.24",
     "description": "BLE HID Support",
     "license": "MIT",
@@ -46,7 +46,7 @@
     ],
     "public": true,
     "targetVersions": {
-        "target": "5.0.12",
+        "target": "6.0.26",
         "targetId": "microbit"
     },
     "supportedTargets": [
