@@ -1,6 +1,6 @@
 {
     "name": "microbit-pxt-blehid - Copy",
-    "version": "0.0.24",
+    "version": "0.1.0",
     "description": "BLE HID Support",
     "license": "MIT",
     "dependencies": {
