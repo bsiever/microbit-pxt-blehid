@@ -235,6 +235,14 @@ keyboard.rawScancode()
 
 HID keyboards send "scancodes" that represent keys.  You may want to send keys that aren't covered here, like the Function Keys (F1, etc.). You can do this by sending the scancode for the key.  Supported scancodes can be found starting on page 83 of the "[HID Usage Tables for Universal Serial Bus (USB) v 1.21](https://usb.org/sites/default/files/hut1_21.pdf#page=83)".  If you look up Keyboard F1 in the table, you'll find it has a scancode of 112 (in the AT-101 column of the table). So, to send an F1: ``[keyboard.sendString(keyboard.rawScancode(112))]``
 
+## Controlling Rates #keyboard-setEventsPerSecond
+
+```sig
+keyboard.setEventsPerSecond()
+```
+
+Set the number of keys that can be sent per second.  The maximum is 33 and the minimum is 5.  The default is 28. 
+
 ## Detecting if the keyboard service use has changed #keyboard-setStatusChangeHandler
 
 ```sig

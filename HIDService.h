@@ -30,6 +30,8 @@ const int numReportsMax = 4;
 const int reportMapMaxSize = 200;  // 172 is enough for any 3
 const int reportMaxSize = 8;       // Max size  
 const int minTimeBetweenNotifies = 30;  // Minimum amount of time between sending notifies
+const int maxTimeBetweenNotifies = 200;  // Maximum amount of time between sending notifies
+const int defaultTimeBetweenNotifies = 35;  // Default amount of time between sending notifies
 
 /**
   * Class definition for a MicroBit BLE HID Service.
@@ -38,6 +40,8 @@ class HIDService : public MicroBitBLEService
 {
   public:
     static HIDService *getInstance();
+
+    static void setEventsPerSecond(uint32_t events);
 
   private:
     static HIDService *service; // Singleton
@@ -123,7 +127,8 @@ class HIDService : public MicroBitBLEService
 
     // Can't be const (may be modified by stack; should be persistent)
     uint8_t protocolMode;  // 0=>Boot Protocol; 1=>Report; Always 1 
-
+    uint32_t timeBetweenNotifies; // Actual time between notifications
+ 
     // Actual service data 
     uint8_t reportMap[reportMapMaxSize];
     unsigned reportMapUsed;

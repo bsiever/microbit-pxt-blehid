@@ -78,14 +78,19 @@ HIDService *HIDService::service = NULL; // Singleton reference to the service
 //     "PM_EVT_FLASH_GARBAGE_COLLECTION_FAILED",
 // };
 
-
-
-
 // Static method for peer_manager events (Bounce it to the instance, which has access to member vars)
 void HIDService::static_pm_events(const pm_evt_t* p_event) {
   getInstance()->pm_events(p_event);
 }
 
+// Static method to update timing
+void HIDService::setEventsPerSecond(uint32_t time) {
+  // Valid range of ~5 - 30 events
+  // Apply thresholds / checks
+  if(time==0) time = defaultTimeBetweenNotifies;
+  time = min(max((int)(1000.0/time), minTimeBetweenNotifies), maxTimeBetweenNotifies);
+  getInstance()->timeBetweenNotifies = time;
+}
 
 void HIDService::pm_events(const pm_evt_t* p_event) {
   //DEBUG("PM Event %s conn %d, peer %d\n",m_event_str[p_event->evt_id], p_event->conn_handle,  p_event->peer_id );
@@ -139,7 +144,8 @@ HIDService *HIDService::getInstance()
 HIDService::HIDService() :
   protocolMode(0x01),  // Report Protocol
   reportMapUsed(0),
-  numReporters(0)
+  numReporters(0), 
+  timeBetweenNotifies(defaultTimeBetweenNotifies)
 {
   // Initialize all report data 
   memset(reporters, 0, sizeof(HIDReporter*)*numReportsMax);
@@ -275,7 +281,7 @@ bool HIDService::notifyChrValue( int idx, const uint8_t *data, uint16_t length) 
     static unsigned lastSend = 0;
     unsigned now = uBit.systemTime();
     int diff = now-lastSend;
-    if(diff<minTimeBetweenNotifies) {
+    if(diff<timeBetweenNotifies) {
         uBit.sleep(diff);
     }
     lastSend = now;

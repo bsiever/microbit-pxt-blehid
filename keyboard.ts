@@ -164,4 +164,13 @@ namespace keyboard {
     export function releaseKeys() : void {
         return
     }
+
+    //% block="set events per second | %rate keys/s" advanced=true
+    //% rate.min=5 rate.max=30
+    //% shim=HIDService::updateEventsPerSecond
+    //% weight=50
+    export function setEventsPerSecond(rate: number) : void {
+        return 
+    }
+    
 }
